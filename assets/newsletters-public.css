@@ -1,0 +1,48 @@
+/* ================================================================
+   PCIO VIS Member Event — newsletters-public.css
+   Styling for the [pcio_me_newsletters] front-end shortcode.
+   ================================================================ */
+
+.me-nl-public {
+    margin: 1em 0;
+}
+.me-nl-public-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.me-nl-public-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    background: #fff;
+}
+.me-nl-public-link {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    text-decoration: none;
+    color: #1d4ed8;
+    font-weight: 600;
+    flex: 1 1 auto;
+}
+.me-nl-public-link:hover .me-nl-public-title {
+    text-decoration: underline;
+}
+.me-nl-public-icon {
+    color: #b91c1c;
+    flex: 0 0 auto;
+}
+.me-nl-public-date {
+    color: #64748b;
+    font-size: 0.875em;
+    white-space: nowrap;
+}
+.me-nl-public-none {
+    color: #64748b;
+    font-style: italic;
+}

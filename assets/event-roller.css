@@ -1,0 +1,201 @@
+/* ================================================================
+   PCIO VIS Member Event — event-roller.css
+   Front-page [pcio_me_event_roller] slider styling.
+   ================================================================ */
+
+.me-roller {
+    position: relative;
+    width: 90%;
+    margin: 0 auto;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
+    background: #0f172a;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.me-roller-track {
+    position: relative;
+    width: 100%;
+    /* Maintain a wide banner ratio; fallback height for old browsers. */
+    aspect-ratio: 16 / 7;
+    min-height: 280px;
+}
+
+.me-roller-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.6s ease;
+}
+
+.me-roller-slide.is-active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 1;
+}
+
+.me-roller-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.me-roller-img-placeholder {
+    background:
+        linear-gradient( 135deg,
+            var(--evt-color, #3b82f6) 0%,
+            rgba(15, 23, 42, 0.9) 100% );
+}
+
+/* Gradient scrim so overlaid text stays readable over any image. */
+.me-roller-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: 32px 36px;
+    color: #fff;
+    background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.72) 0%,
+        rgba(0, 0, 0, 0.32) 42%,
+        rgba(0, 0, 0, 0) 72%
+    );
+}
+
+/* Shaded backdrop behind the text so it stays legible on busy images. */
+.me-roller-textbox {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    max-width: 100%;
+    padding: 16px 20px;
+    border-radius: 12px;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+}
+
+/* Title + date share one line, wrapping gracefully when tight. */
+.me-roller-head {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+}
+
+.me-roller-date {
+    margin: 0;
+    padding: 0;
+    color: #fff;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    opacity: 0.95;
+    text-transform: none;
+    -webkit-text-stroke: 0;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.85);
+}
+
+.me-roller-title {
+    margin: 0;
+    padding: 0;
+    color: #fff;
+    font-family: inherit;
+    font-size: 30px;
+    line-height: 1.15;
+    font-weight: 800;
+    letter-spacing: 0;
+    text-transform: none;
+    -webkit-text-stroke: 0;
+    text-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.9),
+        0 2px 10px rgba(0, 0, 0, 0.7);
+}
+
+.me-roller-more {
+    display: inline-block;
+    padding: 8px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.28);
+    color: #fff;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    text-decoration: none;
+    text-shadow: none;
+    box-shadow: none;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.me-roller-more:hover,
+.me-roller-more:focus,
+.me-roller-more:visited {
+    background: rgba(0, 0, 0, 0.5);
+    border-color: #fff;
+    color: #fff;
+    text-decoration: none;
+}
+
+/* ── Arrow buttons ─────────────────────────────────────────────── */
+.me-roller-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.85);
+    color: #0f172a;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.me-roller-arrow:hover,
+.me-roller-arrow:focus {
+    background: #fff;
+    transform: translateY(-50%) scale(1.06);
+    outline: none;
+}
+
+.me-roller-arrow svg {
+    width: 24px;
+    height: 24px;
+}
+
+.me-roller-prev { left: 16px; }
+.me-roller-next { right: 16px; }
+
+/* ── Responsive ────────────────────────────────────────────────── */
+@media ( max-width: 640px ) {
+    .me-roller { width: 94%; }
+    .me-roller-track { min-height: 220px; }
+    .me-roller-overlay { padding: 22px 18px; }
+    .me-roller-textbox { padding: 12px 14px; gap: 9px; }
+    .me-roller-title { font-size: 21px; }
+    .me-roller-date { font-size: 13px; }
+    .me-roller-arrow { width: 38px; height: 38px; }
+    .me-roller-arrow svg { width: 20px; height: 20px; }
+    .me-roller-prev { left: 10px; }
+    .me-roller-next { right: 10px; }
+}

@@ -1,0 +1,2197 @@
+# Copyright (C) 2026 PCIO
+# This file is distributed under the GPL2 license.
+msgid ""
+msgstr ""
+"Project-Id-Version: PCIO VIS Member Event 1.0.0\n"
+"Report-Msgid-Bugs-To: https://www.pcio.dk/\n"
+"POT-Creation-Date: 2026-06-10 00:00+0200\n"
+"PO-Revision-Date: 2026-09-11 12:18+0200\n"
+"Last-Translator: PCIO <info@pcio.dk>\n"
+"Language-Team: Danish\n"
+"Language: da_DK\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Domain: pcio-vis-member-event\n"
+"X-Generator: Poedit 3.9\n"
+
+msgid "Member Event"
+msgstr "Medlems­begivenheder"
+
+msgid "Manages members and events for a voluntary organization."
+msgstr "Administrerer medlemmer og begivenheder for en frivillig organisation."
+
+# ── Admin action links ────────────────────────────────────────────────────────
+msgid "Members"
+msgstr "Medlemmer"
+
+msgid "Settings"
+msgstr "Indstillinger"
+
+msgid "Vis"
+msgstr "Vis"
+
+msgid "Settings saved."
+msgstr "Indstillinger gemt."
+
+msgid "Vis — Settings"
+msgstr "Vis — Indstillinger"
+
+msgid "Postmark (email sending)"
+msgstr "Postmark (e-mailafsendelse)"
+
+msgid "Used for bulk-sending mails to all members. Get your server API token from postmarkapp.com."
+msgstr "Bruges til masseudsendelse af mails til alle medlemmer. Hent dit server-API-token fra postmarkapp.com."
+
+msgid "Server API Token"
+msgstr "Server-API-token"
+
+msgid "Stored encrypted in the database. Never share this."
+msgstr "Opbevares krypteret i databasen. Del aldrig dette."
+
+msgid "From Email"
+msgstr "Afsender-e-mail"
+
+msgid "Must be a verified sender address in your Postmark account."
+msgstr "Skal være en verificeret afsenderadresse i din Postmark-konto."
+
+msgid "From Name"
+msgstr "Afsendernavn"
+
+msgid "Organisation name"
+msgstr "Organisationens navn"
+
+# ── Navigation ────────────────────────────────────────────────────────────────
+msgid "Calendar"
+msgstr "Kalender"
+
+msgid "Mails"
+msgstr "Mails"
+
+msgid "Log out"
+msgstr "Log ud"
+
+# ── Home page ─────────────────────────────────────────────────────────────────
+msgid "Voluntary Information System"
+msgstr "Frivillig organisationsstyring"
+
+msgid "Browse, add and edit members of the organisation."
+msgstr "Gennemse, tilføj og rediger organisationens medlemmer."
+
+msgid "Manage events, sign-ups and the organisation calendar."
+msgstr "Administrer begivenheder, tilmeldinger og organisationskalenderen."
+
+msgid "Compose and send bulk emails to all members."
+msgstr "Skriv og send massemails til alle medlemmer."
+
+msgid "Loading…"
+msgstr "Indlæser…"
+
+# ── Member field labels ───────────────────────────────────────────────────────
+msgid "#"
+msgstr "#"
+
+msgid "Name"
+msgstr "Navn"
+
+msgid "Email"
+msgstr "E-mail"
+
+msgid "Phone"
+msgstr "Telefon"
+
+msgid "Address"
+msgstr "Adresse"
+
+# ── REST error messages ───────────────────────────────────────────────────────
+msgid "Could not create member."
+msgstr "Kunne ikke oprette medlem."
+
+msgid "Could not update member."
+msgstr "Kunne ikke opdatere medlem."
+
+msgid "Could not delete member."
+msgstr "Kunne ikke slette medlem."
+
+msgid "Not found."
+msgstr "Ikke fundet."
+
+msgid "Could not create event."
+msgstr "Kunne ikke oprette begivenhed."
+
+msgid "Could not update event."
+msgstr "Kunne ikke opdatere begivenhed."
+
+msgid "Could not delete event."
+msgstr "Kunne ikke slette begivenhed."
+
+msgid "Mail not found."
+msgstr "Mail ikke fundet."
+
+msgid "Could not create mail."
+msgstr "Kunne ikke oprette mail."
+
+msgid "Could not update mail."
+msgstr "Kunne ikke opdatere mail."
+
+msgid "Could not delete mail."
+msgstr "Kunne ikke slette mail."
+
+msgid "Postmark is not configured. Set the API token and From address in Settings."
+msgstr "Postmark er ikke konfigureret. Angiv API-token og afsenderadresse under Indstillinger."
+
+msgid "No members with email addresses found."
+msgstr "Ingen medlemmer med e-mailadresser fundet."
+
+# ── Members page JS strings ───────────────────────────────────────────────────
+msgid "+ New Member"
+msgstr "+ Nyt medlem"
+
+msgid "Quick search all columns…"
+msgstr "Søg i alle kolonner…"
+
+msgid "New Member"
+msgstr "Nyt medlem"
+
+msgid "Edit Member"
+msgstr "Rediger medlem"
+
+msgid "Close dialog"
+msgstr "Luk dialog"
+
+msgid "Member #"
+msgstr "Medlemsnummer"
+
+msgid "e.g. 1042"
+msgstr "f.eks. 1042"
+
+msgid "Full name"
+msgstr "Fuldt navn"
+
+msgid "name@example.com"
+msgstr "navn@eksempel.dk"
+
+msgid "+45 00 00 00 00"
+msgstr "+45 00 00 00 00"
+
+msgid "Street, city, postal code…"
+msgstr "Gade, by, postnr.…"
+
+msgid "Cancel"
+msgstr "Annuller"
+
+msgid "Save member"
+msgstr "Gem medlem"
+
+msgid "Delete Member"
+msgstr "Slet medlem"
+
+msgid "Confirm deletion"
+msgstr "Bekræft sletning"
+
+msgid "This action cannot be undone."
+msgstr "Denne handling kan ikke fortrydes."
+
+msgid "Delete"
+msgstr "Slet"
+
+msgid "Failed to load members: "
+msgstr "Kunne ikke indlæse medlemmer: "
+
+msgid "No members yet. Click + New Member to add one."
+msgstr "Ingen medlemmer endnu. Klik + Nyt medlem for at tilføje."
+
+msgid "No members match the current filters."
+msgstr "Ingen medlemmer matcher de aktuelle filtre."
+
+msgid "Name is required."
+msgstr "Navn er påkrævet."
+
+msgid "Enter a valid email address."
+msgstr "Indtast en gyldig e-mailadresse."
+
+msgid "Saving…"
+msgstr "Gemmer…"
+
+msgid "Deleting…"
+msgstr "Sletter…"
+
+msgid "Member created."
+msgstr "Medlem oprettet."
+
+msgid "Member updated."
+msgstr "Medlem opdateret."
+
+msgid "Member deleted."
+msgstr "Medlem slettet."
+
+msgid "Save failed: "
+msgstr "Gem mislykkedes: "
+
+msgid "Delete failed: "
+msgstr "Sletning mislykkedes: "
+
+msgid "Filter"
+msgstr "Filtrer"
+
+msgid "member"
+msgstr "medlem"
+
+msgid "members"
+msgstr "medlemmer"
+
+msgid "Showing"
+msgstr "Viser"
+
+msgid "of"
+msgstr "af"
+
+msgid "total"
+msgstr "i alt"
+
+# ── Event page JS strings ─────────────────────────────────────────────────────
+msgid "Basic"
+msgstr "Grundlæggende"
+
+msgid "Description"
+msgstr "Beskrivelse"
+
+msgid "Crew"
+msgstr "Besætning"
+
+msgid "Tickets"
+msgstr "Billetter"
+
+msgid "Photos"
+msgstr "Fotos"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Blue"
+msgstr "Blå"
+
+msgid "Green"
+msgstr "Grøn"
+
+msgid "Red"
+msgstr "Rød"
+
+msgid "Purple"
+msgstr "Lilla"
+
+msgid "Amber"
+msgstr "Ravgul"
+
+msgid "Teal"
+msgstr "Blågrøn"
+
+msgid "Pink"
+msgstr "Lyserød"
+
+msgid "Slate"
+msgstr "Skifer"
+
+msgid "✓ Saved"
+msgstr "✓ Gemt"
+
+msgid "✕ Error"
+msgstr "✕ Fejl"
+
+msgid "Delete event"
+msgstr "Slet begivenhed"
+
+msgid "Delete Event"
+msgstr "Slet begivenhed"
+
+msgid "Close"
+msgstr "Luk"
+
+msgid "Title"
+msgstr "Titel"
+
+msgid "All-day event"
+msgstr "Heldagsbegivenhed"
+
+msgid "Start date"
+msgstr "Startdato"
+
+msgid "Start time"
+msgstr "Starttidspunkt"
+
+msgid "End date"
+msgstr "Slutdato"
+
+msgid "End time"
+msgstr "Sluttidspunkt"
+
+msgid "Location"
+msgstr "Sted"
+
+msgid "Venue or address"
+msgstr "Sted eller adresse"
+
+msgid "Colour"
+msgstr "Farve"
+
+msgid "Describe the event…"
+msgstr "Beskriv begivenheden…"
+
+msgid "Save description"
+msgstr "Gem beskrivelse"
+
+msgid "No description."
+msgstr "Ingen beskrivelse."
+
+msgid "This section is coming soon."
+msgstr "Denne sektion kommer snart."
+
+msgid "No event ID."
+msgstr "Ingen begivenhedsid."
+
+msgid "Failed to load event: "
+msgstr "Kunne ikke indlæse begivenheden: "
+
+msgid "You have unsaved changes. Leave without saving?"
+msgstr "Du har ikke-gemte ændringer. Forlad uden at gemme?"
+
+msgid "Title is required."
+msgstr "Titel er påkrævet."
+
+# ── Mails page JS strings ─────────────────────────────────────────────────────
+msgid "+ New Mail"
+msgstr "+ Ny mail"
+
+msgid "Subject"
+msgstr "Emne"
+
+msgid "Created"
+msgstr "Oprettet"
+
+msgid "New Mail"
+msgstr "Ny mail"
+
+msgid "Edit Mail"
+msgstr "Rediger mail"
+
+msgid "Mail subject…"
+msgstr "Mailemne…"
+
+msgid "Content"
+msgstr "Indhold"
+
+msgid "Save draft"
+msgstr "Gem kladde"
+
+msgid "Send to all members"
+msgstr "Send til alle medlemmer"
+
+msgid "Send Mail"
+msgstr "Send mail"
+
+msgid "Send to all members?"
+msgstr "Send til alle medlemmer?"
+
+msgid "This will send the mail to all members with an email address."
+msgstr "Dette sender mailen til alle medlemmer med en e-mailadresse."
+
+msgid "Send now"
+msgstr "Send nu"
+
+msgid "Delete Mail"
+msgstr "Slet mail"
+
+msgid "Draft"
+msgstr "Kladde"
+
+msgid "Sent"
+msgstr "Sendt"
+
+msgid "No mails yet."
+msgstr "Ingen mails endnu."
+
+msgid "Failed to load mails: "
+msgstr "Kunne ikke indlæse mails: "
+
+msgid "Sending…"
+msgstr "Sender…"
+
+msgid "Mail created."
+msgstr "Mail oprettet."
+
+msgid "Mail updated."
+msgstr "Mail opdateret."
+
+msgid "Mail deleted."
+msgstr "Mail slettet."
+
+msgid "Failed to load mail: "
+msgstr "Kunne ikke indlæse mail: "
+
+msgid "Send failed: "
+msgstr "Afsendelse mislykkedes: "
+
+msgid "mail"
+msgstr "mail"
+
+msgid "mails"
+msgstr "mails"
+
+msgid "Sent to %d member(s)"
+msgstr "Sendt til %d medlem(mer)"
+
+msgid " (%d failed)"
+msgstr " (%d mislykkedes)"
+
+msgid "Write the mail content here…"
+msgstr "Skriv mailens indhold her…"
+
+msgid "Subject is required."
+msgstr "Emne er påkrævet."
+
+msgid "Edit"
+msgstr "Rediger"
+
+# ── Photos tab: Banner + Thumbnail (JS via PCIO_ME.i18n) ─────────────────────
+msgid "Banner image"
+msgstr "Bannerbillede"
+
+msgid "Thumbnail (tile) image"
+msgstr "Miniaturebillede (felt)"
+
+msgid "Wide landscape image shown as the cover and in the front-page event roller."
+msgstr "Bredt liggende billede, der vises som forside og i begivenhedsrulleren på forsiden."
+
+msgid "Tile image shown in the event grid (the [pcio_me_events] deck)."
+msgstr "Feltbillede, der vises i begivenhedsgitteret ([pcio_me_events]-felterne)."
+
+msgid "Target size"
+msgstr "Ønsket størrelse"
+
+msgid "Current size"
+msgstr "Nuværende størrelse"
+
+msgid "unknown"
+msgstr "ukendt"
+
+msgid "⚠ Does not match the target size — please crop or replace it."
+msgstr "⚠ Matcher ikke den ønskede størrelse — beskær eller udskift billedet."
+
+msgid "✓ Matches the target size."
+msgstr "✓ Matcher den ønskede størrelse."
+
+# ── Crop editor (JS via PCIO_ME.i18n) ────────────────────────────────────────
+msgid "Adjust / crop"
+msgstr "Justér / beskær"
+
+msgid "Adjust image"
+msgstr "Justér billede"
+
+msgid "Drag to move, scroll or pinch to zoom. The selection is cropped to the target size."
+msgstr "Træk for at flytte, rul eller knib for at zoome. Markeringen beskæres til den ønskede størrelse."
+
+msgid "Zoom in"
+msgstr "Zoom ind"
+
+msgid "Zoom out"
+msgstr "Zoom ud"
+
+msgid "Reset"
+msgstr "Nulstil"
+
+msgid "Crop & save"
+msgstr "Beskær & gem"
+
+msgid "Choose a different image"
+msgstr "Vælg et andet billede"
+
+msgid "Select an image first, then adjust it."
+msgstr "Vælg et billede først, og justér det derefter."
+
+msgid "The crop editor failed to load. Please reload the page."
+msgstr "Beskæringsværktøjet kunne ikke indlæses. Genindlæs siden."
+
+# ── [pcio_me_events] tiles ───────────────────────────────────────────────────
+msgid "Upcoming events"
+msgstr "Kommende begivenheder"
+
+msgid "Search…"
+msgstr "Søg…"
+
+msgid "No upcoming events."
+msgstr "Ingen kommende begivenheder."
+
+msgid "No events match your search."
+msgstr "Ingen begivenheder matcher din søgning."
+
+# ── Public event detail page ─────────────────────────────────────────────────
+msgid "Time"
+msgstr "Tidspunkt"
+
+msgid "Place"
+msgstr "Sted"
+
+msgid "Sign up"
+msgstr "Tilmelding"
+
+msgid "Your response"
+msgstr "Dit svar"
+
+msgid "Joining"
+msgstr "Deltager"
+
+msgid "Interested"
+msgstr "Interesseret"
+
+msgid "Not joining"
+msgstr "Deltager ikke"
+
+msgid "Log in to sign up for this event."
+msgstr "Log ind for at tilmelde dig denne begivenhed."
+
+msgid "Log in"
+msgstr "Log ind"
+
+msgid "You cannot sign up for this event."
+msgstr "Du kan ikke tilmelde dig denne begivenhed."
+
+# ── Documents page ───────────────────────────────────────────────────────────
+msgid "Documents"
+msgstr "Dokumenter"
+
+msgid "Upload and manage organisation documents by category."
+msgstr "Upload og administrer organisationens dokumenter efter kategori."
+
+msgid "No documents found."
+msgstr "Ingen dokumenter fundet."
+
+msgid "+ Add Document"
+msgstr "+ Tilføj dokument"
+
+msgid "Quick search…"
+msgstr "Hurtig søgning…"
+
+msgid "Type"
+msgstr "Type"
+
+msgid "Date"
+msgstr "Dato"
+
+msgid "File"
+msgstr "Fil"
+
+msgid "Add Document"
+msgstr "Tilføj dokument"
+
+msgid "Edit Document"
+msgstr "Rediger dokument"
+
+msgid "Document type"
+msgstr "Dokumenttype"
+
+msgid "Select type…"
+msgstr "Vælg type…"
+
+msgid "Document date"
+msgstr "Dokumentdato"
+
+msgid "Display name"
+msgstr "Visningsnavn"
+
+msgid "e.g. Annual Report 2025"
+msgstr "f.eks. Årsrapport 2025"
+
+msgid "No file chosen"
+msgstr "Ingen fil valgt"
+
+msgid "Choose from media library"
+msgstr "Vælg fra mediebibliotek"
+
+msgid "Select Document"
+msgstr "Vælg dokument"
+
+msgid "Use this document"
+msgstr "Brug dette dokument"
+
+msgid "WordPress media library is not available."
+msgstr "WordPress-mediebiblioteket er ikke tilgængeligt."
+
+msgid "Save document"
+msgstr "Gem dokument"
+
+msgid "Delete Document"
+msgstr "Slet dokument"
+
+msgid "No documents yet. Click + Add Document to add one."
+msgstr "Ingen dokumenter endnu. Klik + Tilføj dokument for at tilføje et."
+
+msgid "No documents match the current filters."
+msgstr "Ingen dokumenter matcher de aktuelle filtre."
+
+msgid "Failed to load documents: "
+msgstr "Kunne ikke indlæse dokumenter: "
+
+msgid "Document added."
+msgstr "Dokument tilføjet."
+
+msgid "Document updated."
+msgstr "Dokument opdateret."
+
+msgid "Document deleted."
+msgstr "Dokument slettet."
+
+msgid "Document type is required."
+msgstr "Dokumenttype er påkrævet."
+
+msgid "Display name is required."
+msgstr "Visningsnavn er påkrævet."
+
+msgid "Please choose a file."
+msgstr "Vælg venligst en fil."
+
+msgid "document"
+msgstr "dokument"
+
+msgid "documents"
+msgstr "dokumenter"
+
+msgid "Download"
+msgstr "Download"
+
+# ── Calendar page (JS via PCIO_ME.i18n) ──────────────────────────────────────
+msgid "+ New Event"
+msgstr "+ Ny begivenhed"
+
+msgid "New Event"
+msgstr "Ny begivenhed"
+
+msgid "Event title"
+msgstr "Begivenhedens titel"
+
+msgid "Save event"
+msgstr "Gem begivenhed"
+
+msgid "Color: %s"
+msgstr "Farve: %s"
+
+msgid "Today"
+msgstr "I dag"
+
+msgid "Month"
+msgstr "Måned"
+
+msgid "Week"
+msgstr "Uge"
+
+msgid "Day"
+msgstr "Dag"
+
+msgid "List"
+msgstr "Liste"
+
+msgid "FullCalendar could not be loaded."
+msgstr "FullCalendar kunne ikke indlæses."
+
+msgid "Could not load events: "
+msgstr "Kunne ikke indlæse begivenheder: "
+
+msgid "Event moved."
+msgstr "Begivenhed flyttet."
+
+msgid "Could not move event: "
+msgstr "Kunne ikke flytte begivenhed: "
+
+msgid "Event resized."
+msgstr "Begivenhedens varighed ændret."
+
+msgid "Could not resize event: "
+msgstr "Kunne ikke ændre begivenhedens varighed: "
+
+msgid "Start date is required."
+msgstr "Startdato er påkrævet."
+
+msgid "Event deleted."
+msgstr "Begivenhed slettet."
+
+msgid "this event"
+msgstr "denne begivenhed"
+
+msgid "Delete %s?"
+msgstr "Slet %s?"
+
+# ── Members page (JS via PCIO_ME.i18n) ───────────────────────────────────────
+msgid "this member"
+msgstr "dette medlem"
+
+msgid "Could not load role options: "
+msgstr "Kunne ikke indlæse rolleindstillinger: "
+
+# ── [pcio_me_edit_profile] shortcode ─────────────────────────────────────────
+msgid "Edit your profile"
+msgstr "Rediger din profil"
+
+msgid "Membership number"
+msgstr "Medlemsnummer"
+
+msgid "Built"
+msgstr "Bygget"
+
+msgid "Sail no."
+msgstr "Sejlnr."
+
+msgid "Harbour"
+msgstr "Hjemmehavn"
+
+msgid "Note"
+msgstr "Bemærkning"
+
+msgid "MMSI"
+msgstr "MMSI"
+
+msgid "Model"
+msgstr "Model"
+
+msgid "Renew subscription"
+msgstr "Forny abonnement"
+
+msgid "Save changes"
+msgstr "Gem ændringer"
+
+msgid "Your profile has been updated."
+msgstr "Din profil er blevet opdateret."
+
+msgid "No member record is linked to your account."
+msgstr "Ingen medlemsregistrering er tilknyttet din konto."
+
+msgid "Could not load your member record."
+msgstr "Kunne ikke indlæse din medlemsregistrering."
+
+msgid "You must be logged in as a Vis member to edit your profile."
+msgstr "Du skal være logget ind som Vis-medlem for at redigere din profil."
+
+# ── Access / routing ──────────────────────────────────────────────────────────
+msgid "Access denied"
+msgstr "Adgang nægtet"
+
+msgid "You do not have permission to access this page."
+msgstr "Du har ikke tilladelse til at åbne denne side."
+
+msgid "Open the Vis member area"
+msgstr "Åbn Vis-medlemsområdet"
+
+msgid "No members found."
+msgstr "Ingen medlemmer fundet."
+
+# ── Members page — roles ──────────────────────────────────────────────────────
+msgid "Vis Role"
+msgstr "Vis-rolle"
+
+msgid "WP Role"
+msgstr "WP-rolle"
+
+msgid "Event-system role"
+msgstr "Begivenhedsrolle"
+
+msgid "WordPress role"
+msgstr "WordPress-rolle"
+
+msgid "WP User ID"
+msgstr "WP-bruger-ID"
+
+msgid "WP user ID (optional)"
+msgstr "WP-bruger-ID (valgfrit)"
+
+msgid "Role assignment"
+msgstr "Rolletildeling"
+
+msgid "Role save failed: "
+msgstr "Gem af rolle mislykkedes: "
+
+msgid "— none —"
+msgstr "— ingen —"
+
+msgid "You have unsaved changes. Discard them?"
+msgstr "Du har ugemte ændringer. Vil du kassere dem?"
+
+# ── Event detail page — extra tabs / publish ──────────────────────────────────
+msgid "Publish"
+msgstr "Udgiv"
+
+msgid "Publish & share"
+msgstr "Udgiv og del"
+
+msgid "Public link (permalink)"
+msgstr "Offentligt link (permalink)"
+
+msgid "Anyone with this link can view the event — no login required."
+msgstr "Enhver med dette link kan se begivenheden – login er ikke nødvendigt."
+
+msgid "Page embed code"
+msgstr "Indsæt på side"
+
+msgid "Paste this shortcode into any WordPress page or post to display the event there."
+msgstr "Indsæt denne shortcode på en WordPress-side for at vise begivenheden der."
+
+msgid "Copied to clipboard."
+msgstr "Kopieret til udklipsholder."
+
+msgid "Change image"
+msgstr "Skift billede"
+
+msgid "Remove image"
+msgstr "Fjern billede"
+
+msgid "No image set for this event."
+msgstr "Intet billede er angivet for denne begivenhed."
+
+msgid "Saving image…"
+msgstr "Gemmer billede…"
+
+msgid "Use this image"
+msgstr "Brug dette billede"
+
+# ── Event detail — Guests tab ─────────────────────────────────────────────────
+msgid "Guests"
+msgstr "Gæster"
+
+msgid "Join date"
+msgstr "Tilmeldingsdato"
+
+msgid "Arrived"
+msgstr "Ankommet"
+
+msgid "Not answered"
+msgstr "Ikke besvaret"
+
+msgid "No guests yet."
+msgstr "Ingen gæster endnu."
+
+msgid "Could not update status."
+msgstr "Kunne ikke opdatere status."
+
+msgid "Add guest"
+msgstr "Tilføj gæst"
+
+msgid "Failed to save your response. Please try again."
+msgstr "Kunne ikke gemme dit svar. Prøv venligst igen."
+
+msgid "End cannot be before the start."
+msgstr "Slutdato kan ikke være før startdato."
+
+# ── Event roller / events grid ────────────────────────────────────────────────
+msgid "Tomorrow"
+msgstr "I morgen"
+
+msgid "Read More"
+msgstr "Læs mere"
+
+msgid "Next event"
+msgstr "Næste begivenhed"
+
+msgid "Previous event"
+msgstr "Forrige begivenhed"
+
+# ── Mails page — newsletters + attachments ────────────────────────────────────
+msgid "Add attachment…"
+msgstr "Tilføj bilag…"
+
+msgid "Remove attachment"
+msgstr "Fjern bilag"
+
+msgid "Attachments"
+msgstr "Bilag"
+
+msgid "Attachment"
+msgstr "Bilag"
+
+msgid "Select Attachment"
+msgstr "Vælg bilag"
+
+msgid "Use this file"
+msgstr "Brug denne fil"
+
+msgid "Attach"
+msgstr "Vedhæft"
+
+msgid "Send…"
+msgstr "Send…"
+
+msgid "Loading member count…"
+msgstr "Indlæser antal medlemmer…"
+
+msgid "All members"
+msgstr "Alle medlemmer"
+
+msgid "Specific addresses"
+msgstr "Specifikke adresser"
+
+msgid "Group"
+msgstr "Gruppe"
+
+msgid "Email addresses"
+msgstr "E-mailadresser"
+
+msgid "alice@example.com; bob@example.com"
+msgstr "alice@example.com; bob@example.com"
+
+msgid "Enter at least one email address."
+msgstr "Angiv mindst én e-mailadresse."
+
+#, php-format
+msgid "Invalid address(es): %s"
+msgstr "Ugyldig(e) adresse(r): %s"
+
+msgid "This mail is a newsletter"
+msgstr "Dette brev er et nyhedsbrev"
+
+msgid "A newsletter appends a list of upcoming events and a footer, and can be generated to a PDF document."
+msgstr "Et nyhedsbrev tilføjer en liste over kommende begivenheder og en sidefod, og kan genereres til et PDF-dokument."
+
+msgid "Include events until"
+msgstr "Inkluder begivenheder til og med"
+
+msgid "Defaults to the end of next month."
+msgstr "Standard er slutningen af næste måned."
+
+msgid "Footer"
+msgstr "Sidefod"
+
+msgid "Closing text shown at the bottom of the newsletter…"
+msgstr "Afslutningstekst vist nederst i nyhedsbrevet…"
+
+msgid "Generate newsletter PDF"
+msgstr "Generer nyhedsbrev-PDF"
+
+msgid "Newsletter generated"
+msgstr "Nyhedsbrev genereret"
+
+msgid "Generating…"
+msgstr "Genererer…"
+
+msgid "Generation failed: "
+msgstr "Generering mislykkedes: "
+
+msgid "Open PDF"
+msgstr "Åbn PDF"
+
+msgid "Newsletter"
+msgstr "Nyhedsbrev"
+
+msgid "events"
+msgstr "begivenheder"
+
+# ── Newsletters page ──────────────────────────────────────────────────────────
+msgid "Newsletters"
+msgstr "Nyhedsbreve"
+
+msgid "newsletter"
+msgstr "nyhedsbrev"
+
+msgid "newsletters"
+msgstr "nyhedsbreve"
+
+msgid "Newsletter deleted."
+msgstr "Nyhedsbrev slettet."
+
+msgid "Go to Mails"
+msgstr "Gå til breve"
+
+msgid "PDF"
+msgstr "PDF"
+
+msgid "Until"
+msgstr "Til og med"
+
+msgid "Generated"
+msgstr "Genereret"
+
+msgid "No newsletters generated yet. Create a newsletter mail and click \"Generate newsletter PDF\"."
+msgstr "Ingen nyhedsbreve genereret endnu. Opret et nyhedsbrevsbrev og klik på \"Generer nyhedsbrev-PDF\"."
+
+msgid "No newsletters match your filters."
+msgstr "Ingen nyhedsbreve matcher dine filtre."
+
+msgid "No newsletters published yet."
+msgstr "Ingen nyhedsbreve udgivet endnu."
+
+msgid "Delete Newsletter"
+msgstr "Slet nyhedsbrev"
+
+msgid "This deletes the newsletter and its PDF. This cannot be undone."
+msgstr "Dette sletter nyhedsbrevet og tilhørende PDF. Denne handling kan ikke fortrydes."
+
+msgid "Failed to load newsletters: "
+msgstr "Kunne ikke indlæse nyhedsbreve: "
+
+# ── Finance page ──────────────────────────────────────────────────────────────
+msgid "Finance"
+msgstr "Økonomi"
+
+msgid "+ New entry"
+msgstr "+ Ny post"
+
+msgid "New entry"
+msgstr "Ny post"
+
+msgid "Edit entry"
+msgstr "Rediger post"
+
+msgid "Save entry"
+msgstr "Gem post"
+
+msgid "Delete entry"
+msgstr "Slet post"
+
+msgid "Amount"
+msgstr "Beløb"
+
+msgid "Verified"
+msgstr "Verificeret"
+
+msgid "Journal"
+msgstr "Kassebog"
+
+msgid "No entries yet."
+msgstr "Ingen poster endnu."
+
+msgid "No entries match the current filters."
+msgstr "Ingen poster matcher de aktuelle filtre."
+
+msgid "Enter a valid amount."
+msgstr "Angiv et gyldigt beløb."
+
+msgid "Use a negative amount for money paid out."
+msgstr "Brug et negativt beløb for penge der er udbetalt."
+
+msgid "Entry created."
+msgstr "Post oprettet."
+
+msgid "Entry updated."
+msgstr "Post opdateret."
+
+msgid "Entry deleted."
+msgstr "Post slettet."
+
+msgid "Failed to load: "
+msgstr "Kunne ikke indlæse: "
+
+msgid "Open"
+msgstr "Åbn"
+
+msgid "Remove"
+msgstr "Fjern"
+
+# ── Admin — Shortcode Reference page ─────────────────────────────────────────
+msgid "Vis — Shortcode Reference"
+msgstr "Vis — Shortcode Reference"
+
+msgid "All shortcodes provided by the PCIO VIS Member Event plugin. Paste them into any WordPress page or post."
+msgstr "Alle shortcodes fra PCIO VIS Member Event-pluginet. Indsæt dem på en WordPress-side eller i et indlæg."
+
+msgid "Shortcodes"
+msgstr "Shortcodes"
+
+msgid "Shortcode"
+msgstr "Shortcode"
+
+msgid "Attribute"
+msgstr "Attribut"
+
+msgid "Default"
+msgstr "Standard"
+
+msgid "No attributes."
+msgstr "Ingen attributter."
+
+msgid "Examples"
+msgstr "Eksempler"
+
+msgid "Required capability:"
+msgstr "Påkrævet rettighed:"
+
+msgid "What is rendered"
+msgstr "Hvad vises"
+
+msgid "integer"
+msgstr "heltal"
+
+msgid "string"
+msgstr "tekststreng"
+
+msgid "yes / no"
+msgstr "ja / nej"
+
+msgid "Paste one of these into any WordPress page or widget:"
+msgstr "Indsæt en af disse på en WordPress-side eller i en widget:"
+
+msgid "Renders a read-only table of all members. No login required."
+msgstr "Viser en skrivebeskyttet tabel over alle medlemmer. Login er ikke påkrævet."
+
+msgid "Renders an inline edit form for the currently logged-in member, allowing them to update their own contact details. Requires the vis_member capability; shows a message if no member record is linked to the account."
+msgstr "Viser en redigeringsformular til den indloggede bruger, så vedkommende kan opdatere sine kontaktoplysninger. Kræver rettigheden vis_member; viser en besked, hvis ingen medlemsregistrering er tilknyttet kontoen."
+
+msgid "Renders a list of documents filtered by document type. No login required."
+msgstr "Viser en liste over dokumenter filtreret efter dokumenttype. Login er ikke påkrævet."
+
+msgid "Renders an event card with cover image, title, date, location, description, and sign-up buttons for logged-in members."
+msgstr "Viser et begivenhedskort med forsidebillede, titel, dato, sted, beskrivelse og tilmeldingsknapper for indloggede medlemmer."
+
+msgid "Rotating front-page slider that automatically shows the next upcoming events from the calendar. Each slide shows the cover image, an overlaid title and date, and a Read More button linking to the public event page. No login required."
+msgstr "Roterende forside-slider der automatisk viser de næste kommende begivenheder fra kalenderen. Hvert slide viser forsidebilledet, en overlejret titel og dato samt en Læs mere-knap til den offentlige begivenheds side. Login er ikke påkrævet."
+
+msgid "Shows all upcoming events as a responsive grid of tiles. The number of tiles per row adapts automatically to the screen width. Each tile shows the square thumbnail (falling back to the banner image), a date badge, the title, date / time and location, and links to the public event page at /events/{slug}/. No login required."
+msgstr "Viser alle kommende begivenheder som et responsivt gitter af fliser. Antallet af fliser pr. række tilpasses automatisk skærmbredden. Hver flise viser miniaturebilledet (med reserveløsning til bannerbilledet), et datobadge, titel, dato/tid og sted, og linker til den offentlige begivenheds side på /events/{slug}/. Login er ikke påkrævet."
+
+msgid "Shows a list of the most recently generated newsletter PDFs, each linking to the public PDF document. Newsletters are produced from the Mails screen by ticking \"This mail is a newsletter\" and clicking \"Generate newsletter PDF\"."
+msgstr "Viser en liste over de senest genererede nyhedsbrev-PDF'er, der hver linker til det offentlige PDF-dokument. Nyhedsbreve oprettes fra Breve-skærmen ved at afkrydse \"Dette brev er et nyhedsbrev\" og klikke på \"Generer nyhedsbrev-PDF\"."
+
+msgid "Cover image (if one has been uploaded via the Photos tab on the event detail page)"
+msgstr "Forsidebillede (hvis et er uploadet via fanen Fotos på begivenhedsdetaljesiden)"
+
+msgid "Event title, date / time range, and location"
+msgstr "Begivenhedstitel, dato/tidsinterval og sted"
+
+msgid "Event description (rich text)"
+msgstr "Begivenhedsbeskrivelse (rig tekst)"
+
+msgid "Sign-up buttons (Joining / Interested / Not joining) — shown only to logged-in users with the"
+msgstr "Tilmeldingsknapper (Deltager / Interesseret / Deltager ikke) — vises kun til indloggede brugere med"
+
+msgid "capability who are also linked to a member record."
+msgstr "rettighed og er tilknyttet et medlemsregister."
+
+msgid "How events are chosen"
+msgstr "Sådan vælges begivenheder"
+
+msgid "Events are selected automatically — the next events ordered by start date."
+msgstr "Begivenheder vælges automatisk — de næste begivenheder sorteret efter startdato."
+
+msgid "How many upcoming events to include in the slider."
+msgstr "Antal kommende begivenheder der inkluderes i slideren."
+
+msgid "Seconds between automatic slide changes. The timer resets when a visitor uses the arrows."
+msgstr "Sekunder mellem automatiske slideændringer. Timeren nulstilles, når en besøgende bruger pilene."
+
+msgid "Visitors can move between slides with the left / right arrows; otherwise it advances on its own."
+msgstr "Besøgende kan skifte slide med pil venstre/højre; ellers skifter den automatisk."
+
+msgid "A responsive grid of tiles — the number of columns adjusts to the available width."
+msgstr "Et responsivt gitter af fliser – antallet af kolonner tilpasses den tilgængelige bredde."
+
+msgid "Each tile uses the square Thumb image, falling back to the Banner image, then a coloured placeholder using the event colour."
+msgstr "Hver flise bruger miniaturebilledet (firkantet), med reserveløsning til bannerbilledet, og derefter en farvet pladsholder med begivenhedens farve."
+
+msgid "Events without a cover image show a coloured placeholder using the event colour."
+msgstr "Begivenheder uden forsidebillede viser en farvet pladsholder med begivenhedens farve."
+
+msgid "Only upcoming events are listed, ordered by start date. Past days are excluded."
+msgstr "Kun kommende begivenheder vises, sorteret efter startdato. Forløbne dage medtages ikke."
+
+msgid "Only the date part of the start time is compared, so events happening today are still shown. Past days are excluded."
+msgstr "Kun datodelen af starttidspunktet sammenlignes, så begivenheder der starter i dag stadig vises. Forløbne dage medtages ikke."
+
+msgid "Maximum number of upcoming events to display."
+msgstr "Maksimalt antal kommende begivenheder der vises."
+
+msgid "Maximum number of documents to show. 0 = all."
+msgstr "Maksimalt antal dokumenter der vises. 0 = alle."
+
+msgid "How many recent newsletters to list."
+msgstr "Antal seneste nyhedsbreve der vises."
+
+msgid "Whether to show the live search box above the tiles for filtering by title and location."
+msgstr "Om søgefeltet over fliserne til filtrering efter titel og sted skal vises."
+
+msgid "An optional search box filters the tiles instantly as the visitor types."
+msgstr "Et valgfrit søgefelt filtrerer fliserne øjeblikkeligt mens den besøgende skriver."
+
+msgid "The numeric ID of the event (required). Find it in the URL when viewing an event at /vis/events/{id}/."
+msgstr "Begivenhedens numeriske ID (påkrævet). Find det i URL'en når du viser en begivenhed på /vis/events/{id}/."
+
+msgid "The optional \"limit\" attribute caps the number of documents shown (omit for all)."
+msgstr "Den valgfrie \"limit\"-attribut begrænser antallet af viste dokumenter (udelad for alle)."
+
+msgid "Document type slug (required). Must match the Name column in Document Types."
+msgstr "Dokumenttypens slug (påkrævet). Skal matche Navn-kolonnen i Dokumenttyper."
+
+msgid "Available types:"
+msgstr "Tilgængelige typer:"
+
+# ── Admin — Roles & Capabilities page ────────────────────────────────────────
+msgid "Vis — Roles &amp; Capabilities"
+msgstr "Vis — Roller og rettigheder"
+
+msgid "Capabilities"
+msgstr "Rettigheder"
+
+msgid "Roles"
+msgstr "Roller"
+
+msgid "Event-system roles"
+msgstr "Begivenhedsroller"
+
+msgid "No event-system roles yet."
+msgstr "Ingen begivenhedsroller endnu."
+
+msgid "Add event-system role"
+msgstr "Tilføj begivenhedsrolle"
+
+msgid "Edit event-system role"
+msgstr "Rediger begivenhedsrolle"
+
+msgid "Add role"
+msgstr "Tilføj rolle"
+
+msgid "Update role"
+msgstr "Opdater rolle"
+
+msgid "Vis role added."
+msgstr "Vis-rolle tilføjet."
+
+msgid "Vis role updated."
+msgstr "Vis-rolle opdateret."
+
+msgid "Vis role deleted."
+msgstr "Vis-rolle slettet."
+
+msgid "Delete this event-system role?"
+msgstr "Slet denne begivenhedsrolle?"
+
+msgid "Could not add vis role (slug may already exist)."
+msgstr "Kunne ikke tilføje Vis-rolle (slug findes muligvis allerede)."
+
+msgid "Could not update vis role."
+msgstr "Kunne ikke opdatere Vis-rolle."
+
+msgid "Could not delete vis role."
+msgstr "Kunne ikke slette Vis-rolle."
+
+msgid "These are the event-system roles you can assign to members. Each role grants a set of vis_* capabilities."
+msgstr "Dette er de begivenhedsroller du kan tildele til medlemmer. Hver rolle giver et sæt vis_*-rettigheder."
+
+msgid "Slug"
+msgstr "Slug"
+
+msgid "Slug and name are required."
+msgstr "Slug og navn er påkrævet."
+
+msgid "Grant newly added capabilities to administrators and the matching default roles. Existing custom selections are kept."
+msgstr "Tildel nyoprettede rettigheder til administratorer og de tilsvarende standardroller. Eksisterende brugerdefinerede valg beholdes."
+
+msgid "Sync capabilities"
+msgstr "Synkroniser rettigheder"
+
+msgid "Registered"
+msgstr "Registreret"
+
+msgid "Username"
+msgstr "Brugernavn"
+
+msgid "Edit user"
+msgstr "Rediger bruger"
+
+msgid "Open WordPress → Users"
+msgstr "Åbn WordPress → Brugere"
+
+msgid "WP User Cleanup"
+msgstr "WP-brugerrydning"
+
+msgid "This plugin never deletes WordPress accounts. If you want to remove any of these users, use the WordPress Users screen, which applies the normal capability and security checks."
+msgstr "Dette plugin sletter aldrig WordPress-konti. Ønsker du at fjerne nogen af disse brugere, brug WordPress Brugerskærmen, som anvender de normale rettigheds- og sikkerhedstjek."
+
+msgid "Every WordPress user is linked to an active member. Nothing to clean up."
+msgstr "Alle WordPress-brugere er tilknyttet et aktivt medlem. Intet at rydde op."
+
+# ── Admin — Document Types ────────────────────────────────────────────────────
+msgid "Document Types"
+msgstr "Dokumenttyper"
+
+msgid "No document types yet."
+msgstr "Ingen dokumenttyper endnu."
+
+msgid "Add Document Type"
+msgstr "Tilføj dokumenttype"
+
+msgid "Edit Document Type"
+msgstr "Rediger dokumenttype"
+
+msgid "Add type"
+msgstr "Tilføj type"
+
+msgid "Update type"
+msgstr "Opdater type"
+
+msgid "Document type added."
+msgstr "Dokumenttype tilføjet."
+
+msgid "Document type updated."
+msgstr "Dokumenttype opdateret."
+
+msgid "Document type deleted."
+msgstr "Dokumenttype slettet."
+
+msgid "Delete this document type?"
+msgstr "Slet denne dokumenttype?"
+
+msgid "Cannot delete: documents of this type still exist, or type not found."
+msgstr "Kan ikke slette: Der findes stadig dokumenter af denne type, eller typen blev ikke fundet."
+
+msgid "Could not add document type (name may already exist)."
+msgstr "Kunne ikke tilføje dokumenttype (navn findes muligvis allerede)."
+
+msgid "Could not update document type."
+msgstr "Kunne ikke opdatere dokumenttype."
+
+msgid "Lowercase letters, numbers and hyphens only (e.g. \"annual-report\", \"minutes\")."
+msgstr "Kun små bogstaver, tal og bindestreger (f.eks. \"årsberetning\", \"referat\")."
+
+msgid "Human-readable display name shown in the document list."
+msgstr "Letlæseligt visningsnavn vist i dokumentlisten."
+
+msgid "Name and title are required."
+msgstr "Navn og titel er påkrævet."
+
+msgid "Existing types"
+msgstr "Eksisterende typer"
+
+msgid "Name (slug)"
+msgstr "Navn (slug)"
+
+msgid "Short human-readable label shown in the list."
+msgstr "Kort, letlæseligt label vist i listen."
+
+# ── Admin — Sync Jobs page ────────────────────────────────────────────────────
+msgid "Vis — Sync Jobs"
+msgstr "Vis — Synkroniseringsjobs"
+
+msgid "Scheduled Jobs"
+msgstr "Planlagte jobs"
+
+msgid "Sync Jobs"
+msgstr "Synkroniseringsjobs"
+
+msgid "No sync jobs registered yet."
+msgstr "Ingen synkroniseringsjobs registreret endnu."
+
+msgid "Add Sync Job"
+msgstr "Tilføj synkroniseringsjob"
+
+msgid "Edit Sync Job"
+msgstr "Rediger synkroniseringsjob"
+
+msgid "Add job"
+msgstr "Tilføj job"
+
+msgid "Update job"
+msgstr "Opdater job"
+
+msgid "Sync job added."
+msgstr "Synkroniseringsjob tilføjet."
+
+msgid "Sync job updated."
+msgstr "Synkroniseringsjob opdateret."
+
+msgid "Sync job deleted."
+msgstr "Synkroniseringsjob slettet."
+
+msgid "Delete this sync job?"
+msgstr "Slet dette synkroniseringsjob?"
+
+msgid "Could not add sync job (cron name may already exist)."
+msgstr "Kunne ikke tilføje synkroniseringsjob (cron-navn findes muligvis allerede)."
+
+msgid "Could not update sync job."
+msgstr "Kunne ikke opdatere synkroniseringsjob."
+
+msgid "Could not delete sync job."
+msgstr "Kunne ikke slette synkroniseringsjob."
+
+msgid "Cron Name"
+msgstr "Cron-navn"
+
+msgid "PHP Function"
+msgstr "PHP-funktion"
+
+msgid "Freq. (h)"
+msgstr "Frekvens (t)"
+
+msgid "Frequency (hours)"
+msgstr "Frekvens (timer)"
+
+msgid "Sync URL"
+msgstr "Synk-URL"
+
+msgid "Actions"
+msgstr "Handlinger"
+
+msgid "Last Run"
+msgstr "Sidst kørt"
+
+msgid "Result"
+msgstr "Resultat"
+
+msgid "Enabled"
+msgstr "Aktiveret"
+
+msgid "Disabled"
+msgstr "Deaktiveret"
+
+msgid "✓ Enabled"
+msgstr "✓ Aktiveret"
+
+msgid "All jobs are on schedule."
+msgstr "Alle jobs kører som planlagt."
+
+msgid "One or more jobs are overdue:"
+msgstr "Et eller flere jobs er forsinket:"
+
+msgid "Run now"
+msgstr "Kør nu"
+
+msgid "Run this job now?"
+msgstr "Kør dette job nu?"
+
+msgid "Run automatically on the set schedule"
+msgstr "Kør automatisk efter den fastlagte plan"
+
+msgid "Job disabled."
+msgstr "Job deaktiveret."
+
+msgid "Job enabled."
+msgstr "Job aktiveret."
+
+msgid "Job executed. Refresh to see the updated result."
+msgstr "Job udført. Opdater siden for at se det opdaterede resultat."
+
+msgid "When unchecked the job can still be triggered manually with \"Run now\"."
+msgstr "Når afkrydset er fjernet, kan jobbet stadig udløses manuelt med \"Kør nu\"."
+
+msgid "How often (in whole hours) this job should run. Minimum 1."
+msgstr "Hvor ofte (i hele timer) dette job skal køre. Minimum 1."
+
+msgid "Select a registered sync callable. Extensions add their own jobs to this list."
+msgstr "Vælg en registreret synkroniseringsfunktion. Udvidelser tilføjer egne jobs til denne liste."
+
+msgid "Optional external URL the job synchronises with (informational; your PHP function reads this from the $job array)."
+msgstr "Valgfri ekstern URL som jobbet synkroniserer med (informativt; din PHP-funktion læser dette fra $job-arrayet)."
+
+msgid "Unique slug (lowercase, numbers, underscores). Used as the WP-cron hook name suffix."
+msgstr "Unikt slug (små bogstaver, tal, understreger). Bruges som WP-cron hook-navnssuffix."
+
+msgid "Lowercase letters, numbers and hyphens."
+msgstr "Små bogstaver, tal og bindestreger."
+
+msgid "Invalid PHP function: it is not a registered sync callable."
+msgstr "Ugyldig PHP-funktion: det er ikke et registreret synk-kald."
+
+msgid "Name, Cron Name and PHP Function are required."
+msgstr "Navn, Cron-navn og PHP-funktion er påkrævet."
+
+msgid "— Select a job —"
+msgstr "— Vælg et job —"
+
+msgid "Insufficient permissions."
+msgstr "Utilstrækkelige tilladelser."
+
+# ── [pcio_me_edit_profile] — boat editing ────────────────────────────────────
+msgid "Boat name"
+msgstr "Bådnavn"
+
+msgid "Save boat"
+msgstr "Gem båd"
+
+msgid "Boat saved."
+msgstr "Båd gemt."
+
+# ── Auto-added Danish translations (missing strings) ──────────────────────────
+msgid "%d WordPress user is not linked to an active member."
+msgid_plural "%d WordPress users are not linked to an active member."
+msgstr[0] "%d WordPress-bruger er ikke knyttet til et aktivt medlem."
+msgstr[1] "%d WordPress-brugere er ikke knyttet til et aktivt medlem."
+
+msgid "Action"
+msgstr "Handling"
+
+msgid "Capabilities synced. %d event-system role updated."
+msgid_plural "Capabilities synced. %d event-system roles updated."
+msgstr[0] "Rettigheder synkroniseret. %d begivenhedssystem-rolle opdateret."
+msgstr[1] "Rettigheder synkroniseret. %d begivenhedssystem-roller opdateret."
+
+msgid "Never"
+msgstr "Aldrig"
+
+msgid "—"
+msgstr "—"
+
+msgid "When unchecked the job can still be triggered manually with “Run now”."
+msgstr "Når feltet ikke er markeret, kan jobbet stadig køres manuelt med “Kør nu”."
+
+msgid "Shortcode navigation"
+msgstr "Shortcode-navigation"
+
+msgid "PCIO VIS Member Event"
+msgstr "PCIO VIS Member Event"
+
+msgid "[pcio_me_members]"
+msgstr "[pcio_me_members]"
+
+msgid "Example"
+msgstr "Eksempel"
+
+msgid "[pcio_me_edit_profile]"
+msgstr "[pcio_me_edit_profile]"
+
+msgid "[pcio_me_documents]"
+msgstr "[pcio_me_documents]"
+
+msgid "[pcio_me_event]"
+msgstr "[pcio_me_event]"
+
+msgid "[pcio_me_events]"
+msgstr "[pcio_me_events]"
+
+msgid "[pcio_me_event_roller]"
+msgstr "[pcio_me_event_roller]"
+
+msgid "[pcio_me_newsletters]"
+msgstr "[pcio_me_newsletters]"
+
+msgid "Shows a list of the most recently generated newsletter PDFs, each linking to the public PDF document. Newsletters are produced from the Mails screen by ticking “This mail is a newsletter” and clicking “Generate newsletter PDF”."
+msgstr "Viser en liste over de senest genererede nyhedsbrevs-PDF'er, der hver linker til det offentlige PDF-dokument. Nyhedsbreve produceres fra Mails-skærmen ved at markere “Denne mail er et nyhedsbrev” og klikke på “Generér nyhedsbrevs-PDF”."
+
+msgid "[pcio_me_member_count]"
+msgstr "[pcio_me_member_count]"
+
+msgid "Displays the current total number of members as an animated count-up number. Each page render is recorded as a front-page view in the Statistics dashboard. Works in any page builder text or code module (e.g. Divi Text Module)."
+msgstr "Viser det aktuelle samlede antal medlemmer som et animeret optællingstal. Hver sidevisning registreres som en forsidevisning i Statistik-oversigten. Virker i ethvert tekst- eller kodemodul i en sidebygger (f.eks. Divi Text Module)."
+
+msgid "To track sponsor link clicks from this page, add the CSS class "
+msgstr "For at spore klik på sponsorlinks fra denne side skal du tilføje CSS-klassen "
+
+msgid "to any anchor tag in your content. Clicks are recorded automatically and shown under Vis → Statistics."
+msgstr "til ethvert link-tag i dit indhold. Klik registreres automatisk og vises under Vis → Statistik."
+
+msgid "Sponsor link tracking"
+msgstr "Sporing af sponsorlinks"
+
+msgid "Every click on a front-end link that carries the CSS class "
+msgstr "Hvert klik på et frontend-link, der bærer CSS-klassen "
+
+msgid "is captured in the browser and sent to the server. Totals appear on the Statistics dashboard under"
+msgstr "opfanges i browseren og sendes til serveren. Totaler vises på Statistik-oversigten under"
+
+msgid "Vis → Statistics → Sponsor link clicks"
+msgstr "Vis → Statistik → Sponsorlink-klik"
+
+msgid "No plugin configuration is needed — just add the class to the link in your page editor."
+msgstr "Ingen plugin-konfiguration er nødvendig — tilføj blot klassen til linket i din sideeditor."
+
+msgid "What to add"
+msgstr "Hvad skal tilføjes"
+
+msgid "Where"
+msgstr "Hvor"
+
+msgid "Effect"
+msgstr "Effekt"
+
+msgid "Any <a> tag, or any wrapper element (div, section…) that contains an <a>"
+msgstr "Ethvert <a>-tag eller ethvert wrapper-element (div, section…), der indeholder et <a>"
+
+msgid "Records a click entry (URL + timestamp) whenever a visitor clicks the element. The URL is taken from the <a href> — either the element itself or the first anchor found inside it. Navigation is not interrupted."
+msgstr "Registrerer et klik (URL + tidsstempel), hver gang en besøgende klikker på elementet. URL'en tages fra <a href> — enten selve elementet eller det første link, der findes indeni. Navigationen afbrydes ikke."
+
+msgid "How to add the class in WordPress"
+msgstr "Sådan tilføjer du klassen i WordPress"
+
+msgid "In the block editor: select the link text, open the link toolbar, click the three-dot menu → \"Edit link\" → expand \"Advanced\" → add the class in the \"CSS class\" field."
+msgstr "I blok-editoren: markér linkteksten, åbn link-værktøjslinjen, klik på tre-prikker-menuen → \"Redigér link\" → udvid \"Avanceret\" → tilføj klassen i feltet \"CSS-klasse\"."
+
+msgid "In the classic editor or a page builder code/HTML module: switch to HTML view and add the class directly on the <a> element."
+msgstr "I den klassiske editor eller et kode-/HTML-modul i en sidebygger: skift til HTML-visning og tilføj klassen direkte på <a>-elementet."
+
+msgid "In Divi — plain text link: select the link → link settings → CSS class field."
+msgstr "I Divi — almindeligt tekstlink: markér linket → linkindstillinger → feltet CSS-klasse."
+
+msgid "In Divi — Image or other module with a link: open the module settings → Advanced tab → CSS ID & Classes → CSS Class field. The class goes on the module wrapper div, which contains the <a> Divi generates automatically."
+msgstr "I Divi — billede eller andet modul med et link: åbn modulindstillingerne → fanen Avanceret → CSS ID & Classes → feltet CSS Class. Klassen placeres på modulets wrapper-div, som indeholder det <a>, Divi genererer automatisk."
+
+msgid "Examples (HTML source)"
+msgstr "Eksempler (HTML-kildekode)"
+
+msgid "Multiple sponsors:"
+msgstr "Flere sponsorer:"
+
+msgid "Each link's full URL is stored with every click, so the Statistics page can group and rank sponsors by click count automatically — no extra configuration needed."
+msgstr "Hvert links fulde URL gemmes ved hvert klik, så Statistik-siden automatisk kan gruppere og rangere sponsorer efter antal klik — ingen ekstra konfiguration nødvendig."
+
+msgid "[pcio_me_member_signup]"
+msgstr "[pcio_me_member_signup]"
+
+msgid "The welcome email is sent from the system mail template labelled \"member_welcome\" under Vis → Mails. Edit the subject and body there, using the tag chips to insert dynamic values."
+msgstr "Velkomstmailen sendes fra systemmailskabelonen med navnet \"member_welcome\" under Vis → Mails. Redigér emne og indhold der, og brug tag-chipsene til at indsætte dynamiske værdier."
+
+msgid "string (URL)"
+msgstr "streng (URL)"
+
+msgid "URL the visitor is sent to if they abandon the Stripe payment step. Relative paths are converted to absolute HTTPS automatically. Ignored when no payment extension is active."
+msgstr "URL, som den besøgende sendes til, hvis de forlader Stripe-betalingstrinnet. Relative stier konverteres automatisk til absolut HTTPS. Ignoreres, når ingen betalingsudvidelse er aktiv."
+
+msgid "Core fields (always shown)"
+msgstr "Kernefelter (vises altid)"
+
+msgid "Full name (required)"
+msgstr "Fulde navn (påkrævet)"
+
+msgid "Email address (required, must be unique)"
+msgstr "E-mailadresse (påkrævet, skal være unik)"
+
+msgid "Phone number (optional)"
+msgstr "Telefonnummer (valgfrit)"
+
+msgid "Address (optional)"
+msgstr "Adresse (valgfrit)"
+
+msgid "Welcome email tags"
+msgstr "Tags til velkomstmail"
+
+msgid "Tag"
+msgstr "Tag"
+
+msgid "Provided by"
+msgstr "Leveret af"
+
+msgid "Value"
+msgstr "Værdi"
+
+msgid "Core"
+msgstr "Kerne"
+
+msgid "Member's full name"
+msgstr "Medlemmets fulde navn"
+
+msgid "Assigned member number"
+msgstr "Tildelt medlemsnummer"
+
+msgid "WordPress site title"
+msgstr "WordPress-webstedets titel"
+
+msgid "One-time set-password URL for new accounts; login URL for existing accounts"
+msgstr "Engangs-URL til oprettelse af adgangskode for nye konti; login-URL for eksisterende konti"
+
+msgid "Extension tags resolve to an empty string when the corresponding plugin is not active."
+msgstr "Udvidelses-tags oversættes til en tom streng, når det tilhørende plugin ikke er aktivt."
+
+msgid "[pcio_me_rolling_text]"
+msgstr "[pcio_me_rolling_text]"
+
+msgid "Renders a scrolling marquee banner using texts that are scheduled in the Rolling Texts table. Only entries whose start/stop window includes the current server time are shown. Multiple simultaneous entries are joined by a long dash (—)."
+msgstr "Viser et rullende marquee-banner med tekster, der er planlagt i tabellen Rullende tekster. Kun poster, hvis start/stop-vindue omfatter den aktuelle servertid, vises. Flere samtidige poster sammensættes med en lang tankestreg (—)."
+
+msgid "Manage entries at Vis → Calendar → Rolling Texts tab. You can have as many independent banners as you like by giving each a unique Roller ID and using a matching id attribute in the shortcode."
+msgstr "Administrér poster under Vis → Kalender → fanen Rullende tekster. Du kan have så mange uafhængige bannere, du vil, ved at give hver et unikt Roller-ID og bruge et matchende id-attribut i shortcoden."
+
+msgid "Roller ID (required). Must match the Roller ID of at least one entry in the Rolling Texts table. Use lowercase letters, numbers and hyphens — e.g. \"homepage\", \"events-sidebar\"."
+msgstr "Roller-ID (påkrævet). Skal matche Roller-ID'et for mindst én post i tabellen Rullende tekster. Brug små bogstaver, tal og bindestreger — f.eks. \"homepage\", \"events-sidebar\"."
+
+msgid "Behaviour"
+msgstr "Adfærd"
+
+msgid "When no entry is active the shortcode outputs nothing — the banner simply disappears."
+msgstr "Når ingen post er aktiv, udsender shortcoden ingenting — banneret forsvinder simpelthen."
+
+msgid "Multiple overlapping entries are concatenated with  —  between them."
+msgstr "Flere overlappende poster sammensættes med  —  mellem dem."
+
+msgid "Schedule entries under Vis → Calendar → Rolling Texts. The Roller ID in that form must match the id attribute used in the shortcode."
+msgstr "Planlæg poster under Vis → Kalender → Rullende tekster. Roller-ID'et i den formular skal matche det id-attribut, der bruges i shortcoden."
+
+msgid "Different pages can show different banners by using different id values."
+msgstr "Forskellige sider kan vise forskellige bannere ved at bruge forskellige id-værdier."
+
+msgid "Joined"
+msgstr "Indmeldt"
+
+msgid "Left"
+msgstr "Udmeldt"
+
+msgid "Volunteer"
+msgstr "Frivillig"
+
+msgid "Could not create document type."
+msgstr "Kunne ikke oprette dokumenttype."
+
+msgid "Cannot delete: documents of this type still exist."
+msgstr "Kan ikke slette: der findes stadig dokumenter af denne type."
+
+msgid "Could not create document."
+msgstr "Kunne ikke oprette dokument."
+
+msgid "Could not update document."
+msgstr "Kunne ikke opdatere dokument."
+
+msgid "Could not delete document."
+msgstr "Kunne ikke slette dokument."
+
+msgid "Could not create event type."
+msgstr "Kunne ikke oprette begivenhedstype."
+
+msgid "Could not update event type."
+msgstr "Kunne ikke opdatere begivenhedstype."
+
+msgid "Could not delete event type."
+msgstr "Kunne ikke slette begivenhedstype."
+
+msgid "Unknown image type."
+msgstr "Ukendt billedtype."
+
+msgid "Invalid image data."
+msgstr "Ugyldige billeddata."
+
+msgid "Image is too large."
+msgstr "Billedet er for stort."
+
+msgid "Could not create attachment."
+msgstr "Kunne ikke oprette vedhæftning."
+
+msgid "Could not create entry."
+msgstr "Kunne ikke oprette post."
+
+msgid "Could not update entry."
+msgstr "Kunne ikke opdatere post."
+
+msgid "Could not delete entry."
+msgstr "Kunne ikke slette post."
+
+msgid "System mails cannot be deleted."
+msgstr "Systemmails kan ikke slettes."
+
+msgid "No recipients found for the selected target."
+msgstr "Ingen modtagere fundet for det valgte mål."
+
+msgid "Volunteers"
+msgstr "Frivillige"
+
+msgid "No valid email addresses provided."
+msgstr "Ingen gyldige e-mailadresser angivet."
+
+msgid "Unknown mail group."
+msgstr "Ukendt mailgruppe."
+
+msgid "Welcome to {site_name}"
+msgstr "Velkommen til {site_name}"
+
+msgid "Hi {name},"
+msgstr "Hej {name},"
+
+msgid "Your membership has been confirmed. Your member number is <strong>{member_number}</strong>."
+msgstr "Dit medlemskab er blevet bekræftet. Dit medlemsnummer er <strong>{member_number}</strong>."
+
+msgid "Set your password and log in: <a href=\"{login_url}\">{login_url}</a>"
+msgstr "Opret din adgangskode og log ind: <a href=\"{login_url}\">{login_url}</a>"
+
+msgid "Member name"
+msgstr "Medlemsnavn"
+
+msgid "Member number"
+msgstr "Medlemsnummer"
+
+msgid "Site name"
+msgstr "Webstedsnavn"
+
+msgid "Login / set-password URL"
+msgstr "Login-/opret-adgangskode-URL"
+
+msgid "Security check failed."
+msgstr "Sikkerhedstjek mislykkedes."
+
+msgid "A valid email address is required."
+msgstr "En gyldig e-mailadresse er påkrævet."
+
+msgid "A membership with that email address already exists."
+msgstr "Der findes allerede et medlemskab med den e-mailadresse."
+
+msgid "Validation failed."
+msgstr "Validering mislykkedes."
+
+msgid "Could not create membership record. Please try again."
+msgstr "Kunne ikke oprette medlemspost. Prøv igen."
+
+msgid "Registration complete. Check your email for your login details."
+msgstr "Registrering fuldført. Tjek din e-mail for dine login-oplysninger."
+
+msgid "This field is required."
+msgstr "Dette felt er påkrævet."
+
+msgid "Please enter a valid email address."
+msgstr "Indtast en gyldig e-mailadresse."
+
+msgid "An error occurred. Please try again."
+msgstr "Der opstod en fejl. Prøv igen."
+
+msgid "PDF library is not available."
+msgstr "PDF-biblioteket er ikke tilgængeligt."
+
+msgid "Could not render the newsletter PDF."
+msgstr "Kunne ikke generere nyhedsbrevets PDF."
+
+msgid "Could not save the newsletter record."
+msgstr "Kunne ikke gemme nyhedsbrevsposten."
+
+msgid "Could not create the media attachment."
+msgstr "Kunne ikke oprette mediefilen."
+
+msgid "No upcoming events in this period."
+msgstr "Ingen kommende begivenheder i denne periode."
+
+msgid "Could not delete newsletter."
+msgstr "Kunne ikke slette nyhedsbrev."
+
+msgid "Workgroups"
+msgstr "Arbejdsgrupper"
+
+msgid "Statistics"
+msgstr "Statistik"
+
+msgid "Copy emails"
+msgstr "Kopiér e-mails"
+
+msgid "email address(es) copied to clipboard."
+msgstr "e-mailadresse(r) kopieret til udklipsholder."
+
+msgid "No email addresses in current view."
+msgstr "Ingen e-mailadresser i den aktuelle visning."
+
+msgid "Could not copy to clipboard."
+msgstr "Kunne ikke kopiere til udklipsholder."
+
+msgid "Other"
+msgstr "Andet"
+
+msgid "Resources"
+msgstr "Ressourcer"
+
+msgid "Copy"
+msgstr "Kopiér"
+
+msgid "Event type"
+msgstr "Begivenhedstype"
+
+msgid "— None —"
+msgstr "— Ingen —"
+
+msgid "No resources defined yet. Add them in the Calendar → Resources tab."
+msgstr "Ingen ressourcer defineret endnu. Tilføj dem under fanen Kalender → Ressourcer."
+
+msgid "Resource conflict: "
+msgstr "Ressourcekonflikt: "
+
+msgid "Recommended image size: a wide landscape image of about 1200 × 525 px (≈16:7). It is used as the cover image and in the front-page event roller."
+msgstr "Anbefalet billedstørrelse: et bredt landskabsbillede på ca. 1200 × 525 px (≈16:7). Det bruges som forsidebillede og i forsidens begivenhedsroller."
+
+msgid "Select Event Image"
+msgstr "Vælg begivenhedsbillede"
+
+msgid "Add"
+msgstr "Tilføj"
+
+msgid "Event Types"
+msgstr "Begivenhedstyper"
+
+msgid "Public"
+msgstr "Offentlig"
+
+msgid "Members only"
+msgstr "Kun medlemmer"
+
+msgid "Volunteers only"
+msgstr "Kun frivillige"
+
+msgid "+ New type"
+msgstr "+ Ny type"
+
+msgid "New Event Type"
+msgstr "Ny begivenhedstype"
+
+msgid "Access"
+msgstr "Adgang"
+
+msgid "Event type created."
+msgstr "Begivenhedstype oprettet."
+
+msgid "Event type updated."
+msgstr "Begivenhedstype opdateret."
+
+msgid "Event type deleted."
+msgstr "Begivenhedstype slettet."
+
+msgid "+ New resource"
+msgstr "+ Ny ressource"
+
+msgid "New Resource"
+msgstr "Ny ressource"
+
+msgid "Resource created."
+msgstr "Ressource oprettet."
+
+msgid "Resource updated."
+msgstr "Ressource opdateret."
+
+msgid "Resource deleted."
+msgstr "Ressource slettet."
+
+msgid "Rolling Texts"
+msgstr "Rullende tekster"
+
+msgid "New Rolling Text"
+msgstr "Ny rullende tekst"
+
+msgid "Edit Rolling Text"
+msgstr "Redigér rullende tekst"
+
+msgid "Roller ID"
+msgstr "Roller-ID"
+
+msgid "Start"
+msgstr "Start"
+
+msgid "Stop"
+msgstr "Stop"
+
+msgid "Text"
+msgstr "Tekst"
+
+msgid "Filter by roller ID"
+msgstr "Filtrér efter roller-ID"
+
+msgid "Rolling text created."
+msgstr "Rullende tekst oprettet."
+
+msgid "Rolling text updated."
+msgstr "Rullende tekst opdateret."
+
+msgid "Rolling text deleted."
+msgstr "Rullende tekst slettet."
+
+msgid "This will send the mail to the selected recipients."
+msgstr "Dette sender mailen til de valgte modtagere."
+
+msgid "Send to"
+msgstr "Send til"
+
+msgid "System"
+msgstr "System"
+
+msgid "Available tags"
+msgstr "Tilgængelige tags"
+
+msgid "Events"
+msgstr "Begivenheder"
+
+msgid "No newsletters generated yet. Create a newsletter mail and click “Generate newsletter PDF”."
+msgstr "Ingen nyhedsbreve genereret endnu. Opret en nyhedsbrevsmail og klik på “Generér nyhedsbrevs-PDF”."
+
+msgid "Member"
+msgstr "Medlem"
+
+msgid "Total"
+msgstr "I alt"
+
+msgid "Saved."
+msgstr "Gemt."
+
+msgid "Member changes by year"
+msgstr "Medlemsændringer pr. år"
+
+msgid "No join/leave data yet."
+msgstr "Ingen data om ind-/udmeldelser endnu."
+
+msgid "Activity counters"
+msgstr "Aktivitetstællere"
+
+msgid "Total members"
+msgstr "Medlemmer i alt"
+
+msgid "Front page views"
+msgstr "Forsidevisninger"
+
+msgid "Logins"
+msgstr "Logins"
+
+msgid "Active memberships"
+msgstr "Aktive medlemskaber"
+
+msgid "Sponsor link clicks"
+msgstr "Sponsorlink-klik"
+
+msgid "No sponsor clicks recorded yet."
+msgstr "Ingen sponsorklik registreret endnu."
+
+msgid "URL"
+msgstr "URL"
+
+msgid "Clicks"
+msgstr "Klik"
+
+msgid "+ New workgroup"
+msgstr "+ Ny arbejdsgruppe"
+
+msgid "Save"
+msgstr "Gem"
+
+msgid "Add volunteer"
+msgstr "Tilføj frivillig"
+
+msgid "Chairman"
+msgstr "Formand"
+
+msgid "Workgroup created."
+msgstr "Arbejdsgruppe oprettet."
+
+msgid "Workgroup updated."
+msgstr "Arbejdsgruppe opdateret."
+
+msgid "Workgroup deleted."
+msgstr "Arbejdsgruppe slettet."
+
+msgid "Volunteer added."
+msgstr "Frivillig tilføjet."
+
+msgid "Volunteer removed."
+msgstr "Frivillig fjernet."
+
+msgid "Delete this workgroup?"
+msgstr "Slet denne arbejdsgruppe?"
+
+msgid "No workgroups yet."
+msgstr "Ingen arbejdsgrupper endnu."
+
+msgid "No volunteers in this workgroup."
+msgstr "Ingen frivillige i denne arbejdsgruppe."
+
+msgid "Search volunteers…"
+msgstr "Søg frivillige…"
+
+msgid "volunteers"
+msgstr "frivillige"
+
+msgid "No email addresses in this workgroup."
+msgstr "Ingen e-mailadresser i denne arbejdsgruppe."
+
+msgid "Could not create resource."
+msgstr "Kunne ikke oprette ressource."
+
+msgid "Could not update resource."
+msgstr "Kunne ikke opdatere ressource."
+
+msgid "Could not delete resource."
+msgstr "Kunne ikke slette ressource."
+
+msgid "This email belongs to another WordPress user. Unlink that account or use a different email."
+msgstr "Denne e-mail tilhører en anden WordPress-bruger. Fjern tilknytningen til den konto, eller brug en anden e-mail."
+
+msgid "Member not found."
+msgstr "Medlem ikke fundet."
+
+msgid "Could not create rolling text entry."
+msgstr "Kunne ikke oprette rullende tekst-post."
+
+msgid "Could not update rolling text entry."
+msgstr "Kunne ikke opdatere rullende tekst-post."
+
+msgid "Could not delete rolling text entry."
+msgstr "Kunne ikke slette rullende tekst-post."
+
+msgid "Your user account is not linked to a member record."
+msgstr "Din brugerkonto er ikke knyttet til en medlemspost."
+
+msgid "Invalid status value."
+msgstr "Ugyldig statusværdi."
+
+msgid "Event not found."
+msgstr "Begivenhed ikke fundet."
+
+msgid "Could not save signup."
+msgstr "Kunne ikke gemme tilmelding."
+
+msgid "URL is required."
+msgstr "URL er påkrævet."
+
+msgid "Every %d hour(s) (Vis sync)"
+msgstr "Hver %d. time (Vis-synk)"
+
+msgid "Sync WP Users"
+msgstr "Synkronisér WP-brugere"
+
+msgid "Import WP Users"
+msgstr "Importér WP-brugere"
+
+msgid "Revoked: %1$d  |  Created: %2$d  |  Linked: %3$d  |  Admins skipped: %4$d"
+msgstr "Tilbagekaldt: %1$d  |  Oprettet: %2$d  |  Knyttet: %3$d  |  Administratorer sprunget over: %4$d"
+
+msgid "Imported: %1$d  |  Skipped (already exist): %2$d"
+msgstr "Importeret: %1$d  |  Sprunget over (findes allerede): %2$d"
+
+msgid "Workgroup not found."
+msgstr "Arbejdsgruppe ikke fundet."
+
+msgid "Could not create workgroup."
+msgstr "Kunne ikke oprette arbejdsgruppe."
+
+msgid "Could not update workgroup."
+msgstr "Kunne ikke opdatere arbejdsgruppe."
+
+msgid "Could not delete workgroup."
+msgstr "Kunne ikke slette arbejdsgruppe."
+
+msgid "member_id is required."
+msgstr "member_id er påkrævet."
+
+msgid "Only volunteers can be added to a workgroup."
+msgstr "Kun frivillige kan tilføjes til en arbejdsgruppe."
+
+msgid "Loading&hellip;"
+msgstr "Indlæser&hellip;"
+
+msgid "Event"
+msgstr "Begivenhed"
+
+msgid "Generated newsletter PDFs."
+msgstr "Genererede nyhedsbrevs-PDF'er."
+
+msgid "Cash journal and financial records of the organisation."
+msgstr "Kassekladde og økonomiske registreringer for organisationen."
+
+msgid "Member growth, page views, logins and sponsor clicks."
+msgstr "Medlemsvækst, sidevisninger, logins og sponsorklik."
+
+msgid "Your details"
+msgstr "Dine oplysninger"
+
+msgid "* Required"
+msgstr "* Påkrævet"
+
+msgid "Continue to payment"
+msgstr "Fortsæt til betaling"
+
+msgid "Register"
+msgstr "Registrér"
+
+msgid "Members section"
+msgstr "Medlemssektion"
+
+msgid "Member list"
+msgstr "Medlemsliste"
+
+msgid "Website"
+msgstr "Websted"
+
+msgid "WP Admin"
+msgstr "WP-administration"
+
+msgid "Renders a public registration form for new members. With no payment extension active the member is created immediately and a welcome email is sent. Active extensions can inject extra fields and add a payment (checkout) step on submission."
+msgstr "Viser en offentlig registreringsformular for nye medlemmer. Uden en aktiv betalingsudvidelse oprettes medlemmet straks, og der sendes en velkomstmail. Aktive udvidelser kan indsætte ekstra felter og tilføje et betalingstrin (checkout) ved indsendelse."
+
+msgid "Additional fields (added by active extensions)"
+msgstr "Yderligere felter (tilføjet af aktive udvidelser)"

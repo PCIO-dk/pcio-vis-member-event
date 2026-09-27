@@ -1,0 +1,163 @@
+/* ================================================================
+   PCIO VIS Member Event — finance.css
+   Finance section additions layered on top of members.css (me- base).
+   Only styles not already provided by members.css live here.
+   ================================================================ */
+
+/* .me-fin-tabs / .me-fin-tab are defined in members.css (shared) */
+
+/* ── Tables (match Members / Mails / Documents lists) ───────────── */
+#pcio-me-app .me-fin-section table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    table-layout: auto;
+}
+
+/* Header row — dark gradient like the other admin lists */
+#pcio-me-app .me-fin-section thead tr.me-head-row {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #334155 100%);
+}
+#pcio-me-app .me-fin-section thead tr.me-head-row th {
+    padding: 12px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #94a3b8;
+    white-space: nowrap;
+    border: none;
+    text-align: left;
+    user-select: none;
+}
+#pcio-me-app .me-fin-section thead tr.me-head-row th.sortable {
+    cursor: pointer;
+    transition: color 0.12s, background 0.12s;
+}
+#pcio-me-app .me-fin-section thead tr.me-head-row th.sortable:hover {
+    color: #e2e8f0;
+    background: rgba(255, 255, 255, 0.05);
+}
+#pcio-me-app .me-fin-section thead tr.me-head-row th.sort-asc,
+#pcio-me-app .me-fin-section thead tr.me-head-row th.sort-desc {
+    color: #38bdf8;
+}
+
+/* Filter row — light gray strip */
+#pcio-me-app .me-fin-section thead tr.me-filter-row {
+    background: #f1f5f9;
+}
+#pcio-me-app .me-fin-section thead tr.me-filter-row td {
+    padding: 7px 10px;
+    border: none;
+    border-bottom: 2px solid #dde3ea;
+}
+
+/* Body cells — comfortable padding */
+#pcio-me-app .me-fin-section tbody tr {
+    border-bottom: 1px solid #f1f5f9;
+    transition: background 0.1s ease;
+}
+#pcio-me-app .me-fin-section tbody tr:last-child { border-bottom: none; }
+#pcio-me-app .me-fin-section tbody tr:hover { background: #eff6ff; }
+#pcio-me-app .me-fin-section tbody td {
+    padding: 12px 16px;
+    color: #334155;
+    border: none;
+    vertical-align: middle;
+}
+
+/* Column alignment helpers */
+.me-cell-center { text-align: center; }
+.me-cell-right  { text-align: right; }
+
+/* ── Money cells ────────────────────────────────────────────────── */
+.me-amount {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.me-amount-neg { color: #dc2626; }
+
+/* ── Links / muted text ─────────────────────────────────────────── */
+.me-link { color: #2563eb; text-decoration: none; }
+.me-link:hover { text-decoration: underline; }
+
+.me-muted { color: #6b7280; font-size: 13px; }
+
+/* ── Danger icon button (delete) ────────────────────────────────── */
+.me-icon-danger:hover { background: #fef2f2; color: #dc2626; }
+
+/* ── Form hints ─────────────────────────────────────────────────── */
+.me-form-hint {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* ── Media (attachment) field ───────────────────────────────────── */
+.me-media-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.me-media-name {
+    flex: 1 1 auto;
+    min-width: 120px;
+    font-size: 13px;
+    color: #374151;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.me-btn-link {
+    background: transparent;
+    border: none;
+    color: #dc2626;
+    padding: 4px 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+.me-btn-link:hover { text-decoration: underline; }
+
+/* ── Boolean (checkbox) cell, e.g. Verified ─────────────────────── */
+.me-bool-cell { text-align: center; }
+.me-bool-cell .me-bool-toggle { cursor: pointer; }
+.me-bool-cell .me-bool-toggle[disabled] { cursor: default; opacity: .6; }
+.me-check-label { display: flex; gap: 8px; align-items: center; cursor: pointer; }
+
+/* ── Small external-link button (e.g. Stripe) ───────────────────── */
+.me-btn-xs {
+    display: inline-block;
+    padding: 2px 10px;
+    font-size: 12px;
+    line-height: 1.6;
+    color: #635bff;
+    border: 1px solid #635bff;
+    border-radius: 4px;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.me-btn-xs:hover { background: #635bff; color: #fff; }
+
+/* ── Row actions cell (multiple action buttons) ─────────────────── */
+.me-row-actions {
+    display: flex;
+    gap: 2px;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+}
+
+/* ── Generic action modal (Orders refund / resend) ──────────────── */
+#me-action-text:not(:empty) {
+    margin: 0 0 12px;
+}
+#me-action-amount {
+    max-width: 180px;
+}
+

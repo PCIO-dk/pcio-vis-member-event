@@ -1,0 +1,5 @@
+/* Animated member-count shortcode element */
+.pcio-me-member-count {
+    display: inline-block;
+    font-variant-numeric: tabular-nums;
+}

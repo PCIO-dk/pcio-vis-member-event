@@ -1,0 +1,182 @@
+/* ================================================================
+   PCIO VIS Member Event — event-recurrence.css
+   Styling for the event Recurrence tab.
+   ================================================================ */
+
+.mer-root {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.mer-intro {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 0.9em;
+    color: #475569;
+    line-height: 1.5;
+}
+
+.mer-note {
+    color: #64748b;
+    font-style: italic;
+    margin: 0;
+}
+
+/* Pager */
+.mer-pager {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.mer-pos {
+    font-weight: 600;
+    padding: 0 10px;
+    color: #334155;
+}
+
+.mer-page.is-disabled {
+    opacity: 0.45;
+    pointer-events: none;
+    cursor: default;
+}
+
+/* Command buttons */
+.mer-commands {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+/* Rule editor */
+.mer-rules {
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 16px;
+    background: #fff;
+}
+
+.mer-rules-title {
+    margin: 0 0 12px;
+    font-size: 1.05em;
+    color: #1e293b;
+}
+
+.mer-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 14px;
+}
+
+.mer-field {
+    flex: 1 1 200px;
+    min-width: 160px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.mer-field-full {
+    flex-basis: 100%;
+}
+
+.mer-days {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+    padding: 4px 0;
+}
+
+.mer-day {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.92em;
+    color: #334155;
+    white-space: nowrap;
+}
+
+/* Recalculate prompt */
+.mer-recalc {
+    display: flex;
+    justify-content: center;
+    padding: 12px 0;
+}
+
+/* Series table */
+.mer-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92em;
+}
+
+.mer-table th,
+.mer-table td {
+    text-align: center;
+    padding: 8px 10px;
+    border-bottom: 1px solid #eef2f7;
+}
+
+.mer-table thead th {
+    background: #f8fafc;
+    color: #475569;
+    font-weight: 600;
+}
+
+.mer-table tr.mer-current {
+    background: #eff6ff;
+    font-weight: 600;
+}
+
+.mer-yes { color: #16a34a; font-weight: 600; }
+.mer-no  { color: #b45309; }
+.mer-del { color: #dc2626; font-weight: 600; }
+
+/* Diff / reconcile */
+.mer-diff {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+    padding: 14px;
+    border: 1px solid #fecaca;
+    background: #fef2f2;
+    border-radius: 8px;
+}
+
+.mer-diff-text {
+    margin: 0;
+    color: #991b1b;
+    text-align: center;
+}
+
+.mer-ok {
+    text-align: center;
+    color: #16a34a;
+    margin: 12px 0 0;
+}
+
+/* Status line */
+.mer-status {
+    min-height: 1.2em;
+    text-align: center;
+    color: #475569;
+    font-size: 0.9em;
+}
+
+.mer-status-error {
+    color: #dc2626;
+}
+
+.mer-error {
+    color: #dc2626;
+    text-align: center;
+}

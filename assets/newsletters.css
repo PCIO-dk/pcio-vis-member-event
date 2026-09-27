@@ -1,0 +1,16 @@
+/* ================================================================
+   PCIO VIS Member Event — newsletters.css
+   Small additions on top of members.css for the newsletters list.
+   ================================================================ */
+
+.me-nl-link {
+    font-weight: 600;
+    color: #2563eb;
+    text-decoration: none;
+}
+.me-nl-link:hover {
+    text-decoration: underline;
+}
+.me-nl-missing {
+    color: #94a3b8;
+}

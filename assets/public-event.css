@@ -1,0 +1,180 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Public event detail page (/events/{slug}/)
+   Rendered inside the active theme (get_header / get_footer).
+   ═══════════════════════════════════════════════════════════════════ */
+
+.me-pe {
+    width: 100%;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 24px 20px 48px;
+    box-sizing: border-box;
+}
+
+.me-pe * {
+    box-sizing: border-box;
+}
+
+.me-pe-title {
+    font-size: clamp( 26px, 3.4vw, 42px );
+    font-weight: 700;
+    line-height: 1.2;
+    /* Rendered on the theme's (DIVI) body background, whose colour is unknown,
+       so inherit the theme text colour rather than hard-coding a dark one. */
+    color: inherit;
+    margin: 18px 0 24px;
+}
+
+/* Banner — reduced height, centered, framed so logo-style images
+   (transparent / on white) still look intentional. */
+.me-pe-banner {
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+    aspect-ratio: 1200 / 525;
+    max-height: 320px;
+    background-color: #f1f5f9;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    position: relative;
+    box-shadow: 0 2px 10px rgba( 15, 23, 42, 0.06 );
+}
+
+.me-pe-banner-date {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    min-width: 50px;
+    padding: 7px 6px;
+    background: rgba( 0, 0, 0, 0.55 );
+    border: 1px solid rgba( 255, 255, 255, 0.7 );
+    border-radius: 10px;
+    color: #fff;
+    text-align: center;
+    line-height: 1.1;
+}
+
+.me-pe-banner-day { font-size: 22px; font-weight: 700; }
+.me-pe-banner-mon { font-size: 12px; text-transform: lowercase; }
+
+/* Two-column body */
+.me-pe-body {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 36px;
+    align-items: flex-start;
+}
+
+.me-pe-main {
+    flex: 1 1 0;
+    min-width: 280px;
+    max-width: 680px;
+    font-size: 16px;
+    line-height: 1.7;
+    /* On the unknown theme body background — inherit the theme text colour. */
+    color: inherit;
+}
+
+.me-pe-main > * { margin-top: 0; }
+.me-pe-main p { margin: 0 0 1em; }
+.me-pe-main img { max-width: 100%; height: auto; border-radius: 8px; }
+.me-pe-main ul { list-style: disc; margin-left: 20px; margin-bottom: 20px; }
+.me-pe-main ol { list-style: decimal; margin-left: 20px; margin-bottom: 20px; }
+
+.me-pe-empty { color: inherit; opacity: 0.6; font-style: italic; }
+
+/* Right details panel — a light card */
+.me-pe-side {
+    flex: 0 0 300px;
+    max-width: 300px;
+    align-self: flex-start;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 6px 22px 22px;
+}
+
+.me-pe-side-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 17px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 22px 0 6px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.me-pe-side-title svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: var( --evt-color, #3b82f6 );
+}
+
+.me-pe-side-text {
+    font-size: 15px;
+    line-height: 1.5;
+    color: #475569;
+    margin: 0 0 6px;
+}
+
+/* Sign-up controls fill the narrow column */
+.me-pe-side .me-sc-signup-area { margin-top: 4px; }
+
+.me-pe-side .me-sc-signup-label {
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #94a3b8;
+    margin: 0 0 8px;
+}
+
+.me-pe-side .me-sc-signup-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.me-pe-side .me-sc-signup-btn {
+    width: 100%;
+    justify-content: center;
+}
+
+.me-pe-login {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    margin-top: 8px;
+}
+
+/* Thumbnail at the bottom — smaller, framed */
+.me-pe-thumb {
+    text-align: center;
+    margin: 40px 0 0;
+}
+
+.me-pe-thumb img {
+    max-width: 360px;
+    width: 100%;
+    height: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba( 15, 23, 42, 0.06 );
+}
+
+/* Mobile: stack columns, full-width details card */
+@media ( max-width: 768px ) {
+    .me-pe-body {
+        flex-direction: column;
+    }
+    .me-pe-side {
+        flex-basis: auto;
+        max-width: 100%;
+        width: 100%;
+    }
+}
