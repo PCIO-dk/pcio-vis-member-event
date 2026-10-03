@@ -3,7 +3,7 @@
 Plugin Name:  PCIO VIS Member Event
 Plugin URI:   https://www.pcio.dk/
 Description:  Manages members and events for a voluntary organization.
-Version:      1.4.0
+Version:      1.5.0
 Author:       PCIO
 Author URI:   https://www.pcio.dk
 Requires at least: 6.2
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'PCIO_VIS_PLUGIN_FILE', __FILE__ );
 define( 'PCIO_VIS_PLUGIN_DIR',  plugin_dir_path( __FILE__ ) );
 define( 'PCIO_VIS_REST_NS',     'pcio-vis/v1' );
-define( 'PCIO_VIS_DB_VERSION',  '1.9.0' );
+define( 'PCIO_VIS_DB_VERSION',  '1.10.0' );
 
 // Vendored libraries (Dompdf + php-qrcode) shared with extensions for PDF generation.
 if ( is_readable( PCIO_VIS_PLUGIN_DIR . 'vendor/autoload.php' ) ) {
@@ -70,8 +70,13 @@ require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-member-signup-fulfil
 require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-plugin.php';
 
 register_activation_hook( __FILE__, function () {
-    PCIO_VIS_Installer::install();
+    // Capabilities first, and deliberately not coupled to the schema migration.
+    // The whole Vis admin menu is gated on vis_manage_settings, so if
+    // PCIO_VIS_Installer::install() fatals or dies part-way, granting the caps
+    // afterwards would never happen and the site would be left with no Vis menu
+    // at all — an unusable plugin that still looks activated.
     PCIO_VIS_Caps::activate();
+    PCIO_VIS_Installer::install();
     // Register rewrite rules then flush so /events/{slug}/ works immediately.
     PCIO_VIS_Plugin::instance()->register_rewrites();
     flush_rewrite_rules();

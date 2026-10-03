@@ -234,6 +234,28 @@ class PCIO_VIS_Roles_DB {
         );
     }
 
+     /**
+     * Find the member number linked to a given WordPress user (0 when none).
+     */
+    public static function get_member_number_by_wp_user( int $wp_user_id ): int {
+        if ( $wp_user_id <= 0 ) {
+            return 0;
+        }
+        global $wpdb;
+        return (int) $wpdb->get_var(
+            $wpdb->prepare(
+             "SELECT m.member_number
+                 FROM   %i m
+                 JOIN   %i mr ON m.id = mr.member_id
+                 WHERE  mr.wp_user_id = %d",
+                $wpdb->prefix . 'me_members',
+                $wpdb->prefix . 'me_member_roles',
+                $wp_user_id
+            )
+        );
+    }
+
+
     /**
      * Returns the vis_* capabilities granted to a WP user through the vis_role
      * assigned to their linked member record. Returns [] when the user has no

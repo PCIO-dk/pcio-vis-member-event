@@ -444,7 +444,7 @@ class PCIO_VIS_Plugin {
 
         // Page-specific JS
         if ( $page === 'members' ) {
-            wp_enqueue_script( 'pcio-me-members', $assets . 'members.js', [], '1.2.3', true );
+            wp_enqueue_script( 'pcio-me-members', $assets . 'members.js', [], '1.2.7', true );
             wp_add_inline_script(
                 'pcio-me-members',
                 'const PCIO_ME = ' . wp_json_encode( [
@@ -1455,12 +1455,8 @@ class PCIO_VIS_Plugin {
         }
 
         $assets = plugins_url( 'assets/', PCIO_VIS_PLUGIN_FILE );
-        wp_enqueue_style( 'pcio-me-app',     $assets . 'members.css', [],               '1.2.0' );
-        wp_enqueue_script( 'pcio-me-profile', $assets . 'profile.js',  [],               '1.2.1', true );
-
-        // Collect full boat objects already decorated onto the member row.
-        $boats = array_values( (array) ( $member['boat_data'] ?? [] ) );
-
+        wp_enqueue_style( 'pcio-me-app',     $assets . 'members.css', [], '1.2.0' );
+     
         // Subscription renewal URL (requires pcio-vis-products).
         $renew_url         = '';
         $renew_expire_date = '';
@@ -1482,11 +1478,10 @@ class PCIO_VIS_Plugin {
 
         $profile_config = [
             'rest'         => rest_url( PCIO_VIS_REST_NS ),
-            'nonce'        => wp_create_nonce( 'wp_rest' ),
+            'nonce'      => wp_create_nonce( 'wp_rest' ),
             'memberId'     => $member_id,
             'member'       => $member,
             'memberFields' => PCIO_VIS_DB::get_field_definitions(),
-            'boats'        => $boats,
             'renewUrl'     => $renew_url,
             'renewExpireDate' => $renew_expire_date,
             'i18n'         => [
@@ -1499,16 +1494,19 @@ class PCIO_VIS_Plugin {
                 'fieldPhone'     => __( 'Phone',                                               'pcio-vis-member-event' ),
                 'phPhone'        => __( '+45 00 00 00 00',                                     'pcio-vis-member-event' ),
                 'fieldAddress'   => __( 'Address',                                             'pcio-vis-member-event' ),
-                'phAddress'      => __( 'Street, city, postal code…',                     'pcio-vis-member-event' ),
+                'phAddress'      => __( 'Street, city, postal code…',                          'pcio-vis-member-event' ),
                 // Subscription
                 'btnRenew'       => __( 'Renew subscription',                                  'pcio-vis-member-event' ),
                 // Actions
                 'btnSave'        => __( 'Save changes',                                        'pcio-vis-member-event' ),
-                'stateSaving'    => __( 'Saving…',                                        'pcio-vis-member-event' ),
+                'stateSaving'    => __( 'Saving…',                                             'pcio-vis-member-event' ),
                 'toastSaved'     => __( 'Your profile has been updated.',                      'pcio-vis-member-event' ),
                 'errName'        => __( 'Name is required.',                                   'pcio-vis-member-event' ),
                 'errEmail'       => __( 'Enter a valid email address.',                        'pcio-vis-member-event' ),
                 'errSave'        => __( 'Save failed: ',                                       'pcio-vis-member-event' ),
+                'required'       => __( 'This field is required.',                             'pcio-vis-member-event' ),
+                'emailInvalid'   => __( 'Please enter a valid email address.',                 'pcio-vis-member-event' ),
+                'serverError'    => __( 'An error occurred. Please try again.',                'pcio-vis-member-event' ),
             ],
         ];
 
@@ -1521,17 +1519,41 @@ class PCIO_VIS_Plugin {
          */
         $profile_config = apply_filters( 'pcio_me_profile_config', $profile_config );
 
+        wp_enqueue_style(
+            'pcio-vis-member-profile',
+            plugin_dir_url( PCIO_VIS_PLUGIN_FILE ) . 'assets/member-profile.css',
+            [],
+            PCIO_VIS_DB_VERSION
+        );
+
+        wp_enqueue_script(
+            'pcio-vis-member-profile',
+            plugin_dir_url( PCIO_VIS_PLUGIN_FILE ) . 'assets/member-profile.js',
+            [],
+            '10.0.3',
+            true
+        );
+
         wp_add_inline_script(
-            'pcio-me-profile',
+            'pcio-vis-member-profile',
             'window.PCIO_ME_PROFILE = ' . wp_json_encode( $profile_config ) . ';',
             'before'
         );
 
-        return '<div id="pcio-me-profile-app"></div>';
+        /** @var array<array{id:string,title:string,html:string}> $extra_sections */
+        $extra_sections = apply_filters( 'pcio_me_profile_extra_sections', [] );
+      
+        ob_start();
+        include PCIO_VIS_PLUGIN_DIR . 'templates/member-profile.php';
+        $html = ob_get_clean();
+        return $html;
     }
 
     // ── Shortcode [pcio_me_members] ───────────────────────────────
-    // Public member list with live search and boat info popups.
+    // Member list with live search, for accounts holding the vis_member capability.
+    // The table includes each member's email address and phone number, so it is
+    // deliberately gated rather than public — unlike the event and document
+    // shortcodes, which carry no personal data.
     // Extension plugins can override output via the pcio_me_members_html filter.
 
     public function shortcode_members( array $atts ): string {
@@ -1562,7 +1584,16 @@ class PCIO_VIS_Plugin {
         ++$pcio_sc_inst;
         $table_id  = 'pcio-me-ml-' . $pcio_sc_inst;
         $search_id = 'pcio-me-ms-' . $pcio_sc_inst;
-        $modal_id  = 'pcio-me-bm-' . $pcio_sc_inst;
+
+        // Live search over the rendered table. Enqueued here (not on the /vis/members
+        // admin page) because the shortcode runs on ordinary theme pages.
+        wp_enqueue_script(
+            'pcio-me-members-public',
+            plugin_dir_url( PCIO_VIS_PLUGIN_FILE ) . 'assets/members-public.js',
+            [],
+            '1.0.0',
+            true
+        );
 
         ob_start();
 
@@ -1573,9 +1604,15 @@ class PCIO_VIS_Plugin {
             <div class="pcio-me-members-wrap">
                 <div style="margin-bottom:10px">
                     <input type="search" id="<?php echo esc_attr( $search_id ); ?>"
+                           data-members-search
                            placeholder="<?php esc_attr_e( 'Search…', 'pcio-vis-member-event' ); ?>"
+                           autocomplete="off"
                            style="padding:6px 10px;border:1px solid #cbd5e1;border-radius:4px;min-width:260px;font-size:.9em">
                 </div>
+
+                <p class="pcio-me-members-noresults" data-members-noresults style="display:none">
+                    <?php esc_html_e( 'No members match your search.', 'pcio-vis-member-event' ); ?>
+                </p>
 
                 <div class="pcio-me-members-list" style="overflow-x:auto">
                     <table class="pcio-me-members-table" id="<?php echo esc_attr( $table_id ); ?>">
@@ -1594,7 +1631,9 @@ class PCIO_VIS_Plugin {
                                     $search_parts[] = (string) $v;
                                 }
                             }
-                            $search_text = strtolower( implode( ' ', array_filter( $search_parts ) ) );
+                            // mb_strtolower so Danish letters (Ø/Æ/Å) match the
+                            // lowercase query the browser produces via toLowerCase().
+                            $search_text = mb_strtolower( implode( ' ', array_filter( $search_parts ) ) );
                         ?>
                         <tr data-search="<?php echo esc_attr( $search_text ); ?>">
                             <?php foreach ( $fields as $f ) :
@@ -1621,84 +1660,7 @@ class PCIO_VIS_Plugin {
                     </table>
                 </div>
 
-                <!-- Boat detail modal (position:fixed, shown on demand) -->
-                <div id="<?php echo esc_attr( $modal_id ); ?>"
-                     style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.55);align-items:center;justify-content:center"
-                     role="dialog" aria-modal="true">
-                    <div style="background:#fff;border-radius:8px;padding:1.5rem 1.75rem;max-width:500px;width:90%;position:relative;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)">
-                        <button class="pcio-bm-close"
-                                style="position:absolute;top:.5rem;right:.75rem;font-size:1.75rem;line-height:1;border:none;background:none;cursor:pointer;color:#64748b"
-                                aria-label="<?php esc_attr_e( 'Close', 'pcio-vis-member-event' ); ?>">&times;</button>
-                        <div class="pcio-bm-content"></div>
-                    </div>
-                </div>
-
-                <script>
-                ( function () {
-                    var searchEl  = document.getElementById( <?php echo wp_json_encode( $search_id ); ?> );
-                    var tableEl   = document.getElementById( <?php echo wp_json_encode( $table_id ); ?> );
-                    var modalEl   = document.getElementById( <?php echo wp_json_encode( $modal_id ); ?> );
-                    var closeBtn  = modalEl && modalEl.querySelector( '.pcio-bm-close' );
-                    var contentEl = modalEl && modalEl.querySelector( '.pcio-bm-content' );
-
-                    if ( searchEl && tableEl ) {
-                        searchEl.addEventListener( 'input', function () {
-                            var q = this.value.toLowerCase().trim();
-                            Array.from( tableEl.tBodies[0].rows ).forEach( function ( row ) {
-                                row.style.display = ( ! q || ( row.getAttribute( 'data-search' ) || '' ).includes( q ) ) ? '' : 'none';
-                            } );
-                        } );
-                    }
-
-                    if ( modalEl ) {
-                        document.addEventListener( 'click', function ( e ) {
-                            var btn = e.target.closest( '.pcio-boat-trigger' );
-                            if ( ! btn ) return;
-                            try {
-                                contentEl.innerHTML = renderBoats( JSON.parse( btn.getAttribute( 'data-boat' ) || '[]' ) );
-                                modalEl.style.display = 'flex';
-                            } catch ( err ) {}
-                            e.preventDefault();
-                        } );
-                        if ( closeBtn ) {
-                            closeBtn.addEventListener( 'click', function () { modalEl.style.display = 'none'; } );
-                        }
-                        modalEl.addEventListener( 'click', function ( e ) {
-                            if ( e.target === modalEl ) modalEl.style.display = 'none';
-                        } );
-                        document.addEventListener( 'keydown', function ( e ) {
-                            if ( e.key === 'Escape' && modalEl.style.display !== 'none' ) modalEl.style.display = 'none';
-                        } );
-                    }
-
-                    function renderBoats( boats ) {
-                        return boats.map( function ( b ) {
-                            var rows = [
-                                [ <?php echo wp_json_encode( __( 'Type',     'pcio-vis-member-event' ) ); ?>, b.boat_type    ],
-                                [ <?php echo wp_json_encode( __( 'Model',    'pcio-vis-member-event' ) ); ?>, b.boat_model   ],
-                                [ <?php echo wp_json_encode( __( 'Built',    'pcio-vis-member-event' ) ); ?>, b.build_year   ],
-                                [ <?php echo wp_json_encode( __( 'Sail no.', 'pcio-vis-member-event' ) ); ?>, b.sail_id      ],
-                                [ <?php echo wp_json_encode( __( 'MMSI',     'pcio-vis-member-event' ) ); ?>, b.mmsi         ],
-                                [ <?php echo wp_json_encode( __( 'Harbour',  'pcio-vis-member-event' ) ); ?>, b.home_harbour ],
-                                [ <?php echo wp_json_encode( __( 'Note',     'pcio-vis-member-event' ) ); ?>, b.note         ],
-                            ].filter( function ( r ) { return r[1]; } );
-                            return '<h3 style="margin:0 0 .75rem;font-size:1.1rem">' + esc( b.boat_name ) + '</h3>'
-                                + '<dl style="display:grid;grid-template-columns:auto 1fr;gap:4px 16px;margin:0;font-size:.9rem">'
-                                + rows.map( function ( r ) {
-                                    return '<dt style="font-weight:600;color:#475569">' + esc( r[0] ) + '</dt>'
-                                        + '<dd style="margin:0">' + esc( String( r[1] ) ) + '</dd>';
-                                } ).join( '' )
-                                + '</dl>';
-                        } ).join( '<hr style="margin:.75rem 0;border:none;border-top:1px solid #e2e8f0">' );
-                    }
-
-                    function esc( s ) {
-                        return String( s || '' )
-                            .replace( /&/g, '&amp;' ).replace( /</g, '&lt;' )
-                            .replace( />/g, '&gt;' ).replace( /"/g, '&quot;' );
-                    }
-                }() );
-                </script>
+               
             </div>
             <?php
         }

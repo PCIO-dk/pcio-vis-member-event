@@ -79,8 +79,20 @@ class PCIO_VIS_Meta_DB {
 
     /**
      * Upsert a single meta value.
+     *
+     * $member_id accepts a member id, or a member row/row array as returned by
+     * the DB helpers, and is normalised to an int. Non-numeric input is ignored
+     * rather than fataling the enclosing request.
+     *
+     * @param int|array<string,mixed>|array<int,array<string,mixed>> $member_id Member id or member row(s).
+     * @param string                                                $key      Meta key.
+     * @param string                                                $value    Meta value.
      */
-    public static function set( int $member_id, string $key, string $value ): void {
+    public static function set( $member_id, string $key, string $value ): void {
+        $member_id = self::normalize_member_id( $member_id );
+        if ( $member_id <= 0 ) {
+            return;
+        }
         global $wpdb;
         $wpdb->query(
             $wpdb->prepare(
@@ -90,6 +102,23 @@ class PCIO_VIS_Meta_DB {
                 self::table(), $member_id, $key, $value
             )
         );
+    }
+
+    /**
+     * Reduce a member id or member row (or list of rows) to a single int id.
+     *
+     * @param int|array<string,mixed>|array<int,array<string,mixed>> $member_id Member id or member row(s).
+     */
+    private static function normalize_member_id( $member_id ): int {
+        if ( is_array( $member_id ) ) {
+            if ( isset( $member_id['id'] ) ) {
+                return (int) $member_id['id'];
+            }
+            // A list of rows: only a single-element list can be resolved here.
+            $first = reset( $member_id );
+            return is_array( $first ) ? (int) ( $first['id'] ?? 0 ) : 0;
+        }
+        return (int) $member_id;
     }
 
     /**

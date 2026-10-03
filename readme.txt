@@ -7,7 +7,7 @@ Tags:              members, events, signup, newsletter, documents
 Requires at least: 6.2
 Tested up to:      7.1
 Requires PHP:      8.1
-Stable tag:        1.4.0
+Stable tag:        1.5.0
 License:           GPLv2 or later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -42,7 +42,7 @@ Public pages are served automatically under `/vis/`; no WordPress pages or short
 * Manage settings & mails
 * Manage finance
 
-**Shortcodes.** For themes that prefer to embed content in ordinary pages, the plugin also ships shortcodes: `[pcio_me_members]`, `[pcio_me_documents]`, `[pcio_me_edit_profile]`, `[pcio_me_event]`, `[pcio_me_events]`, `[pcio_me_event_roller]`, `[pcio_me_newsletters]`, `[pcio_me_member_count]`, `[pcio_me_member_signup]` and `[pcio_me_rolling_text]`. The `[pcio_me_edit_profile]` shortcode lets a logged-in member edit their own contact details from any ordinary WordPress page. The `[pcio_me_member_count]` shortcode displays an animated total member count and can be used in any page builder (e.g. a Divi Text Module); each render increments the front-page-view counter visible on the Statistics dashboard. The `[pcio_me_member_signup]` shortcode renders a public member registration form that creates the member, provisions a WordPress account and sends an automated welcome email. The `[pcio_me_rolling_text]` shortcode outputs a scheduled scrolling banner. A **Shortcode reference** page in the Vis admin documents every shortcode with its attributes and examples.
+**Shortcodes.** For themes that prefer to embed content in ordinary pages, the plugin also ships shortcodes: `[pcio_me_members]`, `[pcio_me_documents]`, `[pcio_me_edit_profile]`, `[pcio_me_event]`, `[pcio_me_events]`, `[pcio_me_event_roller]`, `[pcio_me_newsletters]`, `[pcio_me_member_count]`, `[pcio_me_member_signup]` and `[pcio_me_rolling_text]`. The `[pcio_me_edit_profile]` shortcode renders a pre-filled profile form (membership number, name, email, phone, address) for the logged-in member, validates in the browser and saves over REST; the membership number is shown read-only. The `[pcio_me_members]` shortcode renders a searchable member table — it requires a logged-in account holding the `vis_member` capability, and the table includes each member's email address and phone number. The search box filters rows live and shows a message when nothing matches, and `?member_number=…` in the page URL pre-fills the membership-number filter. The `[pcio_me_member_count]` shortcode displays an animated total member count and can be used in any page builder (e.g. a Divi Text Module); each render increments the front-page-view counter visible on the Statistics dashboard. The `[pcio_me_member_signup]` shortcode renders a public member registration form that creates the member, provisions a WordPress account and sends an automated welcome email. The `[pcio_me_rolling_text]` shortcode outputs a scheduled scrolling banner. A **Shortcode reference** page in the Vis admin documents every shortcode with its attributes and examples, and a **Sponsor Links** page documents the `pcio-sponsor-link` class used for click tracking.
 
 **Extensions.** PCIO VIS Member Event is the core plugin for a family of optional add-ons (gallery, products, tickets, project management, home-owner association tools and Conventus sync). The bundled Dompdf and php-qrcode libraries are shared with those extensions for PDF and QR generation.
 
@@ -75,7 +75,7 @@ No. The core plugin runs entirely on your WordPress site. Optional extensions (s
 
 = How do I uninstall? =
 
-Deactivate and delete the plugin from the WordPress admin. To also remove the data, open your database admin tool and drop these tables (replace `wp_` with your actual table prefix):
+Deactivate and delete the plugin from the WordPress admin — the plugin drops its own tables and options on delete, so this is only needed if you remove the plugin files by hand. To also remove the data, open your database admin tool and drop these tables (replace `wp_` with your actual table prefix):
 
 * `wp_me_members`
 * `wp_me_member_meta`
@@ -83,29 +83,26 @@ Deactivate and delete the plugin from the WordPress admin. To also remove the da
 * `wp_me_vis_roles`
 * `wp_me_events`
 * `wp_me_event_signups`
+* `wp_me_event_recurrence`
+* `wp_me_event_types`
+* `wp_me_resources`
+* `wp_me_event_resources`
+* `wp_me_event_type_resources`
+* `wp_me_workgroups`
+* `wp_me_workgroup_members`
 * `wp_me_mails`
 * `wp_me_newsletters`
 * `wp_me_documents`
 * `wp_me_document_types`
+* `wp_me_rolling_texts`
 * `wp_me_finance_journal`
+* `wp_me_sync`
 * `wp_me_statistics`
 * `wp_me_sponsor_clicks`
-* `wp_me_rolling_texts`
-* `wp_me_sync`
 
 == Upgrade Notice ==
-
-= 1.4.0 =
-New database columns (event sign-up mode, membership number) and a recurring-events table are added automatically on the next admin page load. If event creation fails right after updating, open any wp-admin page to trigger the schema upgrade (or re-save Settings → Permalinks).
-
-= 1.3.0 =
-A new database table for rolling-text banners is created automatically on the next admin page load. A "member_welcome" system mail template is seeded under Vis → Mails; review and edit its subject and body before enabling public sign-up with `[pcio_me_member_signup]`.
-
-= 1.2.0 =
-New database tables (event types, resources, workgroups) are created automatically on the next admin page load. Flush rewrite rules (Settings → Permalinks → Save Changes) to activate the new `/vis/workgroups/` page.
-
-= 1.1.0 =
-After updating, flush rewrite rules (Settings → Permalinks → Save) to register the new /vis/statistics/ route. New database tables and member columns are created automatically on the next admin page load.
+= 1.5.0 =
+**Back up your database before updating.** 1.5.0 replaces the separate "Membership #" column with a shared integer membership number. Update the Products, Tickets and Boat extensions to their matching 1.5.0 releases.
 
 == Screenshots ==
 
@@ -115,6 +112,32 @@ After updating, flush rewrite rules (Settings → Permalinks → Save) to regist
 4. Vis admin menues in WordPress admin section.
 
 == Changelog ==
+
+= 1.5.0 =
+* Added: **Rewritten member profile page** — `[pcio_me_edit_profile]` is now a server-rendered form (new `templates/member-profile.php` plus its own stylesheet) with browser-side validation, an inline error box and a success message. The membership number is shown read-only so members cannot change it. Extensions can add their own fieldsets with the new `pcio_me_profile_extra_sections` filter.
+* Added: **Member save validation hook** — the new `pcio_me_member_update_validate` filter lets extensions reject a save (from the member dialog or the profile form) before anything is written; the request is answered with a 422 and the extension's message.
+* Added: **Vis → Sponsor Links** — a dedicated admin page documenting the `pcio-sponsor-link` class, moved off the Shortcode reference page, with step-by-step instructions for the block editor, the classic editor and Divi (plain text links and Image modules).
+* Added: **Exact membership-number deep link** — `/vis/members?member_number=42` pre-fills the membership-number filter and matches that number exactly, so a short number can no longer match a longer one. Used by the Boat register's crew links.
+* Added: **"No members match your search"** message on the `[pcio_me_members]` list when a search filters every row out.
+* Added: **Signup fulfilment context** — new public methods `PCIO_VIS_Member_Signup_Fulfillment::stash_order_context()`, `get_order_context()`, `take_order_provision()`, `claim_order_welcome()` and `is_order_welcome_claimed()` let extensions running on `pcio_mep_order_confirmed` share the created member, read the provisioned WordPress account, and take over (or hand back) the welcome mail.
+* Changed: **One membership number instead of two.** The separate "Membership #" field is retired; the `#` column is now the membership number itself, stored as an integer, and any number of members can share it (that is how a boat or household is grouped).
+* Changed: **The numbering upgrade migrates your data automatically** on the next admin page load. Members with a "Membership #" keep that number; members without one get the leading digits of their old "#"; a "#" that was not a plain number is preserved as a `legacy_member_number` row in `wp_me_member_meta`. The finance journal and the Products extension's subscription table are converted the same way. The routine is safe to re-run and resumes by itself if a step fails.
+* Upgrade procedure:
+   1. Export `wp_me_members` (and `wp_me_p_subscriptions` if you use the Products extension) from your database admin tool, so you can restore the old numbers if anything looks wrong.
+   2. Update the plugin, then open any wp-admin page to run the upgrade.
+   3. Check **Vis → Members**: several members may now share one number, and a number that used to carry a letter suffix has lost it. Correct anything that looks wrong by hand.
+   4. Update the Products, Tickets and Boat extensions to their matching 1.5.0 release. Older extension versions read the retired column, so membership status would look out of date until they are updated.
+   5. If the upgrade did not run (for example because a host blocks `ALTER TABLE`), a `member_number_legacy_140` column is left behind on `wp_me_members` holding the original numbers — leave it in place and open any wp-admin page again; the next attempt resumes from there.
+* Fixed: the members and finance-journal tables are now actually brought up to date on an existing site. Their `CREATE TABLE` statements no longer use `IF NOT EXISTS`, which made `dbDelta()` treat "IF" as the table name and skip the table completely.
+* Changed: **Collision-free number allocation** — new sign-ups get the next free membership number through the new `PCIO_VIS_DB::create_with_next_number()`, which re-checks for a concurrent claim. Two simultaneous sign-ups can no longer be handed the same number.
+* Changed: **Member meta writes are hardened** — `PCIO_VIS_Meta_DB::set()` now accepts a member id *or* a member row (or a single-row list) and silently ignores a non-numeric id instead of raising a type error that killed the request.
+* Changed: **Welcome mail can be rendered without being sent** — `render_welcome()` returns the resolved subject and body (and an empty result when the template, member or address is unusable); `send_welcome()` keeps its old behaviour and now falls back to nothing instead of sending an empty mail.
+* Changed: **No inline script in the members shortcode** — the live search and the boat detail popup were previously emitted as an inline `<script>` block; the search now lives in `assets/members-public.js` and the boat popup is gone (boat details are on the profile page).
+* Changed: `PCIO_VIS_DB` member-number helpers were renamed and aligned: `get_next_member_number()`, `get_next_free_member_number()`, `member_number_is_taken()`, `create_with_next_number()`, `get_member_number_by_id()`, `set_member_number()`, `get_member_ids_by_member_number()` and `get_members_by_member_number()`. The `next_member_number()` / `next_subscription_number()` / `*_subscription_number()` methods are **removed** — extensions that called them must be updated.
+* Changed: the finance journal stores the membership number as an integer, and the journal REST payload no longer returns it as a string.
+* Changed: refreshed the Danish (da_DK) translation and regenerated the translation template (.pot) — the recurring-events strings, the new Sponsor Links page, the sign-up modes and the rewritten profile form were all untranslated before.
+* Fixed: member search in the `[pcio_me_members]` list lowercases with `mb_strtolower()`, so Danish letters (Ø, Æ, Å) now match a search typed with a Danish keyboard.
+* Fixed: the sponsor-link help section is no longer listed twice (the scroll-spy index and the page no longer disagree).
 
 = 1.4.0 =
 * Added: **Recurring events** — a new **Recurrence** tab on the event editor. Define a repeat rule on the first event in a series (daily, weekly, monthly by weekday, monthly by date, or yearly) and generate linked copies; the series can be navigated, extended or resolved into standalone events. A new database table stores the series rules.

@@ -142,19 +142,51 @@ class PCIO_VIS_Caps {
 
     /**
      * Self-heal: re-grant default caps when CAPS_VERSION has advanced past the
-     * value stored for this install. Runs cheaply on every admin request but
-     * only touches the DB when a version bump is detected (e.g. after the
-     * vis_manage_finance cap was added). Avoids needing a manual reactivation.
+     * value stored for this install, and also when the stored version is current
+     * but the caps are missing from the roles anyway.
+     *
+     * The second case is the one that strands a site: deactivate() strips every
+     * vis_* cap from every role, so any path that deactivates without a matching
+     * activate() — an interrupted auto-update, a failed activation, a manual
+     * deactivate — leaves the Vis admin menu (which is gated on
+     * vis_manage_settings) permanently invisible even though the plugin is
+     * active and the stored version still looks current. Comparing the version
+     * alone would never notice that, so the sentinel cap is checked directly.
      */
     public static function maybe_sync(): void {
-        if ( (int) get_option( self::VERSION_OPTION, 0 ) >= self::CAPS_VERSION ) {
-            return;
+        $version = (int) get_option( self::VERSION_OPTION, 0 );
+
+        if ( $version < self::CAPS_VERSION || ! self::role_caps_present() ) {
+            // Remove the retired vis_access cap from all roles on first run after the upgrade.
+            foreach ( wp_roles()->role_objects as $role ) {
+                $role->remove_cap( 'vis_access' );
+            }
+            self::activate();
         }
-        // Remove the retired vis_access cap from all roles on first run after the upgrade.
-        foreach ( wp_roles()->role_objects as $role ) {
-            $role->remove_cap( 'vis_access' );
+    }
+
+    /**
+     * Whether the roles still carry their default Vis capabilities.
+     *
+     * One sentinel per role is enough: the grant is all-or-nothing per role,
+     * because ROLE_DEFAULTS is applied in a single pass.
+     */
+    private static function role_caps_present(): bool {
+        foreach ( self::ROLE_DEFAULTS as $role_slug => $caps ) {
+            if ( [] === $caps ) {
+                continue;
+            }
+            $role = get_role( $role_slug );
+            if ( ! $role ) {
+                continue;
+            }
+            foreach ( $caps as $cap ) {
+                if ( ! $role->has_cap( $cap ) ) {
+                    return false;
+                }
+            }
         }
-        self::activate();
+        return true;
     }
 
     /**

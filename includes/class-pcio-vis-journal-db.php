@@ -31,13 +31,15 @@ class PCIO_VIS_Journal_DB {
         global $wpdb;
         $table   = self::table();
         $charset = $wpdb->get_charset_collate();
-        $sql = "CREATE TABLE IF NOT EXISTS {$table} (
+        // No IF NOT EXISTS — dbDelta skips an existing table entirely when the
+        // statement contains it, so the schema would never be brought up to date.
+        $sql = "CREATE TABLE {$table} (
             id int NOT NULL AUTO_INCREMENT,
             entry_date datetime NOT NULL,
             amount_cents int NOT NULL DEFAULT 0,
             title varchar(200) NOT NULL DEFAULT '',
             member_name varchar(200) NOT NULL DEFAULT '',
-            member_number varchar(50) NOT NULL DEFAULT '',
+            member_number int NOT NULL DEFAULT 0,
             media_id bigint unsigned NULL DEFAULT NULL,
             verified tinyint(1) NOT NULL DEFAULT 0,
             source varchar(50) NOT NULL DEFAULT 'manual',
@@ -197,7 +199,7 @@ class PCIO_VIS_Journal_DB {
             'amount_cents'  => (int) $row['amount_cents'],
             'title'         => (string) $row['title'],
             'member_name'   => (string) $row['member_name'],
-            'member_number' => (string) $row['member_number'],
+            'member_number' => (int) $row['member_number'],
             'media_id'      => $media_id,
             'media_url'     => $media_url,
             'verified'      => ! empty( $row['verified'] ) ? 1 : 0,
@@ -218,7 +220,7 @@ class PCIO_VIS_Journal_DB {
             'amount_cents'  => self::sanitize_amount( $data['amount_cents'] ?? 0 ),
             'title'         => sanitize_text_field( $data['title']         ?? '' ),
             'member_name'   => sanitize_text_field( $data['member_name']   ?? '' ),
-            'member_number' => sanitize_text_field( $data['member_number'] ?? '' ),
+            'member_number' => absint( $data['member_number'] ?? 0 ),
             'media_id'      => ! empty( $data['media_id'] ) ? absint( $data['media_id'] ) : null,
             'verified'      => ! empty( $data['verified'] ) ? 1 : 0,
             'source'        => isset( $data['source'] ) ? sanitize_key( (string) $data['source'] ) : 'manual',
@@ -237,7 +239,7 @@ class PCIO_VIS_Journal_DB {
             'amount_cents'  => fn( $v ) => self::sanitize_amount( $v ),
             'title'         => fn( $v ) => sanitize_text_field( $v ),
             'member_name'   => fn( $v ) => sanitize_text_field( $v ),
-            'member_number' => fn( $v ) => sanitize_text_field( $v ),
+            'member_number' => fn( $v ) => absint( $v ),
             'media_id'      => fn( $v ) => empty( $v ) ? null : absint( $v ),
             'verified'      => fn( $v ) => ! empty( $v ) ? 1 : 0,
             'source'        => fn( $v ) => sanitize_key( (string) $v ),

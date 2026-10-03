@@ -85,12 +85,11 @@ class PCIO_VIS_Member_Signup_Rest {
         }
 
         // Direct path: create member and provision WP account immediately.
-        $member_id = PCIO_VIS_DB::create( [
-            'member_number' => PCIO_VIS_DB::next_member_number(),
-            'name'          => $name,
-            'email'         => $email,
-            'phone'         => $phone,
-            'address'       => $address,
+        $member_id = PCIO_VIS_DB::create_with_next_number( [
+            'name'    => $name,
+            'email'   => $email,
+            'phone'   => $phone,
+            'address' => $address,
         ] );
 
         if ( ! $member_id ) {

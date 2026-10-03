@@ -20,10 +20,13 @@ class PCIO_VIS_DB {
         global $wpdb;
         $table   = self::table();
         $charset = $wpdb->get_charset_collate();
-        $sql = "CREATE TABLE IF NOT EXISTS {$table} (
+        // No IF NOT EXISTS: dbDelta reads the table name straight out of the
+        // statement, so "CREATE TABLE IF NOT EXISTS …" makes it resolve the table
+        // as "IF" and silently skip the whole table — existing tables would then
+        // never be brought up to date.
+        $sql = "CREATE TABLE {$table} (
             id int NOT NULL AUTO_INCREMENT,
-            member_number varchar(20) NOT NULL DEFAULT '',
-            member_subscription_number int NOT NULL DEFAULT 0,
+            member_number int NOT NULL DEFAULT 0,
             name varchar(120) NOT NULL DEFAULT '',
             email varchar(120) NOT NULL DEFAULT '',
             phone varchar(40) NOT NULL DEFAULT '',
@@ -35,22 +38,10 @@ class PCIO_VIS_DB {
             updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY  (id),
             KEY is_volunteer (is_volunteer),
-            KEY member_subscription_number (member_subscription_number)
+            KEY member_number (member_number)
         ) {$charset};";
         dbDelta( $sql );
-
-        // dbDelta sometimes skips ADD COLUMN on existing tables — apply directly.
-        $col = $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM %i LIKE %s', $table, 'is_volunteer' ) );
-        if ( ! $col ) {
-            $wpdb->query( $wpdb->prepare( 'ALTER TABLE %i ADD COLUMN `is_volunteer` tinyint(1) NOT NULL DEFAULT 0', $table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange
-            $wpdb->query( $wpdb->prepare( 'ALTER TABLE %i ADD KEY `is_volunteer` (`is_volunteer`)', $table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange
-        }
-
-        $sub_col = $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM %i LIKE %s', $table, 'member_subscription_number' ) );
-        if ( ! $sub_col ) {
-            $wpdb->query( $wpdb->prepare( 'ALTER TABLE %i ADD COLUMN `member_subscription_number` int NOT NULL DEFAULT 0', $table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange
-            $wpdb->query( $wpdb->prepare( 'ALTER TABLE %i ADD KEY `member_subscription_number` (`member_subscription_number`)', $table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange
-        }
+       
     }
 
     // ── Field definitions ─────────────────────────────────────────
@@ -71,7 +62,6 @@ class PCIO_VIS_DB {
     public static function get_field_definitions(): array {
         $core = [
             [ 'key' => 'member_number', 'label' => __( '#',           'pcio-vis-member-event' ), 'type' => 'text',     'sortable' => true,  'list_col' => true,  'meta' => false ],
-            [ 'key' => 'member_subscription_number', 'label' => __( 'Membership #', 'pcio-vis-member-event' ), 'type' => 'text', 'sortable' => true, 'list_col' => true, 'shortcode_col' => false, 'meta' => false ],
             [ 'key' => 'name',          'label' => __( 'Name',        'pcio-vis-member-event' ), 'type' => 'text',     'sortable' => true,  'list_col' => true,  'meta' => false ],
             [ 'key' => 'email',         'label' => __( 'Email',       'pcio-vis-member-event' ), 'type' => 'email',    'sortable' => true,  'list_col' => true,  'meta' => false ],
             [ 'key' => 'phone',         'label' => __( 'Phone',       'pcio-vis-member-event' ), 'type' => 'tel',      'sortable' => false, 'list_col' => true,  'meta' => false ],
@@ -242,40 +232,80 @@ class PCIO_VIS_DB {
     /**
      * Next member number = highest existing numeric member_number + 1.
      */
-    public static function next_member_number(): string {
+    public static function get_next_member_number(): int {
         global $wpdb;
         $max = (int) $wpdb->get_var(
-            $wpdb->prepare( 'SELECT COALESCE(MAX(CAST(member_number AS UNSIGNED)),0) FROM %i', self::table() )
+            $wpdb->prepare( 'SELECT COALESCE(MAX(member_number), 0) FROM %i', self::table() )
         );
-        return (string) ( $max + 1 );
+        return ( $max + 1 );
     }
 
     /**
-     * Next membership (subscription) number = highest existing + 1. This is the
-     * shared number a paid membership is booked to; several members can share it.
+     * Next member number that no member holds yet.
+     *
+     * get_next_member_number() is a read-then-write sequence, so two signups
+     * running at the same time can pick the same number. This walks past the
+     * numbers that were claimed in the meantime.
      */
-    public static function next_subscription_number(): int {
+    public static function get_next_free_member_number(): int {
+        $candidate = self::get_next_member_number();
+        for ( $i = 0; $i < 100 && self::member_number_is_taken( $candidate ); $i++ ) {
+            $candidate++;
+        }
+        return $candidate;
+    }
+
+    /** Whether any member already holds this membership number. */
+    public static function member_number_is_taken( int $number ): bool {
         global $wpdb;
-        $max = (int) $wpdb->get_var(
-            $wpdb->prepare( 'SELECT COALESCE(MAX(member_subscription_number),0) FROM %i', self::table() )
+        if ( $number <= 0 ) {
+            return false;
+        }
+        return (bool) $wpdb->get_var(
+            $wpdb->prepare( 'SELECT id FROM %i WHERE member_number = %d LIMIT 1', self::table(), $number )
         );
-        return $max + 1;
+    }
+
+    /**
+     * Create a member and assign it the next free membership number.
+     *
+     * Any member_number in $data is ignored — the number is allocated here.
+     *
+     * @param array $data Member fields.
+     * @return int|false Member ID, or false when the insert never succeeded.
+     */
+    public static function create_with_next_number( array $data ) {
+        unset( $data['member_number'] );
+        for ( $attempt = 0; $attempt < 5; $attempt++ ) {
+            $number = self::get_next_free_member_number();
+            $id     = self::create( array_merge( $data, [ 'member_number' => $number ] ) );
+            if ( ! $id ) {
+                continue;
+            }
+            // A concurrent signup may have claimed the same number between our
+            // check and our insert; when it did, move this member to a free one.
+            if ( count( self::get_members_by_member_number( $number ) ) > 1 ) {
+                self::set_member_number( (int) $id, self::get_next_free_member_number() );
+            }
+            return $id;
+        }
+        return false;
     }
 
     /** The membership number a member currently belongs to (0 = none). */
-    public static function get_subscription_number( int $member_id ): int {
+    public static function get_member_number_by_id( int $member_id ): int {
         global $wpdb;
         return (int) $wpdb->get_var(
-            $wpdb->prepare( 'SELECT member_subscription_number FROM %i WHERE id = %d', self::table(), $member_id )
+            $wpdb->prepare( 'SELECT member_number FROM %i WHERE id = %d', self::table(), $member_id )
         );
     }
 
     /** Assign a membership number to a member. */
-    public static function set_subscription_number( int $member_id, int $number ): void {
+    public static function set_member_number( int $member_id, int $number ): void {
         global $wpdb;
         $wpdb->update(
             self::table(),
-            [ 'member_subscription_number' => max( 0, $number ) ],
+            [ 'member_number' => max( 0, $number ) ],
             [ 'id' => $member_id ],
             [ '%d' ],
             [ '%d' ]
@@ -283,15 +313,28 @@ class PCIO_VIS_DB {
     }
 
     /** Member ids sharing a membership number (the boat/household group). */
-    public static function members_by_subscription_number( int $number ): array {
+    public static function get_member_ids_by_member_number( int $member_number ): array {
         global $wpdb;
-        if ( $number <= 0 ) {
+        if ( $member_number <= 0 ) {
             return [];
         }
         $ids = $wpdb->get_col(
-            $wpdb->prepare( 'SELECT id FROM %i WHERE member_subscription_number = %d', self::table(), $number )
+            $wpdb->prepare( 'SELECT id FROM %i WHERE member_number = %d', self::table(), $member_number )
         );
         return array_map( 'intval', $ids ?: [] );
+    }
+
+    /** Member ids sharing a membership number (the boat/household group). */
+    public static function get_members_by_member_number( int $member_number ): array {
+        global $wpdb;
+        if ( $member_number <= 0 ) {
+            return [];
+        }
+        $rows = $wpdb->get_results(
+            $wpdb->prepare( 'SELECT * FROM %i WHERE member_number = %d', self::table(), $member_number ),
+            ARRAY_A
+        );
+        return $rows ?: [];
     }
 
     // ── Internal helpers ──────────────────────────────────────────
@@ -320,8 +363,8 @@ class PCIO_VIS_DB {
             $out['is_volunteer'] = ! empty( $data['is_volunteer'] ) ? 1 : 0;
         }
 
-        if ( array_key_exists( 'member_subscription_number', $data ) ) {
-            $out['member_subscription_number'] = max( 0, (int) $data['member_subscription_number'] );
+        if ( array_key_exists( 'member_number', $data ) ) {
+            $out['member_number'] = max( 0, (int) $data['member_number'] );
         }
 
         return $out;

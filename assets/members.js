@@ -43,12 +43,21 @@
     // ── Bootstrap ─────────────────────────────────────────────────
     document.addEventListener( 'DOMContentLoaded', () => {
         buildShell();
+        const params = new URLSearchParams( window.location.search );
         // Allow deep links like /vis/members?q=1234 to pre-filter the list
         // (used by the shop subscription "customer" links).
-        const q = new URLSearchParams( window.location.search ).get( 'q' );
+        const q = params.get( 'q' );
         if ( q ) {
             const s = document.getElementById( 'me-global-search' );
             if ( s ) { s.value = q; }
+        }
+        // Exact membership-number deep link, e.g. /vis/members?member_number=42
+        // (used by the boat register "crew" links). Unlike ?q this matches the
+        // membership number exactly, so short numbers cannot match longer ones.
+        const msn = params.get( 'member_number' );
+        if ( msn ) {
+            const f = document.querySelector( '.me-filter-input[data-col="member_number"]' );
+            if ( f ) { f.value = msn; }
         }
         loadMembers();
     } );
@@ -126,7 +135,7 @@
                                 <label class="me-form-label" for="f-member-number">${ escHtml( T.fieldMemberNum ) }</label>
                                 <input class="me-form-input" type="text"
                                        id="f-member-number" name="member_number"
-                                       placeholder="${ escHtml( T.phMemberNum ) }" maxlength="20">
+                                       placeholder="${ escHtml( T.phMemberNum ) }" maxlength="10">
                             </div>
                             <div class="me-form-group">
                                 <label class="me-form-label" for="f-name">
@@ -136,14 +145,6 @@
                                        id="f-name" name="name"
                                        placeholder="${ escHtml( T.phName ) }" maxlength="120" required>
                                 <span class="me-field-error" id="err-name"></span>
-                            </div>
-                        </div>
-                        <div class="me-form-row">
-                            <div class="me-form-group">
-                                <label class="me-form-label" for="f-sub-number">${ escHtml( T.fieldSubNum ) }</label>
-                                <input class="me-form-input" type="text" inputmode="numeric"
-                                       id="f-sub-number" name="member_subscription_number"
-                                       placeholder="${ escHtml( T.phSubNum ) }" maxlength="10">
                             </div>
                         </div>
                         <div class="me-form-row">
@@ -305,7 +306,7 @@
             input.type         = 'text';
             input.classList.add( 'me-filter-input' );
             input.dataset.col  = col.key;
-            input.placeholder  = col.key === 'member_subscription_number'
+            input.placeholder  = col.key === 'member_number'
                 ? `${ col.label } (exact)…`
                 : `${ T.filterWord } ${ col.label.toLowerCase() }…`;
             input.autocomplete = 'off';
@@ -400,7 +401,7 @@
                 const cell = String( m[ col ] ?? '' ).toLowerCase();
                 // Membership number is matched exactly so a short integer does not
                 // also hit longer numbers that merely contain it.
-                if ( col === 'member_subscription_number' ) {
+                if ( col === 'member_number' ) {
                     if ( cell !== val ) return false;
                 } else if ( ! cell.includes( val ) ) {
                     return false;
@@ -467,7 +468,6 @@
 
         return `<tr>
             <td class="me-cell-number">${ escHtml( m.member_number || '–' ) }</td>
-            <td class="me-cell-number">${ Number( m.member_subscription_number ) > 0 ? escHtml( m.member_subscription_number ) : '–' }</td>
             <td class="me-cell-name">${ escHtml( m.name ) }</td>
             <td class="me-cell-email">${ emailCell }</td>
             <td class="me-cell-phone">${ escHtml( m.phone || '–' ) }</td>
@@ -536,7 +536,7 @@
             if ( id === null ) {
                 titleEl.textContent = T.titleCreate;
                 setField( 'member_number', '' );
-                setField( 'member_subscription_number', '' );
+                setField( 'member_number', '' );
                 setField( 'name',          '' );
                 setField( 'email',         '' );
                 setField( 'phone',         '' );
@@ -545,7 +545,7 @@
             } else {
                 titleEl.textContent = T.titleEdit;
                 setField( 'member_number', m?.member_number ?? '' );
-                setField( 'member_subscription_number', m?.member_subscription_number ?? '' );
+                setField( 'member_number', m?.member_number ?? '' );
                 setField( 'name',          m?.name          ?? '' );
                 setField( 'email',         m?.email         ?? '' );
                 setField( 'phone',         m?.phone         ?? '' );
@@ -582,7 +582,7 @@
 
         const data = {
             member_number: getField( 'member_number' ),
-            member_subscription_number: getField( 'member_subscription_number' ),
+            member_number: getField( 'member_number' ),
             name:          getField( 'name' ),
             email:         getField( 'email' ),
             phone:         getField( 'phone' ),

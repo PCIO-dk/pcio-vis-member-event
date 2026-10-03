@@ -90,7 +90,7 @@ class PCIO_VIS_Admin {
             [ $this, 'render_sync_page' ]
         );
 
-        // WP User Cleanup: read-only report of unlinked WordPress accounts.
+        // Fourth submenu: WP User Cleanup: read-only report of unlinked WordPress accounts.
         add_submenu_page(
             'pcio-me-settings',
             __( 'WP User Cleanup', 'pcio-vis-member-event' ),
@@ -100,7 +100,17 @@ class PCIO_VIS_Admin {
             [ $this, 'render_cleanup_page' ]
         );
 
-        // Fourth submenu: Shortcode reference
+        // Fifth submenu: Sponsor Links — help for the pcio-sponsor-link CSS class.
+        $this->hooks['sponsor_links'] = add_submenu_page(
+            'pcio-me-settings',
+            __( 'Sponsor Links', 'pcio-vis-member-event' ),
+            __( 'Sponsor Links', 'pcio-vis-member-event' ),
+            'vis_manage_settings',
+            'pcio-me-sponsor-links',
+            [ $this, 'render_sponsor_links_page' ]
+        );
+
+        // Sixth submenu: Shortcode reference
         $this->hooks['shortcodes'] = add_submenu_page(
             'pcio-me-settings',
             __( 'Shortcodes', 'pcio-vis-member-event' ),
@@ -121,6 +131,12 @@ class PCIO_VIS_Admin {
             wp_register_script( 'pcio-me-doc-types', false, [], PCIO_VIS_DB_VERSION, true );
             wp_enqueue_script( 'pcio-me-doc-types' );
             wp_add_inline_script( 'pcio-me-doc-types', $this->doc_types_inline_js() );
+        }
+
+        if ( isset( $this->hooks['sponsor_links'] ) && $hook === $this->hooks['sponsor_links'] ) {
+            wp_register_style( 'pcio-me-sponsor-links', false, [], PCIO_VIS_DB_VERSION );
+            wp_enqueue_style( 'pcio-me-sponsor-links' );
+            wp_add_inline_style( 'pcio-me-sponsor-links', $this->shortcodes_inline_css() );
         }
 
         if ( isset( $this->hooks['shortcodes'] ) && $hook === $this->hooks['shortcodes'] ) {
@@ -410,6 +426,86 @@ JS;
                 </tbody>
             </table>
             <?php endif; ?>
+        </div>
+        <?php
+    }
+
+    /**
+     * Sponsor Links admin page.
+     *
+     * Documents the "pcio-sponsor-link" CSS class used for sponsor click
+     * tracking. It lives here rather than on the Shortcode Reference page
+     * because it is a CSS class, not a shortcode.
+     */
+    public function render_sponsor_links_page(): void {
+        if ( ! current_user_can( 'vis_manage_settings' ) ) {
+            wp_die( esc_html__( 'Insufficient permissions.', 'pcio-vis-member-event' ) );
+        }
+        ?>
+        <div class="wrap pcio-sc-wrap">
+            <h1><?php esc_html_e( 'Sponsor Links', 'pcio-vis-member-event' ); ?></h1>
+            <?php $this->render_sponsor_link_help(); ?>
+        </div>
+        <?php
+    }
+
+    /**
+     * Sponsor link tracking help section, shared markup.
+     */
+    private function render_sponsor_link_help(): void {
+        ?>
+        <div class="pcio-sc-content">
+            <h2 id="sc-sponsor"><?php esc_html_e( 'Sponsor link tracking', 'pcio-vis-member-event' ); ?></h2>
+            <p>
+                <?php esc_html_e( 'Every click on a front-end link that carries the CSS class ', 'pcio-vis-member-event' ); ?>
+                <code class="pcio-sc-code">pcio-sponsor-link</code>
+                <?php esc_html_e( 'is captured in the browser and sent to the server. Totals appear on the Statistics dashboard under', 'pcio-vis-member-event' ); ?>
+                <strong><?php esc_html_e( 'Vis → Statistics → Sponsor link clicks', 'pcio-vis-member-event' ); ?></strong>.
+                <?php esc_html_e( 'No plugin configuration is needed — just add the class to the link in your page editor.', 'pcio-vis-member-event' ); ?>
+            </p>
+
+            <table class="pcio-sc-table wp-list-table widefat">
+                <thead><tr>
+                    <th style="width:22%"><?php esc_html_e( 'What to add', 'pcio-vis-member-event' ); ?></th>
+                    <th style="width:12%"><?php esc_html_e( 'Where', 'pcio-vis-member-event' ); ?></th>
+                    <th><?php esc_html_e( 'Effect', 'pcio-vis-member-event' ); ?></th>
+                </tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code class="pcio-sc-code">class="pcio-sponsor-link"</code></td>
+                        <td><?php esc_html_e( 'Any <a> tag, or any wrapper element (div, section…) that contains an <a>', 'pcio-vis-member-event' ); ?></td>
+                        <td><?php esc_html_e( 'Records a click entry (URL + timestamp) whenever a visitor clicks the element. The URL is taken from the <a href> — either the element itself or the first anchor found inside it. Navigation is not interrupted.', 'pcio-vis-member-event' ); ?></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <strong style="display:block;margin-top:16px"><?php esc_html_e( 'How to add the class in WordPress', 'pcio-vis-member-event' ); ?></strong>
+            <ol style="margin:.5rem 0 1rem;padding-left:1.25rem;font-size:.9rem">
+                <li><?php esc_html_e( 'In the block editor: select the link text, open the link toolbar, click the three-dot menu → "Edit link" → expand "Advanced" → add the class in the "CSS class" field.', 'pcio-vis-member-event' ); ?></li>
+                <li><?php esc_html_e( 'In the classic editor or a page builder code/HTML module: switch to HTML view and add the class directly on the <a> element.', 'pcio-vis-member-event' ); ?></li>
+                <li>
+                    <?php esc_html_e( 'In Divi — plain text link: select the link → link settings → CSS class field.', 'pcio-vis-member-event' ); ?>
+                </li>
+                <li>
+                    <?php esc_html_e( 'In Divi — Image or other module with a link: open the module settings → Advanced tab → CSS ID & Classes → CSS Class field. The class goes on the module wrapper div, which contains the <a> Divi generates automatically.', 'pcio-vis-member-event' ); ?>
+                </li>
+            </ol>
+
+            <strong><?php esc_html_e( 'Examples (HTML source)', 'pcio-vis-member-event' ); ?></strong>
+            <code class="pcio-sc-block">&lt;!-- Plain anchor (block editor / classic editor / code module) --&gt;
+&lt;a href="https://www.sponsor-example.com" class="pcio-sponsor-link"&gt;Our main sponsor&lt;/a&gt;
+
+&lt;!-- Divi Image module: class is on the wrapper div, &lt;a&gt; is generated inside by Divi --&gt;
+&lt;div class="et_pb_image pcio-sponsor-link"&gt;
+  &lt;a href="https://www.sponsor-example.com" target="_blank"&gt;
+    &lt;img src="sponsor-logo.png" alt="Sponsor"&gt;
+  &lt;/a&gt;
+&lt;/div&gt;</code>
+
+            <p class="pcio-sc-note">
+                <strong><?php esc_html_e( 'Multiple sponsors:', 'pcio-vis-member-event' ); ?></strong>
+                <?php esc_html_e( 'Each link\'s full URL is stored with every click, so the Statistics page can group and rank sponsors by click count automatically — no extra configuration needed.', 'pcio-vis-member-event' ); ?>
+            </p>
         </div>
         <?php
     }
@@ -1110,12 +1206,11 @@ JS;
                     <a href="#sc-documents"    class="pcio-sc-nav-item">[pcio_me_documents]</a>
                     <a href="#sc-event"        class="pcio-sc-nav-item">[pcio_me_event]</a>
                     <a href="#sc-events"       class="pcio-sc-nav-item">[pcio_me_events]</a>
-                    <a href="#sc-upcoming-events" class="pcio-sc-nav-item">[pcio_me_upcoming_events]</a>
                     <a href="#sc-event-roller" class="pcio-sc-nav-item">[pcio_me_event_roller]</a>
+                    <a href="#sc-upcoming-events" class="pcio-sc-nav-item">[pcio_me_upcoming_events]</a>
                     <a href="#sc-newsletters"  class="pcio-sc-nav-item">[pcio_me_newsletters]</a>
                     <a href="#sc-member-count" class="pcio-sc-nav-item">[pcio_me_member_count]</a>
                     <a href="#sc-member-signup" class="pcio-sc-nav-item">[pcio_me_member_signup]</a>
-                    <a href="#sc-sponsor"      class="pcio-sc-nav-item pcio-sc-nav-plain">pcio-sponsor-link</a>
                     <a href="#sc-rolling-text" class="pcio-sc-nav-item">[pcio_me_rolling_text]</a>
                 </div>
                 <?php do_action( 'pcio_me_shortcodes_nav_items' ); ?>
@@ -1126,7 +1221,7 @@ JS;
 
             <!-- ─────────────────────────────────────────────────── -->
             <h2 id="sc-members"><?php esc_html_e( '[pcio_me_members]', 'pcio-vis-member-event' ); ?></h2>
-            <p><?php esc_html_e( 'Renders a read-only table of all members. No login required.', 'pcio-vis-member-event' ); ?></p>
+            <p><?php esc_html_e( 'Renders a read-only, searchable table of all members, including their email address and phone number. Requires a logged-in account that carries the vis_member capability — it renders nothing at all for visitors and for accounts without a member record. Any user with vis_member sees the full table; there is no per-member filtering.', 'pcio-vis-member-event' ); ?></p>
 
             <table class="pcio-sc-table wp-list-table widefat">
                 <thead><tr>
@@ -1419,66 +1514,11 @@ JS;
             <p class="pcio-sc-note">
                 <?php esc_html_e( 'To track sponsor link clicks from this page, add the CSS class ', 'pcio-vis-member-event' ); ?>
                 <code class="pcio-sc-code">pcio-sponsor-link</code>
-                <?php esc_html_e( 'to any anchor tag in your content. Clicks are recorded automatically and shown under Vis → Statistics.', 'pcio-vis-member-event' ); ?>
+                <?php esc_html_e( ' to any anchor tag in your content. Clicks are recorded automatically and shown under Vis → Statistics. See Vis → Sponsor Links for details.', 'pcio-vis-member-event' ); ?>
             </p>
 
             <strong style="display:block;margin-top:12px"><?php esc_html_e( 'Example', 'pcio-vis-member-event' ); ?></strong>
             <code class="pcio-sc-block">[pcio_me_member_count]</code>
-
-            <hr style="margin:32px 0">
-
-            <!-- ─────────────────────────────────────────────────── -->
-            <h2 id="sc-sponsor" style="color:inherit"><?php esc_html_e( 'Sponsor link tracking', 'pcio-vis-member-event' ); ?></h2>
-            <p>
-                <?php esc_html_e( 'Every click on a front-end link that carries the CSS class ', 'pcio-vis-member-event' ); ?>
-                <code class="pcio-sc-code">pcio-sponsor-link</code>
-                <?php esc_html_e( 'is captured in the browser and sent to the server. Totals appear on the Statistics dashboard under', 'pcio-vis-member-event' ); ?>
-                <strong><?php esc_html_e( 'Vis → Statistics → Sponsor link clicks', 'pcio-vis-member-event' ); ?></strong>.
-                <?php esc_html_e( 'No plugin configuration is needed — just add the class to the link in your page editor.', 'pcio-vis-member-event' ); ?>
-            </p>
-
-            <table class="pcio-sc-table wp-list-table widefat">
-                <thead><tr>
-                    <th style="width:22%"><?php esc_html_e( 'What to add', 'pcio-vis-member-event' ); ?></th>
-                    <th style="width:12%"><?php esc_html_e( 'Where', 'pcio-vis-member-event' ); ?></th>
-                    <th><?php esc_html_e( 'Effect', 'pcio-vis-member-event' ); ?></th>
-                </tr></thead>
-                <tbody>
-                    <tr>
-                        <td><code class="pcio-sc-code">class="pcio-sponsor-link"</code></td>
-                        <td><?php esc_html_e( 'Any <a> tag, or any wrapper element (div, section…) that contains an <a>', 'pcio-vis-member-event' ); ?></td>
-                        <td><?php esc_html_e( 'Records a click entry (URL + timestamp) whenever a visitor clicks the element. The URL is taken from the <a href> — either the element itself or the first anchor found inside it. Navigation is not interrupted.', 'pcio-vis-member-event' ); ?></td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <strong style="display:block;margin-top:16px"><?php esc_html_e( 'How to add the class in WordPress', 'pcio-vis-member-event' ); ?></strong>
-            <ol style="margin:.5rem 0 1rem;padding-left:1.25rem;font-size:.9rem">
-                <li><?php esc_html_e( 'In the block editor: select the link text, open the link toolbar, click the three-dot menu → "Edit link" → expand "Advanced" → add the class in the "CSS class" field.', 'pcio-vis-member-event' ); ?></li>
-                <li><?php esc_html_e( 'In the classic editor or a page builder code/HTML module: switch to HTML view and add the class directly on the <a> element.', 'pcio-vis-member-event' ); ?></li>
-                <li>
-                    <?php esc_html_e( 'In Divi — plain text link: select the link → link settings → CSS class field.', 'pcio-vis-member-event' ); ?>
-                </li>
-                <li>
-                    <?php esc_html_e( 'In Divi — Image or other module with a link: open the module settings → Advanced tab → CSS ID & Classes → CSS Class field. The class goes on the module wrapper div, which contains the <a> Divi generates automatically.', 'pcio-vis-member-event' ); ?>
-                </li>
-            </ol>
-
-            <strong><?php esc_html_e( 'Examples (HTML source)', 'pcio-vis-member-event' ); ?></strong>
-            <code class="pcio-sc-block">&lt;!-- Plain anchor (block editor / classic editor / code module) --&gt;
-&lt;a href="https://www.sponsor-example.com" class="pcio-sponsor-link"&gt;Our main sponsor&lt;/a&gt;
-
-&lt;!-- Divi Image module: class is on the wrapper div, &lt;a&gt; is generated inside by Divi --&gt;
-&lt;div class="et_pb_image pcio-sponsor-link"&gt;
-  &lt;a href="https://www.sponsor-example.com" target="_blank"&gt;
-    &lt;img src="sponsor-logo.png" alt="Sponsor"&gt;
-  &lt;/a&gt;
-&lt;/div&gt;</code>
-
-            <p style="margin-top:1rem">
-                <strong><?php esc_html_e( 'Multiple sponsors:', 'pcio-vis-member-event' ); ?></strong>
-                <?php esc_html_e( 'Each link\'s full URL is stored with every click, so the Statistics page can group and rank sponsors by click count automatically — no extra configuration needed.', 'pcio-vis-member-event' ); ?>
-            </p>
 
             <hr style="margin:32px 0">
 

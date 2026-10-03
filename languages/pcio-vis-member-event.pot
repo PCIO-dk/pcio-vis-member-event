@@ -1,26 +1,28 @@
 # Copyright (C) 2026 PCIO
-# This file is distributed under the GPL2 license.
-# https://www.gnu.org/licenses/gpl-2.0.html
-
-#, fuzzy, fuzzy
+# This file is distributed under the GPL2.
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PCIO VIS Member Event 1.0.0\n"
+"Project-Id-Version: PCIO VIS Member Event 1.5.0\n"
 "Report-Msgid-Bugs-To: https://www.pcio.dk/\n"
-"POT-Creation-Date: 2026-09-11 12:17+0200\n"
+"POT-Creation-Date: 2026-10-02 18:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Domain: pcio-vis-member-event\n"
 "X-Generator: Poedit 3.9\n"
+"X-Domain: pcio-vis-member-event\n"
 
 #. Plugin Name of the plugin
-#: pcio-vis-member-event.php
+#: pcio-vis-member-event.php includes/class-pcio-vis-admin.php:1203
 msgid "PCIO VIS Member Event"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: pcio-vis-member-event.php
+msgid "https://www.pcio.dk/"
 msgstr ""
 
 #. Description of the plugin
@@ -28,16 +30,23 @@ msgstr ""
 msgid "Manages members and events for a voluntary organization."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:40
-#: includes/class-pcio-vis-plugin.php:319
-#: includes/class-pcio-vis-plugin.php:422
-#: includes/class-pcio-vis-plugin.php:488
-#: includes/class-pcio-vis-plugin.php:504
-#: includes/class-pcio-vis-plugin.php:1176
-#: includes/class-pcio-vis-plugin.php:1233
-#: templates/_nav.php:14
-#: templates/home.php:51
-#: templates/members.php:22
+#. Author of the plugin
+#: pcio-vis-member-event.php
+msgid "PCIO"
+msgstr ""
+
+#. Author URI of the plugin
+#: pcio-vis-member-event.php
+msgid "https://www.pcio.dk"
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:40 includes/class-pcio-vis-plugin.php:354
+#: includes/class-pcio-vis-plugin.php:457
+#: includes/class-pcio-vis-plugin.php:525
+#: includes/class-pcio-vis-plugin.php:541
+#: includes/class-pcio-vis-plugin.php:1311
+#: includes/class-pcio-vis-plugin.php:1368 templates/home.php:51
+#: templates/members.php:22 templates/_nav.php:14
 msgid "Members"
 msgstr ""
 
@@ -45,1032 +54,1042 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:54
-#: includes/class-pcio-vis-admin.php:55
-#: includes/class-pcio-vis-plugin.php:311
+#: includes/class-pcio-vis-admin.php:54 includes/class-pcio-vis-admin.php:55
+#: includes/class-pcio-vis-plugin.php:346
 msgid "Vis"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:66
-#: includes/class-pcio-vis-admin.php:67
-#: includes/class-pcio-vis-admin.php:300
+#: includes/class-pcio-vis-admin.php:66 includes/class-pcio-vis-admin.php:67
+#: includes/class-pcio-vis-admin.php:316
 msgid "Document Types"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:76
-#: includes/class-pcio-vis-admin.php:77
+#: includes/class-pcio-vis-admin.php:76 includes/class-pcio-vis-admin.php:77
 msgid "Roles"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:86
-#: includes/class-pcio-vis-admin.php:87
+#: includes/class-pcio-vis-admin.php:86 includes/class-pcio-vis-admin.php:87
 msgid "Sync Jobs"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:96
-#: includes/class-pcio-vis-admin.php:97
-#: includes/class-pcio-vis-admin.php:440
+#: includes/class-pcio-vis-admin.php:96 includes/class-pcio-vis-admin.php:97
+#: includes/class-pcio-vis-admin.php:536
 msgid "WP User Cleanup"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:106
-#: includes/class-pcio-vis-admin.php:107
+#: includes/class-pcio-vis-admin.php:106 includes/class-pcio-vis-admin.php:107
+#: includes/class-pcio-vis-admin.php:446
+msgid "Sponsor Links"
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:116 includes/class-pcio-vis-admin.php:117
 msgid "Shortcodes"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:251
-#: includes/class-pcio-vis-admin.php:428
-#: includes/class-pcio-vis-admin.php:501
-#: includes/class-pcio-vis-admin.php:714
-#: includes/class-pcio-vis-admin.php:1091
+#: includes/class-pcio-vis-admin.php:267 includes/class-pcio-vis-admin.php:442
+#: includes/class-pcio-vis-admin.php:524 includes/class-pcio-vis-admin.php:597
+#: includes/class-pcio-vis-admin.php:810 includes/class-pcio-vis-admin.php:1187
 #: includes/class-pcio-vis-sync.php:261
 msgid "Insufficient permissions."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:266
+#: includes/class-pcio-vis-admin.php:282
 msgid "Document type added."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:267
+#: includes/class-pcio-vis-admin.php:283
 msgid "Could not add document type (name may already exist)."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:269
-#: includes/class-pcio-vis-admin.php:282
+#: includes/class-pcio-vis-admin.php:285 includes/class-pcio-vis-admin.php:298
 msgid "Name and title are required."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:279
+#: includes/class-pcio-vis-admin.php:295
 msgid "Document type updated."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:280
+#: includes/class-pcio-vis-admin.php:296
 #: includes/class-pcio-vis-docs-rest.php:121
 msgid "Could not update document type."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:289
+#: includes/class-pcio-vis-admin.php:305
 msgid "Document type deleted."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:290
+#: includes/class-pcio-vis-admin.php:306
 msgid "Cannot delete: documents of this type still exist, or type not found."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:310
+#: includes/class-pcio-vis-admin.php:326
 msgid "Edit Document Type"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:311
+#: includes/class-pcio-vis-admin.php:327
 msgid "Add Document Type"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:321
-#: includes/class-pcio-vis-admin.php:382
+#: includes/class-pcio-vis-admin.php:337 includes/class-pcio-vis-admin.php:398
 msgid "Name (slug)"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:328
+#: includes/class-pcio-vis-admin.php:344
 msgid "Lowercase letters, numbers and hyphens only (e.g. \"annual-report\", \"minutes\")."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:333
-#: includes/class-pcio-vis-admin.php:383
-#: includes/class-pcio-vis-plugin.php:639
-#: includes/class-pcio-vis-plugin.php:746
-#: includes/class-pcio-vis-plugin.php:961
-#: includes/class-pcio-vis-plugin.php:1074
+#: includes/class-pcio-vis-admin.php:349 includes/class-pcio-vis-admin.php:399
+#: includes/class-pcio-vis-plugin.php:692
+#: includes/class-pcio-vis-plugin.php:878
+#: includes/class-pcio-vis-plugin.php:1096
+#: includes/class-pcio-vis-plugin.php:1209
 msgid "Title"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:339
+#: includes/class-pcio-vis-admin.php:355
 msgid "Human-readable display name shown in the document list."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:343
+#: includes/class-pcio-vis-admin.php:359
 msgid "Shortcode"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:346
+#: includes/class-pcio-vis-admin.php:362
 msgid "Paste one of these into any WordPress page or widget:"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:355
+#: includes/class-pcio-vis-admin.php:371
 msgid "The optional \"limit\" attribute caps the number of documents shown (omit for all)."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:362
+#: includes/class-pcio-vis-admin.php:378
 msgid "Update type"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:363
+#: includes/class-pcio-vis-admin.php:379
 msgid "Add type"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:367
-#: includes/class-pcio-vis-admin.php:654
-#: includes/class-pcio-vis-admin.php:1074
-#: includes/class-pcio-vis-plugin.php:438
-#: includes/class-pcio-vis-plugin.php:634
-#: includes/class-pcio-vis-plugin.php:757
-#: includes/class-pcio-vis-plugin.php:872
-#: includes/class-pcio-vis-plugin.php:973
-#: includes/class-pcio-vis-plugin.php:1023
-#: includes/class-pcio-vis-plugin.php:1110
-#: includes/class-pcio-vis-plugin.php:1209
+#: includes/class-pcio-vis-admin.php:383 includes/class-pcio-vis-admin.php:750
+#: includes/class-pcio-vis-admin.php:1170
+#: includes/class-pcio-vis-plugin.php:475
+#: includes/class-pcio-vis-plugin.php:687
+#: includes/class-pcio-vis-plugin.php:889
+#: includes/class-pcio-vis-plugin.php:1007
+#: includes/class-pcio-vis-plugin.php:1108
+#: includes/class-pcio-vis-plugin.php:1158
+#: includes/class-pcio-vis-plugin.php:1245
+#: includes/class-pcio-vis-plugin.php:1344
 msgid "Cancel"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:375
+#: includes/class-pcio-vis-admin.php:391
 msgid "Existing types"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:377
+#: includes/class-pcio-vis-admin.php:393
 msgid "No document types yet."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:384
-#: includes/class-pcio-vis-admin.php:671
-#: includes/class-pcio-vis-admin.php:857
+#: includes/class-pcio-vis-admin.php:400 includes/class-pcio-vis-admin.php:767
+#: includes/class-pcio-vis-admin.php:953
 msgid "Actions"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:394
-#: includes/class-pcio-vis-admin.php:686
-#: includes/class-pcio-vis-admin.php:926
-#: includes/class-pcio-vis-plugin.php:920
-#: includes/class-pcio-vis-plugin.php:1029
-#: includes/class-pcio-vis-plugin.php:1116
+#: includes/class-pcio-vis-admin.php:410 includes/class-pcio-vis-admin.php:782
+#: includes/class-pcio-vis-admin.php:1022
+#: includes/class-pcio-vis-plugin.php:939
+#: includes/class-pcio-vis-plugin.php:1055
+#: includes/class-pcio-vis-plugin.php:1164
+#: includes/class-pcio-vis-plugin.php:1251
 msgid "Edit"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:399
+#: includes/class-pcio-vis-admin.php:415
 msgid "Delete this document type?"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:404
-#: includes/class-pcio-vis-admin.php:696
-#: includes/class-pcio-vis-admin.php:937
-#: includes/class-pcio-vis-plugin.php:443
-#: includes/class-pcio-vis-plugin.php:635
-#: includes/class-pcio-vis-plugin.php:762
-#: includes/class-pcio-vis-plugin.php:893
-#: includes/class-pcio-vis-plugin.php:922
-#: includes/class-pcio-vis-plugin.php:969
-#: includes/class-pcio-vis-plugin.php:974
+#: includes/class-pcio-vis-admin.php:420 includes/class-pcio-vis-admin.php:792
+#: includes/class-pcio-vis-admin.php:1033
+#: includes/class-pcio-vis-plugin.php:480
+#: includes/class-pcio-vis-plugin.php:688
+#: includes/class-pcio-vis-plugin.php:894
 #: includes/class-pcio-vis-plugin.php:1028
-#: includes/class-pcio-vis-plugin.php:1115
-#: includes/class-pcio-vis-plugin.php:1210
+#: includes/class-pcio-vis-plugin.php:1057
+#: includes/class-pcio-vis-plugin.php:1104
+#: includes/class-pcio-vis-plugin.php:1109
+#: includes/class-pcio-vis-plugin.php:1163
+#: includes/class-pcio-vis-plugin.php:1250
+#: includes/class-pcio-vis-plugin.php:1345
 msgid "Delete"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:446
+#: includes/class-pcio-vis-admin.php:458
+msgid "Sponsor link tracking"
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:460
+msgid "Every click on a front-end link that carries the CSS class "
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:462
+msgid "is captured in the browser and sent to the server. Totals appear on the Statistics dashboard under"
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:463
+msgid "Vis → Statistics → Sponsor link clicks"
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:464
+msgid "No plugin configuration is needed — just add the class to the link in your page editor."
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:469
+msgid "What to add"
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:470
+msgid "Where"
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:471
+msgid "Effect"
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:476
+msgid "Any <a> tag, or any wrapper element (div, section…) that contains an <a>"
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:477
+msgid "Records a click entry (URL + timestamp) whenever a visitor clicks the element. The URL is taken from the <a href> — either the element itself or the first anchor found inside it. Navigation is not interrupted."
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:482
+msgid "How to add the class in WordPress"
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:484
+msgid "In the block editor: select the link text, open the link toolbar, click the three-dot menu → \"Edit link\" → expand \"Advanced\" → add the class in the \"CSS class\" field."
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:485
+msgid "In the classic editor or a page builder code/HTML module: switch to HTML view and add the class directly on the <a> element."
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:487
+msgid "In Divi — plain text link: select the link → link settings → CSS class field."
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:490
+msgid "In Divi — Image or other module with a link: open the module settings → Advanced tab → CSS ID & Classes → CSS Class field. The class goes on the module wrapper div, which contains the <a> Divi generates automatically."
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:494
+msgid "Examples (HTML source)"
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:506
+msgid "Multiple sponsors:"
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:507
+msgid "Each link's full URL is stored with every click, so the Statistics page can group and rank sponsors by click count automatically — no extra configuration needed."
+msgstr ""
+
+#. translators: %d: number of unlinked WordPress users
+#: includes/class-pcio-vis-admin.php:542
+#, php-format
 msgid "%d WordPress user is not linked to an active member."
 msgid_plural "%d WordPress users are not linked to an active member."
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-pcio-vis-admin.php:457
+#: includes/class-pcio-vis-admin.php:553
 msgid "This plugin never deletes WordPress accounts. If you want to remove any of these users, use the WordPress Users screen, which applies the normal capability and security checks."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:461
+#: includes/class-pcio-vis-admin.php:557
 msgid "Open WordPress → Users"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:466
+#: includes/class-pcio-vis-admin.php:562
 msgid "Every WordPress user is linked to an active member. Nothing to clean up."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:471
+#: includes/class-pcio-vis-admin.php:567
 msgid "Username"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:472
-#: includes/class-pcio-vis-db.php:67
-#: includes/class-pcio-vis-plugin.php:432
-#: includes/class-pcio-vis-plugin.php:695
-#: includes/class-pcio-vis-plugin.php:1362
+#: includes/class-pcio-vis-admin.php:568 includes/class-pcio-vis-db.php:66
+#: includes/class-pcio-vis-plugin.php:469
+#: includes/class-pcio-vis-plugin.php:751
+#: includes/class-pcio-vis-plugin.php:1492 templates/member-profile.php:43
 #: templates/member-signup.php:37
 msgid "Email"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:473
+#: includes/class-pcio-vis-admin.php:569
 msgid "Registered"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:474
+#: includes/class-pcio-vis-admin.php:570
 msgid "Action"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:485
+#: includes/class-pcio-vis-admin.php:581
 msgid "Edit user"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:519
+#: includes/class-pcio-vis-admin.php:615
 msgid "Vis role added."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:520
+#: includes/class-pcio-vis-admin.php:616
 msgid "Could not add vis role (slug may already exist)."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:522
-#: includes/class-pcio-vis-admin.php:536
+#: includes/class-pcio-vis-admin.php:618 includes/class-pcio-vis-admin.php:632
 msgid "Slug and name are required."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:533
+#: includes/class-pcio-vis-admin.php:629
 msgid "Vis role updated."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:534
+#: includes/class-pcio-vis-admin.php:630
 msgid "Could not update vis role."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:543
+#: includes/class-pcio-vis-admin.php:639
 msgid "Vis role deleted."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:544
+#: includes/class-pcio-vis-admin.php:640
 msgid "Could not delete vis role."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:558
+#. translators: %d: number of Vis roles updated
+#: includes/class-pcio-vis-admin.php:654
+#, php-format
 msgid "Capabilities synced. %d event-system role updated."
 msgid_plural "Capabilities synced. %d event-system roles updated."
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-pcio-vis-admin.php:575
+#: includes/class-pcio-vis-admin.php:671
 msgid "Vis — Roles &amp; Capabilities"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:589
+#: includes/class-pcio-vis-admin.php:685
 msgid "Sync capabilities"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:591
+#: includes/class-pcio-vis-admin.php:687
 msgid "Grant newly added capabilities to administrators and the matching default roles. Existing custom selections are kept."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:598
+#: includes/class-pcio-vis-admin.php:694
 msgid "Event-system roles"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:600
+#: includes/class-pcio-vis-admin.php:696
 msgid "These are the event-system roles you can assign to members. Each role grants a set of vis_* capabilities."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:612
+#: includes/class-pcio-vis-admin.php:708
 msgid "Edit event-system role"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:613
+#: includes/class-pcio-vis-admin.php:709
 msgid "Add event-system role"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:616
-#: includes/class-pcio-vis-admin.php:668
+#: includes/class-pcio-vis-admin.php:712 includes/class-pcio-vis-admin.php:764
 msgid "Slug"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:621
+#: includes/class-pcio-vis-admin.php:717
 msgid "Lowercase letters, numbers and hyphens."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:625
-#: includes/class-pcio-vis-admin.php:669
-#: includes/class-pcio-vis-admin.php:851
-#: includes/class-pcio-vis-admin.php:980
-#: includes/class-pcio-vis-db.php:66
-#: includes/class-pcio-vis-plugin.php:430
-#: includes/class-pcio-vis-plugin.php:694
-#: includes/class-pcio-vis-plugin.php:807
-#: includes/class-pcio-vis-plugin.php:816
-#: includes/class-pcio-vis-plugin.php:1006
-#: includes/class-pcio-vis-plugin.php:1205
-#: includes/class-pcio-vis-plugin.php:1360
+#: includes/class-pcio-vis-admin.php:721 includes/class-pcio-vis-admin.php:765
+#: includes/class-pcio-vis-admin.php:947 includes/class-pcio-vis-admin.php:1076
+#: includes/class-pcio-vis-db.php:65 includes/class-pcio-vis-plugin.php:467
+#: includes/class-pcio-vis-plugin.php:750
+#: includes/class-pcio-vis-plugin.php:942
+#: includes/class-pcio-vis-plugin.php:951
+#: includes/class-pcio-vis-plugin.php:1141
+#: includes/class-pcio-vis-plugin.php:1340
+#: includes/class-pcio-vis-plugin.php:1490
 msgid "Name"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:632
-#: includes/class-pcio-vis-admin.php:670
+#: includes/class-pcio-vis-admin.php:728 includes/class-pcio-vis-admin.php:766
 msgid "Capabilities"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:648
+#: includes/class-pcio-vis-admin.php:744
 msgid "Update role"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:649
+#: includes/class-pcio-vis-admin.php:745
 msgid "Add role"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:663
+#: includes/class-pcio-vis-admin.php:759
 msgid "No event-system roles yet."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:691
+#: includes/class-pcio-vis-admin.php:787
 msgid "Delete this event-system role?"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:742
+#: includes/class-pcio-vis-admin.php:838
 msgid "Invalid PHP function: it is not a registered sync callable."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:750
+#: includes/class-pcio-vis-admin.php:846
 msgid "Sync job added."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:751
+#: includes/class-pcio-vis-admin.php:847
 msgid "Could not add sync job (cron name may already exist)."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:753
-#: includes/class-pcio-vis-admin.php:769
+#: includes/class-pcio-vis-admin.php:849 includes/class-pcio-vis-admin.php:865
 msgid "Name, Cron Name and PHP Function are required."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:766
+#: includes/class-pcio-vis-admin.php:862
 msgid "Sync job updated."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:767
+#: includes/class-pcio-vis-admin.php:863
 msgid "Could not update sync job."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:781
+#: includes/class-pcio-vis-admin.php:877
 msgid "Sync job deleted."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:782
+#: includes/class-pcio-vis-admin.php:878
 msgid "Could not delete sync job."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:796
+#: includes/class-pcio-vis-admin.php:892
 msgid "Job enabled."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:797
+#: includes/class-pcio-vis-admin.php:893
 msgid "Job disabled."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:828
+#: includes/class-pcio-vis-admin.php:924
 msgid "Vis — Sync Jobs"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:832
+#: includes/class-pcio-vis-admin.php:928
 msgid "Job executed. Refresh to see the updated result."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:843
+#: includes/class-pcio-vis-admin.php:939
 msgid "Scheduled Jobs"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:846
+#: includes/class-pcio-vis-admin.php:942
 msgid "No sync jobs registered yet."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:852
-#: includes/class-pcio-vis-admin.php:1000
+#: includes/class-pcio-vis-admin.php:948 includes/class-pcio-vis-admin.php:1096
 msgid "Cron Name"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:853
+#: includes/class-pcio-vis-admin.php:949
 msgid "Freq. (h)"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:854
-#: includes/class-pcio-vis-plugin.php:697
-#: includes/class-pcio-vis-plugin.php:713
-#: includes/class-pcio-vis-plugin.php:865
+#: includes/class-pcio-vis-admin.php:950 includes/class-pcio-vis-plugin.php:753
+#: includes/class-pcio-vis-plugin.php:769
+#: includes/class-pcio-vis-plugin.php:1000
 msgid "Status"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:855
+#: includes/class-pcio-vis-admin.php:951
 msgid "Last Run"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:856
+#: includes/class-pcio-vis-admin.php:952
 msgid "Result"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:887
+#: includes/class-pcio-vis-admin.php:983
 msgid "✓ Enabled"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:888
+#: includes/class-pcio-vis-admin.php:984
 msgid "Disabled"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:896
+#: includes/class-pcio-vis-admin.php:992
 msgid "Never"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:906
+#: includes/class-pcio-vis-admin.php:1002
 msgid "—"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:914
+#: includes/class-pcio-vis-admin.php:1010
 msgid "Run this job now?"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:919
+#: includes/class-pcio-vis-admin.php:1015
 msgid "Run now"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:932
+#: includes/class-pcio-vis-admin.php:1028
 msgid "Delete this sync job?"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:954
+#: includes/class-pcio-vis-admin.php:1050
 msgid "All jobs are on schedule."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:957
+#: includes/class-pcio-vis-admin.php:1053
 msgid "One or more jobs are overdue:"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:967
+#: includes/class-pcio-vis-admin.php:1063
 msgid "Edit Sync Job"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:968
+#: includes/class-pcio-vis-admin.php:1064
 msgid "Add Sync Job"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:986
+#: includes/class-pcio-vis-admin.php:1082
 msgid "Short human-readable label shown in the list."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:991
-#: includes/class-pcio-vis-admin.php:1135
-#: includes/class-pcio-vis-admin.php:1156
-#: includes/class-pcio-vis-admin.php:1182
-#: includes/class-pcio-vis-admin.php:1225
-#: includes/class-pcio-vis-admin.php:1263
-#: includes/class-pcio-vis-admin.php:1304
-#: includes/class-pcio-vis-admin.php:1344
-#: includes/class-pcio-vis-admin.php:1371
-#: includes/class-pcio-vis-admin.php:1459
-#: includes/class-pcio-vis-admin.php:1571
-#: includes/class-pcio-vis-plugin.php:606
-#: includes/class-pcio-vis-plugin.php:653
-#: includes/class-pcio-vis-plugin.php:817
-#: includes/class-pcio-vis-plugin.php:1206
+#: includes/class-pcio-vis-admin.php:1087
+#: includes/class-pcio-vis-admin.php:1231
+#: includes/class-pcio-vis-admin.php:1252
+#: includes/class-pcio-vis-admin.php:1278
+#: includes/class-pcio-vis-admin.php:1321
+#: includes/class-pcio-vis-admin.php:1359
+#: includes/class-pcio-vis-admin.php:1400
+#: includes/class-pcio-vis-admin.php:1440
+#: includes/class-pcio-vis-admin.php:1479
+#: includes/class-pcio-vis-admin.php:1506
+#: includes/class-pcio-vis-admin.php:1539
+#: includes/class-pcio-vis-admin.php:1651
+#: includes/class-pcio-vis-plugin.php:659
+#: includes/class-pcio-vis-plugin.php:707
+#: includes/class-pcio-vis-plugin.php:952
+#: includes/class-pcio-vis-plugin.php:1341
 msgid "Description"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1007
+#: includes/class-pcio-vis-admin.php:1103
 msgid "Unique slug (lowercase, numbers, underscores). Used as the WP-cron hook name suffix."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1012
+#: includes/class-pcio-vis-admin.php:1108
 msgid "PHP Function"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1017
+#: includes/class-pcio-vis-admin.php:1113
 msgid "— Select a job —"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1025
+#: includes/class-pcio-vis-admin.php:1121
 msgid "Select a registered sync callable. Extensions add their own jobs to this list."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1030
+#: includes/class-pcio-vis-admin.php:1126
 msgid "Sync URL"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1037
+#: includes/class-pcio-vis-admin.php:1133
 msgid "Optional external URL the job synchronises with (informational; your PHP function reads this from the $job array)."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1042
+#: includes/class-pcio-vis-admin.php:1138
 msgid "Frequency (hours)"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1048
+#: includes/class-pcio-vis-admin.php:1144
 msgid "How often (in whole hours) this job should run. Minimum 1."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1053
+#: includes/class-pcio-vis-admin.php:1149
 msgid "Enabled"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1059
+#: includes/class-pcio-vis-admin.php:1155
 msgid "Run automatically on the set schedule"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1061
+#: includes/class-pcio-vis-admin.php:1157
 msgid "When unchecked the job can still be triggered manually with “Run now”."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1069
+#: includes/class-pcio-vis-admin.php:1165
 msgid "Update job"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1070
+#: includes/class-pcio-vis-admin.php:1166
 msgid "Add job"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1100
+#: includes/class-pcio-vis-admin.php:1196
 msgid "Vis — Shortcode Reference"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1105
+#: includes/class-pcio-vis-admin.php:1201
 msgid "Shortcode navigation"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1107
-msgid "PCIO VIS Member Event"
-msgstr ""
-
-#: includes/class-pcio-vis-admin.php:1127
+#: includes/class-pcio-vis-admin.php:1223
 msgid "[pcio_me_members]"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1128
+#: includes/class-pcio-vis-admin.php:1224
 msgid "Renders a read-only table of all members. No login required."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1132
-#: includes/class-pcio-vis-admin.php:1153
-#: includes/class-pcio-vis-admin.php:1179
-#: includes/class-pcio-vis-admin.php:1222
-#: includes/class-pcio-vis-admin.php:1260
-#: includes/class-pcio-vis-admin.php:1301
-#: includes/class-pcio-vis-admin.php:1341
-#: includes/class-pcio-vis-admin.php:1368
-#: includes/class-pcio-vis-admin.php:1456
-#: includes/class-pcio-vis-admin.php:1568
+#: includes/class-pcio-vis-admin.php:1228
+#: includes/class-pcio-vis-admin.php:1249
+#: includes/class-pcio-vis-admin.php:1275
+#: includes/class-pcio-vis-admin.php:1318
+#: includes/class-pcio-vis-admin.php:1356
+#: includes/class-pcio-vis-admin.php:1397
+#: includes/class-pcio-vis-admin.php:1437
+#: includes/class-pcio-vis-admin.php:1476
+#: includes/class-pcio-vis-admin.php:1503
+#: includes/class-pcio-vis-admin.php:1536
+#: includes/class-pcio-vis-admin.php:1648
 msgid "Attribute"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1133
-#: includes/class-pcio-vis-admin.php:1154
-#: includes/class-pcio-vis-admin.php:1180
-#: includes/class-pcio-vis-admin.php:1223
-#: includes/class-pcio-vis-admin.php:1261
-#: includes/class-pcio-vis-admin.php:1302
-#: includes/class-pcio-vis-admin.php:1342
-#: includes/class-pcio-vis-admin.php:1369
-#: includes/class-pcio-vis-admin.php:1457
-#: includes/class-pcio-vis-admin.php:1569
-#: includes/class-pcio-vis-plugin.php:1005
-#: includes/class-pcio-vis-plugin.php:1542
+#: includes/class-pcio-vis-admin.php:1229
+#: includes/class-pcio-vis-admin.php:1250
+#: includes/class-pcio-vis-admin.php:1276
+#: includes/class-pcio-vis-admin.php:1319
+#: includes/class-pcio-vis-admin.php:1357
+#: includes/class-pcio-vis-admin.php:1398
+#: includes/class-pcio-vis-admin.php:1438
+#: includes/class-pcio-vis-admin.php:1477
+#: includes/class-pcio-vis-admin.php:1504
+#: includes/class-pcio-vis-admin.php:1537
+#: includes/class-pcio-vis-admin.php:1649
+#: includes/class-pcio-vis-plugin.php:1140
 msgid "Type"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1134
-#: includes/class-pcio-vis-admin.php:1155
-#: includes/class-pcio-vis-admin.php:1181
-#: includes/class-pcio-vis-admin.php:1224
-#: includes/class-pcio-vis-admin.php:1262
-#: includes/class-pcio-vis-admin.php:1303
-#: includes/class-pcio-vis-admin.php:1343
-#: includes/class-pcio-vis-admin.php:1370
-#: includes/class-pcio-vis-admin.php:1458
-#: includes/class-pcio-vis-admin.php:1570
+#: includes/class-pcio-vis-admin.php:1230
+#: includes/class-pcio-vis-admin.php:1251
+#: includes/class-pcio-vis-admin.php:1277
+#: includes/class-pcio-vis-admin.php:1320
+#: includes/class-pcio-vis-admin.php:1358
+#: includes/class-pcio-vis-admin.php:1399
+#: includes/class-pcio-vis-admin.php:1439
+#: includes/class-pcio-vis-admin.php:1478
+#: includes/class-pcio-vis-admin.php:1505
+#: includes/class-pcio-vis-admin.php:1538
+#: includes/class-pcio-vis-admin.php:1650
 msgid "Default"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1138
-#: includes/class-pcio-vis-admin.php:1159
-#: includes/class-pcio-vis-admin.php:1374
+#: includes/class-pcio-vis-admin.php:1234
+#: includes/class-pcio-vis-admin.php:1255
+#: includes/class-pcio-vis-admin.php:1509
 msgid "No attributes."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1142
-#: includes/class-pcio-vis-admin.php:1168
-#: includes/class-pcio-vis-admin.php:1249
-#: includes/class-pcio-vis-admin.php:1385
+#: includes/class-pcio-vis-admin.php:1238
+#: includes/class-pcio-vis-admin.php:1264
+#: includes/class-pcio-vis-admin.php:1345
+#: includes/class-pcio-vis-admin.php:1520
 msgid "Example"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1148
+#: includes/class-pcio-vis-admin.php:1244
 msgid "[pcio_me_edit_profile]"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1149
+#: includes/class-pcio-vis-admin.php:1245
 msgid "Renders an inline edit form for the currently logged-in member, allowing them to update their own contact details. Requires the vis_member capability; shows a message if no member record is linked to the account."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1164
+#: includes/class-pcio-vis-admin.php:1260
 msgid "Required capability:"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1174
+#: includes/class-pcio-vis-admin.php:1270
 msgid "[pcio_me_documents]"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1175
+#: includes/class-pcio-vis-admin.php:1271
 msgid "Renders a list of documents filtered by document type. No login required."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1187
-#: includes/class-pcio-vis-admin.php:1576
+#: includes/class-pcio-vis-admin.php:1283
+#: includes/class-pcio-vis-admin.php:1656
 msgid "string"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1190
+#: includes/class-pcio-vis-admin.php:1286
 msgid "Document type slug (required). Must match the Name column in Document Types."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1193
+#: includes/class-pcio-vis-admin.php:1289
 msgid "Available types:"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1203
-#: includes/class-pcio-vis-admin.php:1230
-#: includes/class-pcio-vis-admin.php:1268
-#: includes/class-pcio-vis-admin.php:1309
-#: includes/class-pcio-vis-admin.php:1315
-#: includes/class-pcio-vis-admin.php:1349
+#: includes/class-pcio-vis-admin.php:1299
+#: includes/class-pcio-vis-admin.php:1326
+#: includes/class-pcio-vis-admin.php:1364
+#: includes/class-pcio-vis-admin.php:1405
+#: includes/class-pcio-vis-admin.php:1411
+#: includes/class-pcio-vis-admin.php:1445
+#: includes/class-pcio-vis-admin.php:1451
+#: includes/class-pcio-vis-admin.php:1484
 msgid "integer"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1205
+#: includes/class-pcio-vis-admin.php:1301
 msgid "Maximum number of documents to show. 0 = all."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1210
-#: includes/class-pcio-vis-admin.php:1289
-#: includes/class-pcio-vis-admin.php:1330
-#: includes/class-pcio-vis-admin.php:1356
-#: includes/class-pcio-vis-admin.php:1551
-#: includes/class-pcio-vis-admin.php:1591
+#: includes/class-pcio-vis-admin.php:1306
+#: includes/class-pcio-vis-admin.php:1385
+#: includes/class-pcio-vis-admin.php:1426
+#: includes/class-pcio-vis-admin.php:1465
+#: includes/class-pcio-vis-admin.php:1491
+#: includes/class-pcio-vis-admin.php:1631
+#: includes/class-pcio-vis-admin.php:1671
 msgid "Examples"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1217
+#: includes/class-pcio-vis-admin.php:1313
 msgid "[pcio_me_event]"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1218
+#: includes/class-pcio-vis-admin.php:1314
 msgid "Renders an event card with cover image, title, date, location, description, and sign-up buttons for logged-in members."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1232
+#: includes/class-pcio-vis-admin.php:1328
 msgid "The numeric ID of the event (required). Find it in the URL when viewing an event at /vis/events/{id}/."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1237
-#: includes/class-pcio-vis-admin.php:1281
+#: includes/class-pcio-vis-admin.php:1333
+#: includes/class-pcio-vis-admin.php:1377
 msgid "What is rendered"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1239
+#: includes/class-pcio-vis-admin.php:1335
 msgid "Cover image (if one has been uploaded via the Photos tab on the event detail page)"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1240
+#: includes/class-pcio-vis-admin.php:1336
 msgid "Event title, date / time range, and location"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1241
+#: includes/class-pcio-vis-admin.php:1337
 msgid "Event description (rich text)"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1243
+#: includes/class-pcio-vis-admin.php:1339
 msgid "Sign-up buttons (Joining / Interested / Not joining) — shown only to logged-in users with the"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1245
+#: includes/class-pcio-vis-admin.php:1341
 msgid "capability who are also linked to a member record."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1255
+#: includes/class-pcio-vis-admin.php:1351
 msgid "[pcio_me_events]"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1256
+#: includes/class-pcio-vis-admin.php:1352
 msgid "Shows all upcoming events as a responsive grid of tiles. The number of tiles per row adapts automatically to the screen width. Each tile shows the square thumbnail (falling back to the banner image), a date badge, the title, date / time and location, and links to the public event page at /events/{slug}/. No login required."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1270
+#: includes/class-pcio-vis-admin.php:1366
 msgid "Maximum number of upcoming events to display."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1274
+#: includes/class-pcio-vis-admin.php:1370
 msgid "yes / no"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1276
+#: includes/class-pcio-vis-admin.php:1372
 msgid "Whether to show the live search box above the tiles for filtering by title and location."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1283
+#: includes/class-pcio-vis-admin.php:1379
 msgid "A responsive grid of tiles — the number of columns adjusts to the available width."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1284
+#: includes/class-pcio-vis-admin.php:1380
 msgid "Only upcoming events are listed, ordered by start date. Past days are excluded."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1285
+#: includes/class-pcio-vis-admin.php:1381
 msgid "Each tile uses the square Thumb image, falling back to the Banner image, then a coloured placeholder using the event colour."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1286
+#: includes/class-pcio-vis-admin.php:1382
 msgid "An optional search box filters the tiles instantly as the visitor types."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1296
+#: includes/class-pcio-vis-admin.php:1392
 msgid "[pcio_me_event_roller]"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1297
+#: includes/class-pcio-vis-admin.php:1393
 msgid "Rotating front-page slider that automatically shows the next upcoming events from the calendar. Each slide shows the cover image, an overlaid title and date, and a Read More button linking to the public event page. No login required."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1311
+#: includes/class-pcio-vis-admin.php:1407
 msgid "How many upcoming events to include in the slider."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1317
+#: includes/class-pcio-vis-admin.php:1413
 msgid "Seconds between automatic slide changes. The timer resets when a visitor uses the arrows."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1322
+#: includes/class-pcio-vis-admin.php:1418
+#: includes/class-pcio-vis-admin.php:1458
 msgid "How events are chosen"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1324
+#: includes/class-pcio-vis-admin.php:1420
 msgid "Events are selected automatically — the next events ordered by start date."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1325
+#: includes/class-pcio-vis-admin.php:1421
 msgid "Only the date part of the start time is compared, so events happening today are still shown. Past days are excluded."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1326
+#: includes/class-pcio-vis-admin.php:1422
 msgid "Events without a cover image show a coloured placeholder using the event colour."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1327
+#: includes/class-pcio-vis-admin.php:1423
 msgid "Visitors can move between slides with the left / right arrows; otherwise it advances on its own."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1336
-msgid "[pcio_me_newsletters]"
+#: includes/class-pcio-vis-admin.php:1432
+msgid "[pcio_me_upcoming_events]"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1337
-msgid "Shows a list of the most recently generated newsletter PDFs, each linking to the public PDF document. Newsletters are produced from the Mails screen by ticking “This mail is a newsletter” and clicking “Generate newsletter PDF”."
+#: includes/class-pcio-vis-admin.php:1433
+msgid "A compact “agenda” list of upcoming events grouped by month. Each month is shown as a heading, followed by its events as “day. title”, with the title linking to the public event page. Month names follow the site language (e.g. September / Oktober / November in Danish). No login required."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1351
-msgid "How many recent newsletters to list."
+#: includes/class-pcio-vis-admin.php:1447
+msgid "How many months ahead to include, counting the current month (3 = this month plus the next two)."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1363
-msgid "[pcio_me_member_count]"
+#: includes/class-pcio-vis-admin.php:1453
+msgid "Optional hard cap on the number of events shown. 0 means no cap — every event in the window is listed."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1364
-msgid "Displays the current total number of members as an animated count-up number. Each page render is recorded as a front-page view in the Statistics dashboard. Works in any page builder text or code module (e.g. Divi Text Module)."
+#: includes/class-pcio-vis-admin.php:1460
+msgid "Events from the start of today up to the end of the month window are listed, ordered by start date."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1378
-#: includes/class-pcio-vis-plugin.php:1548
-msgid "Note"
+#: includes/class-pcio-vis-admin.php:1461
+msgid "Events are grouped under their start month; the year is added to the heading only when the window crosses into another year."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1380
-msgid "To track sponsor link clicks from this page, add the CSS class "
-msgstr ""
-
-#: includes/class-pcio-vis-admin.php:1382
-msgid "to any anchor tag in your content. Clicks are recorded automatically and shown under Vis → Statistics."
-msgstr ""
-
-#: includes/class-pcio-vis-admin.php:1391
-msgid "Sponsor link tracking"
-msgstr ""
-
-#: includes/class-pcio-vis-admin.php:1393
-msgid "Every click on a front-end link that carries the CSS class "
-msgstr ""
-
-#: includes/class-pcio-vis-admin.php:1395
-msgid "is captured in the browser and sent to the server. Totals appear on the Statistics dashboard under"
-msgstr ""
-
-#: includes/class-pcio-vis-admin.php:1396
-msgid "Vis → Statistics → Sponsor link clicks"
-msgstr ""
-
-#: includes/class-pcio-vis-admin.php:1397
-msgid "No plugin configuration is needed — just add the class to the link in your page editor."
-msgstr ""
-
-#: includes/class-pcio-vis-admin.php:1402
-msgid "What to add"
-msgstr ""
-
-#: includes/class-pcio-vis-admin.php:1403
-msgid "Where"
-msgstr ""
-
-#: includes/class-pcio-vis-admin.php:1404
-msgid "Effect"
-msgstr ""
-
-#: includes/class-pcio-vis-admin.php:1409
-msgid "Any <a> tag, or any wrapper element (div, section…) that contains an <a>"
-msgstr ""
-
-#: includes/class-pcio-vis-admin.php:1410
-msgid "Records a click entry (URL + timestamp) whenever a visitor clicks the element. The URL is taken from the <a href> — either the element itself or the first anchor found inside it. Navigation is not interrupted."
-msgstr ""
-
-#: includes/class-pcio-vis-admin.php:1415
-msgid "How to add the class in WordPress"
-msgstr ""
-
-#: includes/class-pcio-vis-admin.php:1417
-msgid "In the block editor: select the link text, open the link toolbar, click the three-dot menu → \"Edit link\" → expand \"Advanced\" → add the class in the \"CSS class\" field."
-msgstr ""
-
-#: includes/class-pcio-vis-admin.php:1418
-msgid "In the classic editor or a page builder code/HTML module: switch to HTML view and add the class directly on the <a> element."
-msgstr ""
-
-#: includes/class-pcio-vis-admin.php:1420
-msgid "In Divi — plain text link: select the link → link settings → CSS class field."
-msgstr ""
-
-#: includes/class-pcio-vis-admin.php:1423
-msgid "In Divi — Image or other module with a link: open the module settings → Advanced tab → CSS ID & Classes → CSS Class field. The class goes on the module wrapper div, which contains the <a> Divi generates automatically."
-msgstr ""
-
-#: includes/class-pcio-vis-admin.php:1427
-msgid "Examples (HTML source)"
-msgstr ""
-
-#: includes/class-pcio-vis-admin.php:1439
-msgid "Multiple sponsors:"
-msgstr ""
-
-#: includes/class-pcio-vis-admin.php:1440
-msgid "Each link's full URL is stored with every click, so the Statistics page can group and rank sponsors by click count automatically — no extra configuration needed."
-msgstr ""
-
-#: includes/class-pcio-vis-admin.php:1446
-msgid "[pcio_me_member_signup]"
-msgstr ""
-
-#: includes/class-pcio-vis-admin.php:1448
-msgid "Renders a public registration form for new members. With no payment extension active the member is created immediately and a welcome email is sent. Active extensions can inject extra fields and add a payment (checkout) step on submission."
-msgstr ""
-
-#: includes/class-pcio-vis-admin.php:1451
-msgid "The welcome email is sent from the system mail template labelled \"member_welcome\" under Vis → Mails. Edit the subject and body there, using the tag chips to insert dynamic values."
-msgstr ""
-
-#: includes/class-pcio-vis-admin.php:1464
-msgid "string (URL)"
-msgstr ""
-
-#: includes/class-pcio-vis-admin.php:1466
-msgid "URL the visitor is sent to if they abandon the Stripe payment step. Relative paths are converted to absolute HTTPS automatically. Ignored when no payment extension is active."
+#: includes/class-pcio-vis-admin.php:1462
+msgid "Only the date part of the start time is compared, so events happening today are still shown."
 msgstr ""
 
 #: includes/class-pcio-vis-admin.php:1471
+msgid "[pcio_me_newsletters]"
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:1472
+msgid "Shows a list of the most recently generated newsletter PDFs, each linking to the public PDF document. Newsletters are produced from the Mails screen by ticking “This mail is a newsletter” and clicking “Generate newsletter PDF”."
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:1486
+msgid "How many recent newsletters to list."
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:1498
+msgid "[pcio_me_member_count]"
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:1499
+msgid "Displays the current total number of members as an animated count-up number. Each page render is recorded as a front-page view in the Statistics dashboard. Works in any page builder text or code module (e.g. Divi Text Module)."
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:1513
+msgid "Note"
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:1515
+msgid "To track sponsor link clicks from this page, add the CSS class "
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:1517
+msgid " to any anchor tag in your content. Clicks are recorded automatically and shown under Vis → Statistics. See Vis → Sponsor Links for details."
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:1526
+msgid "[pcio_me_member_signup]"
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:1528
+msgid "Renders a public registration form for new members. With no payment extension active the member is created immediately and a welcome email is sent. Active extensions can inject extra fields and add a payment (checkout) step on submission."
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:1531
+msgid "The welcome email is sent from the system mail template labelled \"member_welcome\" under Vis → Mails. Edit the subject and body there, using the tag chips to insert dynamic values."
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:1544
+msgid "string (URL)"
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:1546
+msgid "URL the visitor is sent to if they abandon the Stripe payment step. Relative paths are converted to absolute HTTPS automatically. Ignored when no payment extension is active."
+msgstr ""
+
+#: includes/class-pcio-vis-admin.php:1551
 msgid "Core fields (always shown)"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1473
+#: includes/class-pcio-vis-admin.php:1553
 msgid "Full name (required)"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1474
+#: includes/class-pcio-vis-admin.php:1554
 msgid "Email address (required, must be unique)"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1475
+#: includes/class-pcio-vis-admin.php:1555
 msgid "Phone number (optional)"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1476
+#: includes/class-pcio-vis-admin.php:1556
 msgid "Address (optional)"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1489
+#: includes/class-pcio-vis-admin.php:1569
 msgid "Additional fields (added by active extensions)"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1497
+#: includes/class-pcio-vis-admin.php:1577
 msgid "Welcome email tags"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1500
+#: includes/class-pcio-vis-admin.php:1580
 msgid "Tag"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1501
+#: includes/class-pcio-vis-admin.php:1581
 msgid "Provided by"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1502
+#: includes/class-pcio-vis-admin.php:1582
 msgid "Value"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1505
-#: includes/class-pcio-vis-admin.php:1506
-#: includes/class-pcio-vis-admin.php:1507
-#: includes/class-pcio-vis-admin.php:1508
+#: includes/class-pcio-vis-admin.php:1585
+#: includes/class-pcio-vis-admin.php:1586
+#: includes/class-pcio-vis-admin.php:1587
+#: includes/class-pcio-vis-admin.php:1588
 msgid "Core"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1505
+#: includes/class-pcio-vis-admin.php:1585
 msgid "Member's full name"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1506
+#: includes/class-pcio-vis-admin.php:1586
 msgid "Assigned member number"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1507
+#: includes/class-pcio-vis-admin.php:1587
 msgid "WordPress site title"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1508
+#: includes/class-pcio-vis-admin.php:1588
 msgid "One-time set-password URL for new accounts; login URL for existing accounts"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1527
+#: includes/class-pcio-vis-admin.php:1607
 msgid "Extension tags resolve to an empty string when the corresponding plugin is not active."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1558
+#: includes/class-pcio-vis-admin.php:1638
 msgid "[pcio_me_rolling_text]"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1560
+#: includes/class-pcio-vis-admin.php:1640
 msgid "Renders a scrolling marquee banner using texts that are scheduled in the Rolling Texts table. Only entries whose start/stop window includes the current server time are shown. Multiple simultaneous entries are joined by a long dash (—)."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1563
+#: includes/class-pcio-vis-admin.php:1643
 msgid "Manage entries at Vis → Calendar → Rolling Texts tab. You can have as many independent banners as you like by giving each a unique Roller ID and using a matching id attribute in the shortcode."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1578
+#: includes/class-pcio-vis-admin.php:1658
 msgid "Roller ID (required). Must match the Roller ID of at least one entry in the Rolling Texts table. Use lowercase letters, numbers and hyphens — e.g. \"homepage\", \"events-sidebar\"."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1583
+#: includes/class-pcio-vis-admin.php:1663
 msgid "Behaviour"
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1585
+#: includes/class-pcio-vis-admin.php:1665
 msgid "When no entry is active the shortcode outputs nothing — the banner simply disappears."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1586
+#: includes/class-pcio-vis-admin.php:1666
 msgid "Multiple overlapping entries are concatenated with  —  between them."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1587
+#: includes/class-pcio-vis-admin.php:1667
 msgid "Schedule entries under Vis → Calendar → Rolling Texts. The Roller ID in that form must match the id attribute used in the shortcode."
 msgstr ""
 
-#: includes/class-pcio-vis-admin.php:1588
+#: includes/class-pcio-vis-admin.php:1668
 msgid "Different pages can show different banners by using different id values."
 msgstr ""
 
-#: includes/class-pcio-vis-db.php:65
+#: includes/class-pcio-vis-db.php:64
 msgid "#"
 msgstr ""
 
-#: includes/class-pcio-vis-db.php:68
-#: includes/class-pcio-vis-plugin.php:434
-#: includes/class-pcio-vis-plugin.php:1364
+#: includes/class-pcio-vis-db.php:67 includes/class-pcio-vis-plugin.php:471
+#: includes/class-pcio-vis-plugin.php:1494 templates/member-profile.php:51
 #: templates/member-signup.php:45
 msgid "Phone"
 msgstr ""
 
-#: includes/class-pcio-vis-db.php:69
-#: includes/class-pcio-vis-plugin.php:436
-#: includes/class-pcio-vis-plugin.php:1366
+#: includes/class-pcio-vis-db.php:68 includes/class-pcio-vis-plugin.php:473
+#: includes/class-pcio-vis-plugin.php:1496 templates/member-profile.php:58
 #: templates/member-signup.php:52
 msgid "Address"
 msgstr ""
 
-#: includes/class-pcio-vis-db.php:70
-#: includes/class-pcio-vis-plugin.php:1161
+#: includes/class-pcio-vis-db.php:69 includes/class-pcio-vis-plugin.php:1296
 msgid "Joined"
 msgstr ""
 
-#: includes/class-pcio-vis-db.php:71
-#: includes/class-pcio-vis-plugin.php:1162
+#: includes/class-pcio-vis-db.php:70 includes/class-pcio-vis-plugin.php:1297
 msgid "Left"
 msgstr ""
 
-#: includes/class-pcio-vis-db.php:72
-#: includes/class-pcio-vis-plugin.php:477
-#: includes/class-pcio-vis-plugin.php:478
+#: includes/class-pcio-vis-db.php:71 includes/class-pcio-vis-plugin.php:514
+#: includes/class-pcio-vis-plugin.php:515
 msgid "Volunteer"
 msgstr ""
 
@@ -1107,18 +1126,23 @@ msgid "Could not delete event type."
 msgstr ""
 
 #: includes/class-pcio-vis-events-rest.php:93
-#: includes/class-pcio-vis-events-rest.php:178
+#: includes/class-pcio-vis-events-rest.php:191
 #: includes/class-pcio-vis-journal-rest.php:82
 #: includes/class-pcio-vis-journal-rest.php:113
 #: includes/class-pcio-vis-mails-rest.php:90
 #: includes/class-pcio-vis-newsletters-rest.php:89
 #: includes/class-pcio-vis-newsletters-rest.php:102
+#: includes/class-pcio-vis-recurrence-rest.php:67
+#: includes/class-pcio-vis-recurrence-rest.php:80
+#: includes/class-pcio-vis-recurrence-rest.php:120
+#: includes/class-pcio-vis-recurrence-rest.php:137
+#: includes/class-pcio-vis-recurrence-rest.php:154
 msgid "Not found."
 msgstr ""
 
 #: includes/class-pcio-vis-events-rest.php:105
 #: includes/class-pcio-vis-events-rest.php:135
-#: includes/class-pcio-vis-plugin.php:662
+#: includes/class-pcio-vis-plugin.php:718
 msgid "End cannot be before the start."
 msgstr ""
 
@@ -1127,28 +1151,28 @@ msgid "Could not create event."
 msgstr ""
 
 #: includes/class-pcio-vis-events-rest.php:140
-#: includes/class-pcio-vis-events-rest.php:228
+#: includes/class-pcio-vis-events-rest.php:241
 msgid "Could not update event."
 msgstr ""
 
-#: includes/class-pcio-vis-events-rest.php:161
+#: includes/class-pcio-vis-events-rest.php:174
 msgid "Could not delete event."
 msgstr ""
 
-#: includes/class-pcio-vis-events-rest.php:185
+#: includes/class-pcio-vis-events-rest.php:198
 msgid "Unknown image type."
 msgstr ""
 
-#: includes/class-pcio-vis-events-rest.php:190
-#: includes/class-pcio-vis-events-rest.php:196
+#: includes/class-pcio-vis-events-rest.php:203
+#: includes/class-pcio-vis-events-rest.php:209
 msgid "Invalid image data."
 msgstr ""
 
-#: includes/class-pcio-vis-events-rest.php:200
+#: includes/class-pcio-vis-events-rest.php:213
 msgid "Image is too large."
 msgstr ""
 
-#: includes/class-pcio-vis-events-rest.php:218
+#: includes/class-pcio-vis-events-rest.php:231
 msgid "Could not create attachment."
 msgstr ""
 
@@ -1173,7 +1197,7 @@ msgid "Could not update mail."
 msgstr ""
 
 #: includes/class-pcio-vis-mails-rest.php:137
-#: includes/class-pcio-vis-plugin.php:944
+#: includes/class-pcio-vis-plugin.php:1079
 msgid "System mails cannot be deleted."
 msgstr ""
 
@@ -1191,7 +1215,7 @@ msgid "No recipients found for the selected target."
 msgstr ""
 
 #: includes/class-pcio-vis-mails-rest.php:304
-#: includes/class-pcio-vis-plugin.php:505
+#: includes/class-pcio-vis-plugin.php:542
 msgid "Volunteers"
 msgstr ""
 
@@ -1203,35 +1227,35 @@ msgstr ""
 msgid "Unknown mail group."
 msgstr ""
 
-#: includes/class-pcio-vis-member-signup-fulfillment.php:38
+#: includes/class-pcio-vis-member-signup-fulfillment.php:117
 msgid "Welcome to {site_name}"
 msgstr ""
 
-#: includes/class-pcio-vis-member-signup-fulfillment.php:40
+#: includes/class-pcio-vis-member-signup-fulfillment.php:119
 msgid "Hi {name},"
 msgstr ""
 
-#: includes/class-pcio-vis-member-signup-fulfillment.php:41
+#: includes/class-pcio-vis-member-signup-fulfillment.php:120
 msgid "Your membership has been confirmed. Your member number is <strong>{member_number}</strong>."
 msgstr ""
 
-#: includes/class-pcio-vis-member-signup-fulfillment.php:42
+#: includes/class-pcio-vis-member-signup-fulfillment.php:121
 msgid "Set your password and log in: <a href=\"{login_url}\">{login_url}</a>"
 msgstr ""
 
-#: includes/class-pcio-vis-member-signup-fulfillment.php:185
+#: includes/class-pcio-vis-member-signup-fulfillment.php:305
 msgid "Member name"
 msgstr ""
 
-#: includes/class-pcio-vis-member-signup-fulfillment.php:186
+#: includes/class-pcio-vis-member-signup-fulfillment.php:306
 msgid "Member number"
 msgstr ""
 
-#: includes/class-pcio-vis-member-signup-fulfillment.php:187
+#: includes/class-pcio-vis-member-signup-fulfillment.php:307
 msgid "Site name"
 msgstr ""
 
-#: includes/class-pcio-vis-member-signup-fulfillment.php:188
+#: includes/class-pcio-vis-member-signup-fulfillment.php:308
 msgid "Login / set-password URL"
 msgstr ""
 
@@ -1241,9 +1265,9 @@ msgid "Security check failed."
 msgstr ""
 
 #: includes/class-pcio-vis-member-signup-rest.php:47
-#: includes/class-pcio-vis-plugin.php:451
-#: includes/class-pcio-vis-plugin.php:1223
-#: includes/class-pcio-vis-plugin.php:1374
+#: includes/class-pcio-vis-plugin.php:488
+#: includes/class-pcio-vis-plugin.php:1358
+#: includes/class-pcio-vis-plugin.php:1504
 msgid "Name is required."
 msgstr ""
 
@@ -1256,26 +1280,30 @@ msgid "A membership with that email address already exists."
 msgstr ""
 
 #: includes/class-pcio-vis-member-signup-rest.php:62
+#: includes/class-pcio-vis-rest.php:173
 msgid "Validation failed."
 msgstr ""
 
-#: includes/class-pcio-vis-member-signup-rest.php:98
+#: includes/class-pcio-vis-member-signup-rest.php:97
 msgid "Could not create membership record. Please try again."
 msgstr ""
 
-#: includes/class-pcio-vis-member-signup-rest.php:121
+#: includes/class-pcio-vis-member-signup-rest.php:120
 msgid "Registration complete. Check your email for your login details."
 msgstr ""
 
 #: includes/class-pcio-vis-member-signup.php:43
+#: includes/class-pcio-vis-plugin.php:1507
 msgid "This field is required."
 msgstr ""
 
 #: includes/class-pcio-vis-member-signup.php:44
+#: includes/class-pcio-vis-plugin.php:1508
 msgid "Please enter a valid email address."
 msgstr ""
 
 #: includes/class-pcio-vis-member-signup.php:45
+#: includes/class-pcio-vis-plugin.php:1509
 msgid "An error occurred. Please try again."
 msgstr ""
 
@@ -1288,7 +1316,7 @@ msgid "Could not render the newsletter PDF."
 msgstr ""
 
 #: includes/class-pcio-vis-newsletter.php:88
-#: includes/class-pcio-vis-plugin.php:941
+#: includes/class-pcio-vis-plugin.php:1076
 msgid "Newsletter"
 msgstr ""
 
@@ -1301,8 +1329,8 @@ msgid "Could not create the media attachment."
 msgstr ""
 
 #: includes/class-pcio-vis-newsletter.php:178
-#: includes/class-pcio-vis-plugin.php:1795
-#: includes/class-pcio-vis-plugin.php:1929
+#: includes/class-pcio-vis-plugin.php:1983
+#: includes/class-pcio-vis-plugin.php:2117
 msgid "Upcoming events"
 msgstr ""
 
@@ -1314,1650 +1342,1929 @@ msgstr ""
 msgid "Could not delete newsletter."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:232
-#: includes/class-pcio-vis-plugin.php:698
-#: includes/class-pcio-vis-plugin.php:702
-#: includes/class-pcio-vis-plugin.php:1672
-#: includes/class-pcio-vis-plugin.php:1723
-#: templates/event-public.php:135
+#: includes/class-pcio-vis-plugin.php:242
+#: includes/class-pcio-vis-plugin.php:754
+#: includes/class-pcio-vis-plugin.php:758
+#: includes/class-pcio-vis-plugin.php:1771
+#: includes/class-pcio-vis-plugin.php:1822 templates/event-public.php:142
 msgid "Joining"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:233
-#: includes/class-pcio-vis-plugin.php:701
-#: includes/class-pcio-vis-plugin.php:705
-#: includes/class-pcio-vis-plugin.php:1673
-#: includes/class-pcio-vis-plugin.php:1724
-#: templates/event-public.php:136
+#: includes/class-pcio-vis-plugin.php:243
+#: includes/class-pcio-vis-plugin.php:757
+#: includes/class-pcio-vis-plugin.php:761
+#: includes/class-pcio-vis-plugin.php:1772
+#: includes/class-pcio-vis-plugin.php:1823 templates/event-public.php:143
 msgid "Interested"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:234
-#: includes/class-pcio-vis-plugin.php:699
-#: includes/class-pcio-vis-plugin.php:703
-#: includes/class-pcio-vis-plugin.php:1674
-#: includes/class-pcio-vis-plugin.php:1725
-#: templates/event-public.php:137
+#: includes/class-pcio-vis-plugin.php:244
+#: includes/class-pcio-vis-plugin.php:755
+#: includes/class-pcio-vis-plugin.php:759
+#: includes/class-pcio-vis-plugin.php:1773
+#: includes/class-pcio-vis-plugin.php:1824 templates/event-public.php:144
 msgid "Not joining"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:235
-#: includes/class-pcio-vis-plugin.php:1675
+#: includes/class-pcio-vis-plugin.php:245
+#: includes/class-pcio-vis-plugin.php:1774
 msgid "Failed to save your response. Please try again."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:313
+#: includes/class-pcio-vis-plugin.php:318
+msgid "No sign-up (information only)"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:319
+msgid "Simple: join / interested / not joining"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:348
 msgid "Open the Vis member area"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:320
-#: includes/class-pcio-vis-plugin.php:626
-#: includes/class-pcio-vis-plugin.php:743
-#: includes/class-pcio-vis-plugin.php:796
-#: templates/_nav.php:15
-#: templates/calendar.php:21
-#: templates/home.php:77
+#: includes/class-pcio-vis-plugin.php:355
+#: includes/class-pcio-vis-plugin.php:679
+#: includes/class-pcio-vis-plugin.php:875
+#: includes/class-pcio-vis-plugin.php:930 templates/calendar.php:21
+#: templates/home.php:77 templates/_nav.php:15
 msgid "Calendar"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:321
-#: includes/class-pcio-vis-plugin.php:1002
-#: templates/_nav.php:16
-#: templates/documents.php:21
-#: templates/home.php:157
+#: includes/class-pcio-vis-plugin.php:356
+#: includes/class-pcio-vis-plugin.php:1137 templates/documents.php:21
+#: templates/home.php:157 templates/_nav.php:16
 msgid "Documents"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:324
-#: includes/class-pcio-vis-plugin.php:1104
-#: templates/_nav.php:20
-#: templates/finance.php:22
-#: templates/home.php:182
+#: includes/class-pcio-vis-plugin.php:359
+#: includes/class-pcio-vis-plugin.php:1239 templates/finance.php:22
+#: templates/home.php:182 templates/_nav.php:20
 msgid "Finance"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:327
-#: includes/class-pcio-vis-plugin.php:493
-#: includes/class-pcio-vis-plugin.php:1181
-#: includes/class-pcio-vis-plugin.php:1203
-#: includes/class-pcio-vis-plugin.php:1234
-#: templates/workgroups.php:19
+#: includes/class-pcio-vis-plugin.php:362
+#: includes/class-pcio-vis-plugin.php:530
+#: includes/class-pcio-vis-plugin.php:1316
+#: includes/class-pcio-vis-plugin.php:1338
+#: includes/class-pcio-vis-plugin.php:1369 templates/workgroups.php:19
 msgid "Workgroups"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:328
-#: includes/class-pcio-vis-plugin.php:498
-#: includes/class-pcio-vis-plugin.php:1186
-#: includes/class-pcio-vis-plugin.php:1235
-#: templates/_members-subnav.php:46
-#: templates/home.php:210
-#: templates/statistics.php:20
+#: includes/class-pcio-vis-plugin.php:363
+#: includes/class-pcio-vis-plugin.php:535
+#: includes/class-pcio-vis-plugin.php:1321
+#: includes/class-pcio-vis-plugin.php:1370 templates/home.php:210
+#: templates/statistics.php:20 templates/_members-subnav.php:46
 msgid "Statistics"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:331
-#: includes/class-pcio-vis-plugin.php:861
-#: templates/_nav.php:24
-#: templates/home.php:103
-#: templates/mails.php:21
+#: includes/class-pcio-vis-plugin.php:366
+#: includes/class-pcio-vis-plugin.php:996 templates/home.php:103
+#: templates/mails.php:21 templates/_nav.php:24
 msgid "Mails"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:332
-#: includes/class-pcio-vis-plugin.php:960
-#: templates/_nav.php:25
-#: templates/home.php:129
-#: templates/newsletters.php:21
+#: includes/class-pcio-vis-plugin.php:367
+#: includes/class-pcio-vis-plugin.php:1095 templates/home.php:129
+#: templates/newsletters.php:21 templates/_nav.php:25
 msgid "Newsletters"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:394
+#: includes/class-pcio-vis-plugin.php:429
 msgid "You do not have permission to access this page."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:395
+#: includes/class-pcio-vis-plugin.php:430
 msgid "Access denied"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:423
+#: includes/class-pcio-vis-plugin.php:458
 msgid "+ New Member"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:424
-#: includes/class-pcio-vis-plugin.php:966
-#: includes/class-pcio-vis-plugin.php:1106
+#: includes/class-pcio-vis-plugin.php:459
+#: includes/class-pcio-vis-plugin.php:1101
+#: includes/class-pcio-vis-plugin.php:1241
 msgid "Quick search all columns…"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:425
+#: includes/class-pcio-vis-plugin.php:460
 msgid "New Member"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:426
+#: includes/class-pcio-vis-plugin.php:461
 msgid "Edit Member"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:427
-#: includes/class-pcio-vis-plugin.php:1011
-#: includes/class-pcio-vis-plugin.php:1109
+#: includes/class-pcio-vis-plugin.php:462
+#: includes/class-pcio-vis-plugin.php:1146
+#: includes/class-pcio-vis-plugin.php:1244
 msgid "Close dialog"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:428
-#: includes/class-pcio-vis-plugin.php:1076
+#: includes/class-pcio-vis-plugin.php:463
+#: includes/class-pcio-vis-plugin.php:1211
 msgid "Member #"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:429
+#: includes/class-pcio-vis-plugin.php:464
 msgid "e.g. 1042"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:431
-#: includes/class-pcio-vis-plugin.php:1361
+#: includes/class-pcio-vis-plugin.php:465
+msgid "Membership #"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:466
+msgid "0 = none"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:468
+#: includes/class-pcio-vis-plugin.php:1491 templates/member-profile.php:35
 #: templates/member-signup.php:29
 msgid "Full name"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:433
-#: includes/class-pcio-vis-plugin.php:1363
+#: includes/class-pcio-vis-plugin.php:470
+#: includes/class-pcio-vis-plugin.php:1493
 msgid "name@example.com"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:435
-#: includes/class-pcio-vis-plugin.php:1365
+#: includes/class-pcio-vis-plugin.php:472
+#: includes/class-pcio-vis-plugin.php:1495
 msgid "+45 00 00 00 00"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:437
-#: includes/class-pcio-vis-plugin.php:1367
+#: includes/class-pcio-vis-plugin.php:474
+#: includes/class-pcio-vis-plugin.php:1497
 msgid "Street, city, postal code…"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:439
+#: includes/class-pcio-vis-plugin.php:476
 msgid "Save member"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:440
+#: includes/class-pcio-vis-plugin.php:477
 msgid "Delete Member"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:441
-#: includes/class-pcio-vis-plugin.php:632
-#: includes/class-pcio-vis-plugin.php:760
-#: includes/class-pcio-vis-plugin.php:891
-#: includes/class-pcio-vis-plugin.php:971
+#: includes/class-pcio-vis-plugin.php:478
+#: includes/class-pcio-vis-plugin.php:685
+#: includes/class-pcio-vis-plugin.php:892
 #: includes/class-pcio-vis-plugin.php:1026
-#: includes/class-pcio-vis-plugin.php:1113
+#: includes/class-pcio-vis-plugin.php:1106
+#: includes/class-pcio-vis-plugin.php:1161
+#: includes/class-pcio-vis-plugin.php:1248
 msgid "Confirm deletion"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:442
-#: includes/class-pcio-vis-plugin.php:633
-#: includes/class-pcio-vis-plugin.php:761
-#: includes/class-pcio-vis-plugin.php:892
+#: includes/class-pcio-vis-plugin.php:479
+#: includes/class-pcio-vis-plugin.php:686
+#: includes/class-pcio-vis-plugin.php:893
 #: includes/class-pcio-vis-plugin.php:1027
-#: includes/class-pcio-vis-plugin.php:1114
+#: includes/class-pcio-vis-plugin.php:1162
+#: includes/class-pcio-vis-plugin.php:1249
 msgid "This action cannot be undone."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:445
-#: includes/class-pcio-vis-plugin.php:793
+#. translators: %s: member name or "this member"
+#. translators: %s: event title or "this event"
+#: includes/class-pcio-vis-plugin.php:482
+#: includes/class-pcio-vis-plugin.php:927
+#, php-format
 msgid "Delete %s?"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:446
+#: includes/class-pcio-vis-plugin.php:483
 msgid "this member"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:447
+#: includes/class-pcio-vis-plugin.php:484
 msgid "Could not load role options: "
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:448
+#: includes/class-pcio-vis-plugin.php:485
 msgid "Failed to load members: "
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:449
+#: includes/class-pcio-vis-plugin.php:486
 msgid "No members yet. Click + New Member to add one."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:450
+#: includes/class-pcio-vis-plugin.php:487
 msgid "No members match the current filters."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:452
-#: includes/class-pcio-vis-plugin.php:1375
+#: includes/class-pcio-vis-plugin.php:489
+#: includes/class-pcio-vis-plugin.php:1505
 msgid "Enter a valid email address."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:453
-#: includes/class-pcio-vis-plugin.php:627
-#: includes/class-pcio-vis-plugin.php:787
-#: includes/class-pcio-vis-plugin.php:899
-#: includes/class-pcio-vis-plugin.php:1033
-#: includes/class-pcio-vis-plugin.php:1122
-#: includes/class-pcio-vis-plugin.php:1372
+#: includes/class-pcio-vis-plugin.php:490
+#: includes/class-pcio-vis-plugin.php:680
+#: includes/class-pcio-vis-plugin.php:835
+#: includes/class-pcio-vis-plugin.php:921
+#: includes/class-pcio-vis-plugin.php:1034
+#: includes/class-pcio-vis-plugin.php:1168
+#: includes/class-pcio-vis-plugin.php:1257
+#: includes/class-pcio-vis-plugin.php:1502
 msgid "Saving…"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:454
-#: includes/class-pcio-vis-plugin.php:636
-#: includes/class-pcio-vis-plugin.php:789
-#: includes/class-pcio-vis-plugin.php:901
-#: includes/class-pcio-vis-plugin.php:1034
-#: includes/class-pcio-vis-plugin.php:1123
+#: includes/class-pcio-vis-plugin.php:491
+#: includes/class-pcio-vis-plugin.php:689
+#: includes/class-pcio-vis-plugin.php:923
+#: includes/class-pcio-vis-plugin.php:1036
+#: includes/class-pcio-vis-plugin.php:1169
+#: includes/class-pcio-vis-plugin.php:1258
 msgid "Deleting…"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:455
+#: includes/class-pcio-vis-plugin.php:492
 msgid "Member created."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:456
+#: includes/class-pcio-vis-plugin.php:493
 msgid "Member updated."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:457
+#: includes/class-pcio-vis-plugin.php:494
 msgid "Member deleted."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:458
-#: includes/class-pcio-vis-plugin.php:788
-#: includes/class-pcio-vis-plugin.php:905
-#: includes/class-pcio-vis-plugin.php:1038
-#: includes/class-pcio-vis-plugin.php:1128
-#: includes/class-pcio-vis-plugin.php:1224
-#: includes/class-pcio-vis-plugin.php:1376
+#: includes/class-pcio-vis-plugin.php:495
+#: includes/class-pcio-vis-plugin.php:922
+#: includes/class-pcio-vis-plugin.php:1040
+#: includes/class-pcio-vis-plugin.php:1173
+#: includes/class-pcio-vis-plugin.php:1263
+#: includes/class-pcio-vis-plugin.php:1359
+#: includes/class-pcio-vis-plugin.php:1506
 msgid "Save failed: "
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:459
-#: includes/class-pcio-vis-plugin.php:637
-#: includes/class-pcio-vis-plugin.php:790
-#: includes/class-pcio-vis-plugin.php:907
-#: includes/class-pcio-vis-plugin.php:984
-#: includes/class-pcio-vis-plugin.php:1039
-#: includes/class-pcio-vis-plugin.php:1129
+#: includes/class-pcio-vis-plugin.php:496
+#: includes/class-pcio-vis-plugin.php:690
+#: includes/class-pcio-vis-plugin.php:924
+#: includes/class-pcio-vis-plugin.php:1042
+#: includes/class-pcio-vis-plugin.php:1119
+#: includes/class-pcio-vis-plugin.php:1174
+#: includes/class-pcio-vis-plugin.php:1264
 msgid "Delete failed: "
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:460
-#: includes/class-pcio-vis-plugin.php:898
-#: includes/class-pcio-vis-plugin.php:967
-#: includes/class-pcio-vis-plugin.php:1043
-#: includes/class-pcio-vis-plugin.php:1130
+#: includes/class-pcio-vis-plugin.php:497
+#: includes/class-pcio-vis-plugin.php:1033
+#: includes/class-pcio-vis-plugin.php:1102
+#: includes/class-pcio-vis-plugin.php:1178
+#: includes/class-pcio-vis-plugin.php:1265
 msgid "Filter"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:461
+#: includes/class-pcio-vis-plugin.php:498
 msgid "member"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:462
+#: includes/class-pcio-vis-plugin.php:499
 msgid "members"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:463
-#: includes/class-pcio-vis-plugin.php:911
-#: includes/class-pcio-vis-plugin.php:980
+#: includes/class-pcio-vis-plugin.php:500
 #: includes/class-pcio-vis-plugin.php:1046
-#: includes/class-pcio-vis-plugin.php:1131
+#: includes/class-pcio-vis-plugin.php:1115
+#: includes/class-pcio-vis-plugin.php:1181
+#: includes/class-pcio-vis-plugin.php:1266
 msgid "Showing"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:464
-#: includes/class-pcio-vis-plugin.php:912
-#: includes/class-pcio-vis-plugin.php:981
+#: includes/class-pcio-vis-plugin.php:501
 #: includes/class-pcio-vis-plugin.php:1047
-#: includes/class-pcio-vis-plugin.php:1132
+#: includes/class-pcio-vis-plugin.php:1116
+#: includes/class-pcio-vis-plugin.php:1182
+#: includes/class-pcio-vis-plugin.php:1267
 msgid "of"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:465
-#: includes/class-pcio-vis-plugin.php:913
-#: includes/class-pcio-vis-plugin.php:982
+#: includes/class-pcio-vis-plugin.php:502
 #: includes/class-pcio-vis-plugin.php:1048
-#: includes/class-pcio-vis-plugin.php:1133
+#: includes/class-pcio-vis-plugin.php:1117
+#: includes/class-pcio-vis-plugin.php:1183
+#: includes/class-pcio-vis-plugin.php:1268
 msgid "total"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:467
+#: includes/class-pcio-vis-plugin.php:504
 msgid "Vis Role"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:468
+#: includes/class-pcio-vis-plugin.php:505
 msgid "WP Role"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:469
+#: includes/class-pcio-vis-plugin.php:506
 msgid "Event-system role"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:470
+#: includes/class-pcio-vis-plugin.php:507
 msgid "WordPress role"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:471
+#: includes/class-pcio-vis-plugin.php:508
 msgid "WP User ID"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:472
+#: includes/class-pcio-vis-plugin.php:509
 msgid "WP user ID (optional)"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:473
+#: includes/class-pcio-vis-plugin.php:510
 msgid "— none —"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:474
+#: includes/class-pcio-vis-plugin.php:511
 msgid "Role assignment"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:475
+#: includes/class-pcio-vis-plugin.php:512
 msgid "Role save failed: "
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:480
-#: includes/class-pcio-vis-plugin.php:1134
+#: includes/class-pcio-vis-plugin.php:517
+#: includes/class-pcio-vis-plugin.php:1269
 msgid "You have unsaved changes. Discard them?"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:481
-#: includes/class-pcio-vis-plugin.php:1227
+#: includes/class-pcio-vis-plugin.php:518
+#: includes/class-pcio-vis-plugin.php:1362
 msgid "Copy emails"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:482
-#: includes/class-pcio-vis-plugin.php:1228
+#: includes/class-pcio-vis-plugin.php:519
+#: includes/class-pcio-vis-plugin.php:1363
 msgid "email address(es) copied to clipboard."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:483
+#: includes/class-pcio-vis-plugin.php:520
 msgid "No email addresses in current view."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:484
-#: includes/class-pcio-vis-plugin.php:1230
+#: includes/class-pcio-vis-plugin.php:521
+#: includes/class-pcio-vis-plugin.php:1365
 msgid "Could not copy to clipboard."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:506
+#: includes/class-pcio-vis-plugin.php:543
 msgid "Other"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:605
+#: includes/class-pcio-vis-plugin.php:658
 msgid "Basic"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:607
-#: includes/class-pcio-vis-plugin.php:650
-#: includes/class-pcio-vis-plugin.php:798
-#: includes/class-pcio-vis-plugin.php:818
+#: includes/class-pcio-vis-plugin.php:660
+#: includes/class-pcio-vis-plugin.php:704
+#: includes/class-pcio-vis-plugin.php:932
+#: includes/class-pcio-vis-plugin.php:953
 msgid "Resources"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:608
+#: includes/class-pcio-vis-plugin.php:661
 msgid "Guests"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:609
+#: includes/class-pcio-vis-plugin.php:662
 msgid "Photos"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:610
+#: includes/class-pcio-vis-plugin.php:663
 msgid "Publish"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:611
+#: includes/class-pcio-vis-plugin.php:664
 msgid "Publish & share"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:612
+#: includes/class-pcio-vis-plugin.php:665
 msgid "Public link (permalink)"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:613
+#: includes/class-pcio-vis-plugin.php:666
 msgid "Anyone with this link can view the event — no login required."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:614
+#: includes/class-pcio-vis-plugin.php:667
 msgid "Page embed code"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:615
+#: includes/class-pcio-vis-plugin.php:668
 msgid "Paste this shortcode into any WordPress page or post to display the event there."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:616
+#: includes/class-pcio-vis-plugin.php:669
 msgid "Copy"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:617
+#: includes/class-pcio-vis-plugin.php:670
 msgid "Copied to clipboard."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:618
-#: includes/class-pcio-vis-plugin.php:764
+#: includes/class-pcio-vis-plugin.php:671
+#: includes/class-pcio-vis-plugin.php:896
 msgid "Blue"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:619
-#: includes/class-pcio-vis-plugin.php:765
+#: includes/class-pcio-vis-plugin.php:672
+#: includes/class-pcio-vis-plugin.php:897
 msgid "Green"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:620
-#: includes/class-pcio-vis-plugin.php:766
+#: includes/class-pcio-vis-plugin.php:673
+#: includes/class-pcio-vis-plugin.php:898
 msgid "Red"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:621
-#: includes/class-pcio-vis-plugin.php:767
+#: includes/class-pcio-vis-plugin.php:674
+#: includes/class-pcio-vis-plugin.php:899
 msgid "Purple"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:622
-#: includes/class-pcio-vis-plugin.php:768
+#: includes/class-pcio-vis-plugin.php:675
+#: includes/class-pcio-vis-plugin.php:900
 msgid "Amber"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:623
-#: includes/class-pcio-vis-plugin.php:769
+#: includes/class-pcio-vis-plugin.php:676
+#: includes/class-pcio-vis-plugin.php:901
 msgid "Teal"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:624
-#: includes/class-pcio-vis-plugin.php:770
+#: includes/class-pcio-vis-plugin.php:677
+#: includes/class-pcio-vis-plugin.php:902
 msgid "Pink"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:625
-#: includes/class-pcio-vis-plugin.php:771
+#: includes/class-pcio-vis-plugin.php:678
+#: includes/class-pcio-vis-plugin.php:903
 msgid "Slate"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:628
-#: includes/class-pcio-vis-plugin.php:692
+#: includes/class-pcio-vis-plugin.php:681
+#: includes/class-pcio-vis-plugin.php:748
 msgid "✓ Saved"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:629
-#: includes/class-pcio-vis-plugin.php:693
+#: includes/class-pcio-vis-plugin.php:682
+#: includes/class-pcio-vis-plugin.php:749
 msgid "✕ Error"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:630
-#: includes/class-pcio-vis-plugin.php:756
+#: includes/class-pcio-vis-plugin.php:683
+#: includes/class-pcio-vis-plugin.php:888
 msgid "Delete event"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:631
-#: includes/class-pcio-vis-plugin.php:759
+#: includes/class-pcio-vis-plugin.php:684
+#: includes/class-pcio-vis-plugin.php:891
 msgid "Delete Event"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:638
-#: includes/class-pcio-vis-plugin.php:763
-#: includes/class-pcio-vis-plugin.php:868
-#: includes/class-pcio-vis-plugin.php:975
-#: includes/class-pcio-vis-plugin.php:1496
+#: includes/class-pcio-vis-plugin.php:691
+#: includes/class-pcio-vis-plugin.php:895
+#: includes/class-pcio-vis-plugin.php:1003
+#: includes/class-pcio-vis-plugin.php:1110
 msgid "Close"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:640
-#: includes/class-pcio-vis-plugin.php:748
+#: includes/class-pcio-vis-plugin.php:693
+#: includes/class-pcio-vis-plugin.php:880
 msgid "All-day event"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:641
-#: includes/class-pcio-vis-plugin.php:749
+#: includes/class-pcio-vis-plugin.php:694
+#: includes/class-pcio-vis-plugin.php:826
+#: includes/class-pcio-vis-plugin.php:881
 msgid "Start date"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:642
-#: includes/class-pcio-vis-plugin.php:750
+#: includes/class-pcio-vis-plugin.php:695
+#: includes/class-pcio-vis-plugin.php:882
 msgid "Start time"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:643
-#: includes/class-pcio-vis-plugin.php:751
+#: includes/class-pcio-vis-plugin.php:696
+#: includes/class-pcio-vis-plugin.php:883
 msgid "End date"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:644
-#: includes/class-pcio-vis-plugin.php:752
+#: includes/class-pcio-vis-plugin.php:697
+#: includes/class-pcio-vis-plugin.php:884
 msgid "End time"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:645
-#: includes/class-pcio-vis-plugin.php:753
+#: includes/class-pcio-vis-plugin.php:698
+#: includes/class-pcio-vis-plugin.php:885
 msgid "Location"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:646
-#: includes/class-pcio-vis-plugin.php:754
+#: includes/class-pcio-vis-plugin.php:699
+#: includes/class-pcio-vis-plugin.php:886
 msgid "Venue or address"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:647
-#: includes/class-pcio-vis-plugin.php:755
-#: includes/class-pcio-vis-plugin.php:809
-#: includes/class-pcio-vis-plugin.php:1207
+#: includes/class-pcio-vis-plugin.php:700
+#: includes/class-pcio-vis-plugin.php:887
+#: includes/class-pcio-vis-plugin.php:944
+#: includes/class-pcio-vis-plugin.php:1342
 msgid "Colour"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:648
-#: includes/class-pcio-vis-plugin.php:800
+#: includes/class-pcio-vis-plugin.php:701
+#: includes/class-pcio-vis-plugin.php:934
 msgid "Event type"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:678
+#: includes/class-pcio-vis-plugin.php:702
 msgid "Sign-up"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:308
-msgid "No sign-up (information only)"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:309
-msgid "Simple: join / interested / not joining"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:649
-#: includes/class-pcio-vis-plugin.php:801
+#: includes/class-pcio-vis-plugin.php:703
+#: includes/class-pcio-vis-plugin.php:799
+#: includes/class-pcio-vis-plugin.php:935
 msgid "— None —"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:651
+#: includes/class-pcio-vis-plugin.php:705
 msgid "No resources defined yet. Add them in the Calendar → Resources tab."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:652
-#: includes/class-pcio-vis-plugin.php:819
+#: includes/class-pcio-vis-plugin.php:706
+#: includes/class-pcio-vis-plugin.php:954
 msgid "Resource conflict: "
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:654
+#: includes/class-pcio-vis-plugin.php:708
 msgid "Describe the event…"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:655
+#: includes/class-pcio-vis-plugin.php:709
 msgid "Save description"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:656
+#: includes/class-pcio-vis-plugin.php:710
 msgid "Edit HTML"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:657
+#: includes/class-pcio-vis-plugin.php:711
 msgid "Visual editor"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:656
-#: templates/event-public.php:56
+#: includes/class-pcio-vis-plugin.php:712 templates/event-public.php:56
 msgid "No description."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:657
+#: includes/class-pcio-vis-plugin.php:713
 msgid "This section is coming soon."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:658
+#: includes/class-pcio-vis-plugin.php:714
 msgid "No event ID."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:659
+#: includes/class-pcio-vis-plugin.php:715
 msgid "Failed to load event: "
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:660
+#: includes/class-pcio-vis-plugin.php:716
 msgid "You have unsaved changes. Leave without saving?"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:661
-#: includes/class-pcio-vis-plugin.php:785
+#: includes/class-pcio-vis-plugin.php:717
+#: includes/class-pcio-vis-plugin.php:919
 msgid "Title is required."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:664
+#: includes/class-pcio-vis-plugin.php:720
 msgid "No image set for this event."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:665
-#: includes/class-pcio-vis-plugin.php:1019
-#: includes/class-pcio-vis-plugin.php:1136
+#: includes/class-pcio-vis-plugin.php:721
+#: includes/class-pcio-vis-plugin.php:1154
+#: includes/class-pcio-vis-plugin.php:1271
 msgid "Choose from media library"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:666
+#: includes/class-pcio-vis-plugin.php:722
 msgid "Change image"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:667
+#: includes/class-pcio-vis-plugin.php:723
 msgid "Remove image"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:668
+#: includes/class-pcio-vis-plugin.php:724
 msgid "Recommended image size: a wide landscape image of about 1200 × 525 px (≈16:7). It is used as the cover image and in the front-page event roller."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:669
+#: includes/class-pcio-vis-plugin.php:725
 msgid "Banner image"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:670
+#: includes/class-pcio-vis-plugin.php:726
 msgid "Thumbnail (tile) image"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:671
+#: includes/class-pcio-vis-plugin.php:727
 msgid "Wide landscape image shown as the cover and in the front-page event roller."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:672
+#: includes/class-pcio-vis-plugin.php:728
 msgid "Tile image shown in the event grid (the [pcio_me_events] deck)."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:673
+#: includes/class-pcio-vis-plugin.php:729
 msgid "Target size"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:674
+#: includes/class-pcio-vis-plugin.php:730
 msgid "Current size"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:675
+#: includes/class-pcio-vis-plugin.php:731
 msgid "unknown"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:676
+#: includes/class-pcio-vis-plugin.php:732
 msgid "⚠ Does not match the target size — please crop or replace it."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:677
+#: includes/class-pcio-vis-plugin.php:733
 msgid "✓ Matches the target size."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:678
+#: includes/class-pcio-vis-plugin.php:734
 msgid "Adjust / crop"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:679
+#: includes/class-pcio-vis-plugin.php:735
 msgid "Adjust image"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:680
+#: includes/class-pcio-vis-plugin.php:736
 msgid "Drag to move, scroll or pinch to zoom. The selection is cropped to the target size."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:681
+#: includes/class-pcio-vis-plugin.php:737
 msgid "Zoom in"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:682
+#: includes/class-pcio-vis-plugin.php:738
 msgid "Zoom out"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:683
+#: includes/class-pcio-vis-plugin.php:739
 msgid "Reset"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:684
+#: includes/class-pcio-vis-plugin.php:740
 msgid "Crop & save"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:685
+#: includes/class-pcio-vis-plugin.php:741
 msgid "Choose a different image"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:686
+#: includes/class-pcio-vis-plugin.php:742
 msgid "Select an image first, then adjust it."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:687
+#: includes/class-pcio-vis-plugin.php:743
 msgid "The crop editor failed to load. Please reload the page."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:688
+#: includes/class-pcio-vis-plugin.php:744
 msgid "Select Event Image"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:689
+#: includes/class-pcio-vis-plugin.php:745
 msgid "Use this image"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:690
-#: includes/class-pcio-vis-plugin.php:925
-#: includes/class-pcio-vis-plugin.php:1022
-#: includes/class-pcio-vis-plugin.php:1141
+#: includes/class-pcio-vis-plugin.php:746
+#: includes/class-pcio-vis-plugin.php:1060
+#: includes/class-pcio-vis-plugin.php:1157
+#: includes/class-pcio-vis-plugin.php:1276
 msgid "WordPress media library is not available."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:691
+#: includes/class-pcio-vis-plugin.php:747
 msgid "Saving image…"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:696
+#: includes/class-pcio-vis-plugin.php:752
 msgid "Join date"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:700
-#: includes/class-pcio-vis-plugin.php:704
+#: includes/class-pcio-vis-plugin.php:756
+#: includes/class-pcio-vis-plugin.php:760
 msgid "Arrived"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:706
+#: includes/class-pcio-vis-plugin.php:762
 msgid "Not answered"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:707
-#: includes/class-pcio-vis-plugin.php:1158
+#: includes/class-pcio-vis-plugin.php:763
+#: includes/class-pcio-vis-plugin.php:1293
 msgid "Loading…"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:708
+#: includes/class-pcio-vis-plugin.php:764
 msgid "No guests yet."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:709
-#: includes/class-pcio-vis-plugin.php:1004
+#: includes/class-pcio-vis-plugin.php:765
+#: includes/class-pcio-vis-plugin.php:1139
 msgid "Quick search…"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:710
+#: includes/class-pcio-vis-plugin.php:766
 msgid "Could not update status."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:711
+#: includes/class-pcio-vis-plugin.php:767
 msgid "Add guest"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:712
+#: includes/class-pcio-vis-plugin.php:768
 msgid "Add"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:744
-msgid "+ New Event"
+#: includes/class-pcio-vis-plugin.php:771
+msgid "Recurrence"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:745
-msgid "New Event"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:747
-msgid "Event title"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:758
-msgid "Save event"
+#: includes/class-pcio-vis-plugin.php:772
+msgid "Recurring events are copies of the first event in the series. Only the first event defines the repeat rules, so make sure everything on it is correct before creating copies."
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:773
-msgid "Color: %s"
+msgid "This is not the first event in the series. Only the first event can define the repeat rules."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:774
-#: includes/class-pcio-vis-plugin.php:1875
-msgid "Today"
-msgstr ""
-
+#. translators: %1$d: this event's position in the series; %2$d: total number of events in the series.
 #: includes/class-pcio-vis-plugin.php:775
-msgid "Month"
+#, php-format
+msgid "Event %1$d of %2$d in the series"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:776
-msgid "Week"
+#: includes/class-pcio-vis-plugin.php:800
+msgid "First"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:777
-msgid "Day"
+msgid "‹ Previous"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:778
-msgid "List"
+msgid "Next ›"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:779
-msgid "FullCalendar could not be loaded."
+#: includes/class-pcio-vis-plugin.php:804
+msgid "Last"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:780
-msgid "Could not load events: "
+msgid "Make this a recurring event"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:781
-msgid "Event moved."
+msgid "Resolve to standalone events"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:782
-msgid "Could not move event: "
+msgid "Delete all"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:783
-msgid "Event resized."
+msgid "Delete others"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:784
-msgid "Could not resize event: "
+msgid "Repeat rules"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:785
+msgid "Number of occurrences"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:786
-msgid "Start date is required."
+msgid "Repeat until"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:787
+msgid "Every"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:788
+msgid "Repeat after"
+msgstr ""
+
+#. translators: Week-view title prefix, e.g. "Week 37".
+#: includes/class-pcio-vis-plugin.php:789
+#: includes/class-pcio-vis-plugin.php:794
+#: includes/class-pcio-vis-plugin.php:908
+#: includes/class-pcio-vis-plugin.php:912
+msgid "Week"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:790
+msgid "Weekday"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:791
-msgid "Event deleted."
+msgid "Day of month"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:794
-msgid "this event"
+#: includes/class-pcio-vis-plugin.php:792
+#: includes/class-pcio-vis-plugin.php:795
+#: includes/class-pcio-vis-plugin.php:907
+msgid "Month"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:793
+#: includes/class-pcio-vis-plugin.php:909
+msgid "Day"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:796
+msgid "Month-day"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:797
-msgid "Event Types"
+msgid "Year-day"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:798
+msgid "Year"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:801
+msgid "Second"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:802
-msgid "Public"
+msgid "Third"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:803
-msgid "Members only"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:804
-msgid "Volunteers only"
+msgid "Fourth"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:805
-msgid "+ New type"
+msgid "Monday"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:806
-msgid "New Event Type"
+msgid "Tuesday"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:807
+msgid "Wednesday"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:808
-msgid "Access"
+msgid "Thursday"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:809
+msgid "Friday"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:810
-msgid "Event type created."
+msgid "Saturday"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:811
-msgid "Event type updated."
+msgid "Sunday"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:812
-msgid "Event type deleted."
+msgid "January"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:813
+msgid "February"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:814
-msgid "+ New resource"
+msgid "March"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:815
-msgid "New Resource"
+msgid "April"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:816
+msgid "May"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:817
+msgid "June"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:818
+msgid "July"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:819
+msgid "August"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:820
-msgid "Resource created."
+msgid "September"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:821
-msgid "Resource updated."
+msgid "October"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:822
-msgid "Resource deleted."
+msgid "November"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:823
+msgid "December"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:824
-msgid "Rolling Texts"
+msgid "Recalculate"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:825
-#: includes/class-pcio-vis-plugin.php:1105
-msgid "+ New entry"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:826
-msgid "New Rolling Text"
+msgid "Event ID"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:827
-msgid "Edit Rolling Text"
+msgid "Created?"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:828
-msgid "Roller ID"
+msgid "Yes"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:829
-msgid "Start"
+msgid "No"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:830
-msgid "Stop"
+msgid "To be deleted"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:831
-msgid "Text"
+msgid "Create and delete to match the rules"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:832
-msgid "Filter by roller ID"
-msgstr ""
-
+#. translators: 1: number of events to create, 2: number to delete.
 #: includes/class-pcio-vis-plugin.php:833
-msgid "Rolling text created."
+#, php-format
+msgid "%1$d event(s) will be created and %2$d will be deleted so the series matches the rules."
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:834
-msgid "Rolling text updated."
+msgid "The series matches the rules."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:835
-msgid "Rolling text deleted."
+#: includes/class-pcio-vis-plugin.php:836
+msgid "Working…"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:862
-msgid "+ New Mail"
+#: includes/class-pcio-vis-plugin.php:837
+msgid "Resolve this series into standalone events?"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:863
-#: includes/class-pcio-vis-plugin.php:869
-msgid "Subject"
+#: includes/class-pcio-vis-plugin.php:838
+msgid "Delete every event in this series? This cannot be undone."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:864
-msgid "Created"
+#: includes/class-pcio-vis-plugin.php:839
+msgid "Delete every other event in this series and keep this one?"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:866
-msgid "New Mail"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:867
-msgid "Edit Mail"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:870
-msgid "Mail subject…"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:871
-msgid "Content"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:873
-msgid "Save draft"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:874
-msgid "Send…"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:875
-msgid "Send Mail"
+#: includes/class-pcio-vis-plugin.php:840
+msgid "Something went wrong. Please try again."
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:876
-msgid "Send to all members?"
+msgid "+ New Event"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:877
-msgid "This will send the mail to the selected recipients."
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:878
-msgid "Loading member count…"
+msgid "New Event"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:879
-msgid "Send now"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:880
-msgid "Send to"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:881
-msgid "All members"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:882
-msgid "Specific addresses"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:883
-#: includes/class-pcio-vis-plugin.php:884
-msgid "Group"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:885
-msgid "Email addresses"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:886
-msgid "alice@example.com; bob@example.com"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:887
-msgid "Enter at least one email address."
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:889
-msgid "Invalid address(es): %s"
+msgid "Event title"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:890
-msgid "Delete Mail"
+msgid "Save event"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:894
-msgid "Draft"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:895
-msgid "Sent"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:896
-msgid "No mails yet."
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:897
-msgid "Failed to load mails: "
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:900
-msgid "Sending…"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:902
-msgid "Mail created."
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:903
-msgid "Mail updated."
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:904
-msgid "Mail deleted."
+#. translators: %s: colour name (e.g. "Blue", "Red")
+#: includes/class-pcio-vis-plugin.php:905
+#, php-format
+msgid "Color: %s"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:906
-msgid "Failed to load mail: "
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:908
-msgid "Send failed: "
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:909
-msgid "mail"
+#: includes/class-pcio-vis-plugin.php:2063
+msgid "Today"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:910
-msgid "mails"
+msgid "List"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:913
+msgid "FullCalendar could not be loaded."
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:914
+msgid "Could not load events: "
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:915
-msgid "Sent to %d member(s)"
+msgid "Event moved."
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:916
+msgid "Could not move event: "
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:917
-msgid " (%d failed)"
+msgid "Event resized."
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:918
-msgid "Write the mail content here…"
+msgid "Could not resize event: "
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:919
-msgid "Subject is required."
+#: includes/class-pcio-vis-plugin.php:920
+msgid "Start date is required."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:921
-msgid "Send to all members"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:923
-msgid "Attachments"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:924
-msgid "Add attachment…"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:926
-#: includes/class-pcio-vis-plugin.php:1139
-msgid "Select Attachment"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:927
-msgid "Attach"
+#: includes/class-pcio-vis-plugin.php:925
+msgid "Event deleted."
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:928
-msgid "Remove attachment"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:929
-msgid "This mail is a newsletter"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:930
-msgid "A newsletter appends a list of upcoming events and a footer, and can be generated to a PDF document."
+msgid "this event"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:931
-msgid "Include events until"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:932
-msgid "Defaults to the end of next month."
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:933
-msgid "Footer"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:934
-msgid "Closing text shown at the bottom of the newsletter…"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:935
-msgid "Generate newsletter PDF"
+msgid "Event Types"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:936
-msgid "Generating…"
+msgid "Public"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:937
-msgid "Newsletter generated"
+msgid "Members only"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:938
-msgid "Generation failed: "
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:939
-#: includes/class-pcio-vis-plugin.php:968
-msgid "Open PDF"
+msgid "Volunteers only"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:940
-msgid "events"
+msgid "+ New type"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:942
-msgid "System"
+#: includes/class-pcio-vis-plugin.php:941
+msgid "New Event Type"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:943
-msgid "Available tags"
+msgid "Access"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:945
+msgid "Event type created."
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:946
+msgid "Event type updated."
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:947
+msgid "Event type deleted."
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:949
+msgid "+ New resource"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:950
+msgid "New Resource"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:955
+msgid "Resource created."
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:956
+msgid "Resource updated."
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:957
+msgid "Resource deleted."
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:959
+msgid "Rolling Texts"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:960
+#: includes/class-pcio-vis-plugin.php:1240
+msgid "+ New entry"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:961
+msgid "New Rolling Text"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:962
-msgid "Events"
+msgid "Edit Rolling Text"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:963
-msgid "Until"
+msgid "Roller ID"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:964
-msgid "Generated"
+msgid "Start"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:965
-msgid "PDF"
+msgid "Stop"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:966
+msgid "Text"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:967
+msgid "Filter by roller ID"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:968
+msgid "Rolling text created."
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:969
+msgid "Rolling text updated."
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:970
-msgid "Delete Newsletter"
+msgid "Rolling text deleted."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:972
-msgid "This deletes the newsletter and its PDF. This cannot be undone."
+#: includes/class-pcio-vis-plugin.php:997
+msgid "+ New Mail"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:976
-msgid "No newsletters generated yet. Create a newsletter mail and click “Generate newsletter PDF”."
+#: includes/class-pcio-vis-plugin.php:998
+#: includes/class-pcio-vis-plugin.php:1004
+msgid "Subject"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:977
-msgid "No newsletters match your filters."
+#: includes/class-pcio-vis-plugin.php:999
+msgid "Created"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:978
-msgid "newsletter"
+#: includes/class-pcio-vis-plugin.php:1001
+msgid "New Mail"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:979
-msgid "newsletters"
+#: includes/class-pcio-vis-plugin.php:1002
+msgid "Edit Mail"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:983
-msgid "Failed to load newsletters: "
+#: includes/class-pcio-vis-plugin.php:1005
+msgid "Mail subject…"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:985
-msgid "Newsletter deleted."
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:986
-msgid "Go to Mails"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:1003
-msgid "+ Add Document"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:1007
-#: includes/class-pcio-vis-plugin.php:1073
-msgid "Date"
+#: includes/class-pcio-vis-plugin.php:1006
+msgid "Content"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1008
-#: includes/class-pcio-vis-plugin.php:1017
-msgid "File"
+msgid "Save draft"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1009
-msgid "Add Document"
+msgid "Send…"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1010
-msgid "Edit Document"
+msgid "Send Mail"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1011
+msgid "Send to all members?"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1012
-msgid "Document type"
+msgid "This will send the mail to the selected recipients."
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1013
-msgid "Select type…"
+msgid "Loading member count…"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1014
-msgid "Document date"
+msgid "Send now"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1015
-msgid "Display name"
+msgid "Send to"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1016
-msgid "e.g. Annual Report 2025"
+msgid "All members"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1017
+msgid "Specific addresses"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1018
-#: includes/class-pcio-vis-plugin.php:1138
-msgid "No file chosen"
+#: includes/class-pcio-vis-plugin.php:1019
+msgid "Group"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1020
-msgid "Select Document"
+msgid "Email addresses"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1021
-msgid "Use this document"
+msgid "alice@example.com; bob@example.com"
 msgstr ""
 
+#: includes/class-pcio-vis-plugin.php:1022
+msgid "Enter at least one email address."
+msgstr ""
+
+#. translators: %s: comma-separated list of invalid email addresses.
 #: includes/class-pcio-vis-plugin.php:1024
-msgid "Save document"
+#, php-format
+msgid "Invalid address(es): %s"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1025
-msgid "Delete Document"
+msgid "Delete Mail"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1029
+msgid "Draft"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1030
-msgid "No documents yet. Click + Add Document to add one."
+msgid "Sent"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1031
-msgid "No documents match the current filters."
+msgid "No mails yet."
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1032
-msgid "Failed to load documents: "
+msgid "Failed to load mails: "
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1035
-msgid "Document added."
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:1036
-msgid "Document updated."
+msgid "Sending…"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1037
-msgid "Document deleted."
+msgid "Mail created."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1040
-msgid "Document type is required."
+#: includes/class-pcio-vis-plugin.php:1038
+msgid "Mail updated."
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1039
+msgid "Mail deleted."
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1041
-msgid "Display name is required."
+msgid "Failed to load mail: "
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1042
-msgid "Please choose a file."
+#: includes/class-pcio-vis-plugin.php:1043
+msgid "Send failed: "
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1044
-msgid "document"
+msgid "mail"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1045
-msgid "documents"
+msgid "mails"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1049
-msgid "Download"
+#. translators: %d: number of members the mail was sent to.
+#: includes/class-pcio-vis-plugin.php:1050
+#, php-format
+msgid "Sent to %d member(s)"
+msgstr ""
+
+#. translators: %d: number of failed deliveries.
+#: includes/class-pcio-vis-plugin.php:1052
+#, php-format
+msgid " (%d failed)"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1053
+msgid "Write the mail content here…"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1054
+msgid "Subject is required."
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1056
+msgid "Send to all members"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1058
+msgid "Attachments"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1059
+msgid "Add attachment…"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1061
+#: includes/class-pcio-vis-plugin.php:1274
+msgid "Select Attachment"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1062
+msgid "Attach"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1063
+msgid "Remove attachment"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1064
+msgid "This mail is a newsletter"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1065
+msgid "A newsletter appends a list of upcoming events and a footer, and can be generated to a PDF document."
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1066
+msgid "Include events until"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1067
+msgid "Defaults to the end of next month."
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1068
-msgid "Journal"
+msgid "Footer"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1069
+msgid "Closing text shown at the bottom of the newsletter…"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1070
+msgid "Generate newsletter PDF"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1071
+msgid "Generating…"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1072
+msgid "Newsletter generated"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1073
+msgid "Generation failed: "
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1074
+#: includes/class-pcio-vis-plugin.php:1103
+msgid "Open PDF"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1075
-msgid "Member"
+msgid "events"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1077
-msgid "Amount"
+msgid "System"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1078
-msgid "Total"
+msgid "Available tags"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1079
-msgid "Verified"
+#: includes/class-pcio-vis-plugin.php:1097
+msgid "Events"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1080
-#: includes/class-pcio-vis-plugin.php:1135
-msgid "Attachment"
+#: includes/class-pcio-vis-plugin.php:1098
+msgid "Until"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1099
+msgid "Generated"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1100
+msgid "PDF"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1105
+msgid "Delete Newsletter"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1107
-msgid "New entry"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:1108
-msgid "Edit entry"
+msgid "This deletes the newsletter and its PDF. This cannot be undone."
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1111
-msgid "Save entry"
+msgid "No newsletters generated yet. Create a newsletter mail and click “Generate newsletter PDF”."
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1112
-msgid "Delete entry"
+msgid "No newsletters match your filters."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1117
-#: includes/class-pcio-vis-plugin.php:1159
-#: includes/class-pcio-vis-plugin.php:1225
-msgid "Failed to load: "
+#: includes/class-pcio-vis-plugin.php:1113
+msgid "newsletter"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1114
+msgid "newsletters"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1118
-msgid "No entries yet."
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:1119
-msgid "No entries match the current filters."
+msgid "Failed to load newsletters: "
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1120
-msgid "Enter a valid amount."
+msgid "Newsletter deleted."
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1121
-msgid "Use a negative amount for money paid out."
+msgid "Go to Mails"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1124
-msgid "Entry created."
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:1125
-msgid "Entry updated."
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:1126
-msgid "Saved."
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:1127
-msgid "Entry deleted."
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:1137
-#: includes/class-pcio-vis-plugin.php:1213
-msgid "Remove"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:1140
-msgid "Use this file"
+#: includes/class-pcio-vis-plugin.php:1138
+msgid "+ Add Document"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1142
-msgid "Open"
+#: includes/class-pcio-vis-plugin.php:1208
+msgid "Date"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1143
+#: includes/class-pcio-vis-plugin.php:1152
+msgid "File"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1144
+msgid "Add Document"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1145
+msgid "Edit Document"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1147
+msgid "Document type"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1148
+msgid "Select type…"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1149
+msgid "Document date"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1150
+msgid "Display name"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1151
+msgid "e.g. Annual Report 2025"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1153
+#: includes/class-pcio-vis-plugin.php:1273
+msgid "No file chosen"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1155
+msgid "Select Document"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1156
+msgid "Use this document"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1159
+msgid "Save document"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1160
-msgid "Member changes by year"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:1163
-msgid "No join/leave data yet."
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:1164
-msgid "Activity counters"
+msgid "Delete Document"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1165
-msgid "Total members"
+msgid "No documents yet. Click + Add Document to add one."
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1166
-msgid "Front page views"
+msgid "No documents match the current filters."
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1167
-msgid "Logins"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:1168
-msgid "Active memberships"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:1169
-msgid "Sponsor link clicks"
+msgid "Failed to load documents: "
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1170
-msgid "No sponsor clicks recorded yet."
+msgid "Document added."
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1171
-msgid "URL"
+msgid "Document updated."
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1172
-msgid "Clicks"
+msgid "Document deleted."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1204
-msgid "+ New workgroup"
+#: includes/class-pcio-vis-plugin.php:1175
+msgid "Document type is required."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1208
-msgid "Save"
+#: includes/class-pcio-vis-plugin.php:1176
+msgid "Display name is required."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1211
-msgid "Add volunteer"
+#: includes/class-pcio-vis-plugin.php:1177
+msgid "Please choose a file."
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1179
+msgid "document"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1180
+msgid "documents"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1184
+msgid "Download"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1203
+msgid "Journal"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1210
+msgid "Member"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1212
-msgid "Chairman"
+msgid "Amount"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1213
+msgid "Total"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1214
-msgid "Workgroup created."
+msgid "Verified"
 msgstr ""
 
 #: includes/class-pcio-vis-plugin.php:1215
+#: includes/class-pcio-vis-plugin.php:1270
+msgid "Attachment"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1242
+msgid "New entry"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1243
+msgid "Edit entry"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1246
+msgid "Save entry"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1247
+msgid "Delete entry"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1252
+#: includes/class-pcio-vis-plugin.php:1294
+#: includes/class-pcio-vis-plugin.php:1360
+msgid "Failed to load: "
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1253
+msgid "No entries yet."
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1254
+msgid "No entries match the current filters."
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1255
+msgid "Enter a valid amount."
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1256
+msgid "Use a negative amount for money paid out."
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1259
+msgid "Entry created."
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1260
+msgid "Entry updated."
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1261
+msgid "Saved."
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1262
+msgid "Entry deleted."
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1272
+#: includes/class-pcio-vis-plugin.php:1348
+msgid "Remove"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1275
+msgid "Use this file"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1277
+msgid "Open"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1295
+msgid "Member changes by year"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1298
+msgid "No join/leave data yet."
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1299
+msgid "Activity counters"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1300
+msgid "Total members"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1301
+msgid "Front page views"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1302
+msgid "Logins"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1303
+msgid "Active memberships"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1304
+msgid "Sponsor link clicks"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1305
+msgid "No sponsor clicks recorded yet."
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1306
+msgid "URL"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1307
+msgid "Clicks"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1339
+msgid "+ New workgroup"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1343
+msgid "Save"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1346
+msgid "Add volunteer"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1347
+msgid "Chairman"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1349
+msgid "Workgroup created."
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:1350
 msgid "Workgroup updated."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1216
+#: includes/class-pcio-vis-plugin.php:1351
 msgid "Workgroup deleted."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1217
+#: includes/class-pcio-vis-plugin.php:1352
 msgid "Volunteer added."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1218
+#: includes/class-pcio-vis-plugin.php:1353
 msgid "Volunteer removed."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1219
+#: includes/class-pcio-vis-plugin.php:1354
 msgid "Delete this workgroup?"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1220
+#: includes/class-pcio-vis-plugin.php:1355
 msgid "No workgroups yet."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1221
+#: includes/class-pcio-vis-plugin.php:1356
 msgid "No volunteers in this workgroup."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1222
+#: includes/class-pcio-vis-plugin.php:1357
 msgid "Search volunteers…"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1226
+#: includes/class-pcio-vis-plugin.php:1361
 msgid "volunteers"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1229
+#: includes/class-pcio-vis-plugin.php:1364
 msgid "No email addresses in this workgroup."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1274
+#: includes/class-pcio-vis-plugin.php:1409
 msgid "No documents found."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1309
+#: includes/class-pcio-vis-plugin.php:1444
 msgid "You must be logged in as a Vis member to edit your profile."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1314
+#: includes/class-pcio-vis-plugin.php:1449
 msgid "No member record is linked to your account."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1319
+#: includes/class-pcio-vis-plugin.php:1454
 msgid "Could not load your member record."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1358
+#: includes/class-pcio-vis-plugin.php:1488
 msgid "Edit your profile"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1359
+#: includes/class-pcio-vis-plugin.php:1489 templates/member-profile.php:28
 msgid "Membership number"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1369
+#: includes/class-pcio-vis-plugin.php:1499
 msgid "Renew subscription"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1371
+#: includes/class-pcio-vis-plugin.php:1501
 msgid "Save changes"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1373
+#: includes/class-pcio-vis-plugin.php:1503
 msgid "Your profile has been updated."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1435
+#: includes/class-pcio-vis-plugin.php:1598
 msgid "No members found."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1441
-#: includes/class-pcio-vis-plugin.php:1931
+#: includes/class-pcio-vis-plugin.php:1605
+#: includes/class-pcio-vis-plugin.php:2119
 msgid "Search…"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1543
-msgid "Model"
+#: includes/class-pcio-vis-plugin.php:1611
+msgid "No members match your search."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1544
-msgid "Built"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:1545
-msgid "Sail no."
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:1546
-msgid "MMSI"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:1547
-msgid "Harbour"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:1718
-#: includes/class-pcio-vis-plugin.php:1720
-#: templates/event-public.php:130
-#: templates/event-public.php:132
+#: includes/class-pcio-vis-plugin.php:1817
+#: includes/class-pcio-vis-plugin.php:1819 templates/event-public.php:137
+#: templates/event-public.php:139
 msgid "Your response"
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1829
-msgid "Read More"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:1840
-msgid "Previous event"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:1844
-msgid "Next event"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:1877
-msgid "Tomorrow"
-msgstr ""
-
-#: includes/class-pcio-vis-plugin.php:1936
+#: includes/class-pcio-vis-plugin.php:1897
+#: includes/class-pcio-vis-plugin.php:2124
 msgid "No upcoming events."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:1983
+#: includes/class-pcio-vis-plugin.php:2017
+msgid "Read More"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:2028
+msgid "Previous event"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:2032
+msgid "Next event"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:2065
+msgid "Tomorrow"
+msgstr ""
+
+#: includes/class-pcio-vis-plugin.php:2171
 msgid "No events match your search."
 msgstr ""
 
-#: includes/class-pcio-vis-plugin.php:2015
+#: includes/class-pcio-vis-plugin.php:2203
 msgid "No newsletters published yet."
+msgstr ""
+
+#: includes/class-pcio-vis-recurrence-rest.php:98
+msgid "Only the first event in the series can define the rules."
+msgstr ""
+
+#: includes/class-pcio-vis-recurrence-rest.php:107
+msgid "Could not create the series."
+msgstr ""
+
+#: includes/class-pcio-vis-recurrence-rest.php:124
+#: includes/class-pcio-vis-recurrence-rest.php:141
+#: includes/class-pcio-vis-recurrence-rest.php:158
+msgid "This event is not part of a series."
+msgstr ""
+
+#: includes/class-pcio-vis-recurrence-rest.php:180
+msgid "Set a number of occurrences and/or a repeat-until date."
+msgstr ""
+
+#: includes/class-pcio-vis-recurrence-rest.php:186
+msgid "Choose a valid repeat frequency."
+msgstr ""
+
+#: includes/class-pcio-vis-recurrence-rest.php:189
+msgid "Repeat interval must be at least 1."
+msgstr ""
+
+#: includes/class-pcio-vis-recurrence-rest.php:196
+msgid "Select at least one weekday."
+msgstr ""
+
+#: includes/class-pcio-vis-recurrence-rest.php:201
+msgid "Choose a week and a weekday."
+msgstr ""
+
+#: includes/class-pcio-vis-recurrence-rest.php:206
+msgid "Choose a day of the month."
+msgstr ""
+
+#: includes/class-pcio-vis-recurrence-rest.php:211
+msgid "Choose a month and a day of the month."
+msgstr ""
+
+#: includes/class-pcio-vis-recurrence-rest.php:216
+msgid "Choose a month, a week and a weekday."
 msgstr ""
 
 #: includes/class-pcio-vis-resources-rest.php:70
@@ -2980,15 +3287,15 @@ msgstr ""
 msgid "This email belongs to another WordPress user. Unlink that account or use a different email."
 msgstr ""
 
-#: includes/class-pcio-vis-rest.php:164
+#: includes/class-pcio-vis-rest.php:181
 msgid "Could not update member."
 msgstr ""
 
-#: includes/class-pcio-vis-rest.php:198
+#: includes/class-pcio-vis-rest.php:215
 msgid "Could not delete member."
 msgstr ""
 
-#: includes/class-pcio-vis-rest.php:213
+#: includes/class-pcio-vis-rest.php:230
 #: includes/class-pcio-vis-workgroups-rest.php:133
 msgid "Member not found."
 msgstr ""
@@ -3028,7 +3335,9 @@ msgstr ""
 msgid "URL is required."
 msgstr ""
 
+#. translators: %d: number of hours
 #: includes/class-pcio-vis-sync.php:70
+#, php-format
 msgid "Every %d hour(s) (Vis sync)"
 msgstr ""
 
@@ -3040,11 +3349,15 @@ msgstr ""
 msgid "Import WP Users"
 msgstr ""
 
+#. translators: 1: revoked count, 2: created count, 3: linked count, 4: skipped admins
 #: includes/class-pcio-vis-sync.php:352
+#, php-format
 msgid "Revoked: %1$d  |  Created: %2$d  |  Linked: %3$d  |  Admins skipped: %4$d"
 msgstr ""
 
+#. translators: 1: imported count, 2: skipped count
 #: includes/class-pcio-vis-sync.php:414
+#, php-format
 msgid "Imported: %1$d  |  Skipped (already exist): %2$d"
 msgstr ""
 
@@ -3072,34 +3385,9 @@ msgstr ""
 msgid "Only volunteers can be added to a workgroup."
 msgstr ""
 
-#: templates/_members-subnav.php:38
-msgid "Members section"
-msgstr ""
-
-#: templates/_members-subnav.php:41
-msgid "Member list"
-msgstr ""
-
-#: templates/_nav.php:52
-msgid "Website"
-msgstr ""
-
-#: templates/_nav.php:57
-msgid "WP Admin"
-msgstr ""
-
-#: templates/_nav.php:63
-msgid "Log out"
-msgstr ""
-
-#: templates/calendar.php:34
-#: templates/documents.php:34
-#: templates/event.php:34
-#: templates/finance.php:35
-#: templates/mails.php:34
-#: templates/members.php:35
-#: templates/newsletters.php:34
-#: templates/workgroups.php:38
+#: templates/calendar.php:34 templates/documents.php:34 templates/event.php:34
+#: templates/finance.php:35 templates/mails.php:34 templates/members.php:35
+#: templates/newsletters.php:34 templates/workgroups.php:38
 msgid "Loading&hellip;"
 msgstr ""
 
@@ -3115,15 +3403,15 @@ msgstr ""
 msgid "Sign up"
 msgstr ""
 
-#: templates/event-public.php:151
+#: templates/event-public.php:158
 msgid "Log in to sign up for this event."
 msgstr ""
 
-#: templates/event-public.php:153
+#: templates/event-public.php:160
 msgid "Log in"
 msgstr ""
 
-#: templates/event-public.php:156
+#: templates/event-public.php:163
 msgid "You cannot sign up for this event."
 msgstr ""
 
@@ -3163,12 +3451,16 @@ msgstr ""
 msgid "Member growth, page views, logins and sponsor clicks."
 msgstr ""
 
-#: templates/member-signup.php:24
+#: templates/member-profile.php:23 templates/member-signup.php:24
 msgid "Your details"
 msgstr ""
 
-#: templates/member-signup.php:65
+#: templates/member-profile.php:71 templates/member-signup.php:65
 msgid "* Required"
+msgstr ""
+
+#: templates/member-profile.php:76
+msgid "Update"
 msgstr ""
 
 #: templates/member-signup.php:71
@@ -3179,3 +3471,22 @@ msgstr ""
 msgid "Register"
 msgstr ""
 
+#: templates/_members-subnav.php:38
+msgid "Members section"
+msgstr ""
+
+#: templates/_members-subnav.php:41
+msgid "Member list"
+msgstr ""
+
+#: templates/_nav.php:52
+msgid "Website"
+msgstr ""
+
+#: templates/_nav.php:57
+msgid "WP Admin"
+msgstr ""
+
+#: templates/_nav.php:63
+msgid "Log out"
+msgstr ""

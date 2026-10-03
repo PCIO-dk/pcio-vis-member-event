@@ -158,6 +158,23 @@ class PCIO_VIS_Rest {
             }
         }
 
+        /**
+         * Filter: pcio_me_member_update_validate
+         * Lets extensions reject a member save before anything is written.
+         * Extensions add their own fields to the payload, so they validate them here.
+         *
+         * @param array  $result   ['valid' => true, 'message' => '']
+         * @param array  $data     Raw submitted data (core + extension fields).
+         * @param int    $id       Member ID being updated.
+         */
+        $ext = apply_filters( 'pcio_me_member_update_validate', [ 'valid' => true, 'message' => '' ], $data, $id );
+        if ( ! ( $ext['valid'] ?? true ) ) {
+            return new WP_REST_Response(
+                [ 'message' => (string) ( $ext['message'] ?? __( 'Validation failed.', 'pcio-vis-member-event' ) ) ],
+                422
+            );
+        }
+
         $result = PCIO_VIS_DB::update( $id, $data );
         // $result is false on DB error, or an int (0 = no fields changed, ≥1 = changed). Both are valid saves.
         if ( false === $result ) {
