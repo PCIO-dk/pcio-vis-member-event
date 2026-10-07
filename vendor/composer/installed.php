@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
-        'name' => 'pcio/member-event-tickets',
-        'pretty_version' => 'dev-master',
-        'version' => 'dev-master',
-        'reference' => 'ee8d3fbaf7be0e887167432fa9bd97bb636d2f44',
+        'name' => 'pcio/pcio-vis-member-event',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '98bc6c2a712a6db975e6a44cae9e2075602cf9ff',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -64,10 +64,10 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        'pcio/member-event-tickets' => array(
-            'pretty_version' => 'dev-master',
-            'version' => 'dev-master',
-            'reference' => 'ee8d3fbaf7be0e887167432fa9bd97bb636d2f44',
+        'pcio/pcio-vis-member-event' => array(
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '98bc6c2a712a6db975e6a44cae9e2075602cf9ff',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
