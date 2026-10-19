@@ -9,6 +9,9 @@
     const EVENTS_REST = ( PCIO_ME.rest + '/events'      ).replace( /([^:]\/)\/+/g, '$1' );
     const TYPES_REST  = ( PCIO_ME.rest + '/event-types' ).replace( /([^:]\/)\/+/g, '$1' );
     const RSC_REST    = ( PCIO_ME.rest + '/resources'   ).replace( /([^:]\/)\/+/g, '$1' );
+    const ROLES_REST  = ( PCIO_ME.rest + '/event-roles' ).replace( /([^:]\/)\/+/g, '$1' );
+    const MEMBERS_REST = ( PCIO_ME.rest + '/members'    ).replace( /([^:]\/)\/+/g, '$1' );
+    const FILTER_REST = ( PCIO_ME.rest + '/calendar-filter' ).replace( /([^:]\/)\/+/g, '$1' );
     const NONCE       = PCIO_ME.nonce;
     const CAN_EDIT    = PCIO_ME.canEdit;
     const EVENT_ID    = PCIO_ME.eventId;
@@ -31,25 +34,50 @@
         { id: 'basic',       label: T.tabBasic   },
         { id: 'description', label: T.tabDesc    },
         { id: 'resources',   label: T.tabResources || 'Resources' },
-        { id: 'guests',      label: T.tabGuests  },
+        { id: 'crew',        label: T.tabCrew || 'Crew' },
+        { id: 'guests',      label: T.tabGuests, signupModes: [ 'simple' ], inactiveText: T.guestsInactive },
         { id: 'photos',      label: T.tabPhotos  },
     ];
-    // Publish tab is editor-only.
+    TABS.push( { id: 'publish', label: T.tabPublish } );
+    // Recurrence is editor-only.
     if ( CAN_EDIT ) {
-        TABS.push( { id: 'publish', label: T.tabPublish } );
         TABS.push( { id: 'recurrence', label: T.tabRecurrence || 'Recurrence' } );
+    }
+    if ( PCIO_ME.canHistory ) {
+        TABS.push( { id: 'history', label: T.tabHistory || 'History' } );
     }
 
     // Extra tabs registered by extensions via the `pcio_me_event_tabs` filter.
     const EXTRA_TABS = Array.isArray( PCIO_ME.extraTabs ) ? PCIO_ME.extraTabs : [];
     EXTRA_TABS.forEach( t => {
         if ( t && t.id ) {
-            TABS.push( { id: t.id, label: t.label || t.id } );
+            TABS.push( {
+                id:           t.id,
+                label:        t.label || t.id,
+                signupModes:  Array.isArray( t.signupModes ) ? t.signupModes : null,
+                inactiveText: t.inactiveText || '',
+            } );
         }
     } );
 
+    // A tab with signupModes only applies to events using one of those modes.
+    function isTabActive( tab ) {
+        if ( ! tab || ! Array.isArray( tab.signupModes ) || ! event ) return true;
+        return tab.signupModes.includes( event.signup_mode || 'simple' );
+    }
+
+    // Grey out tabs that do not apply to the event's current sign-up mode.
+    function syncTabAvailability() {
+        document.querySelectorAll( '.me-tab-btn' ).forEach( btn => {
+            const tab      = TABS.find( t => t.id === btn.dataset.tab );
+            const inactive = ! isTabActive( tab );
+            btn.classList.toggle( 'me-tab-inactive', inactive );
+            btn.title = inactive ? ( tab.inactiveText || T.tabInactive || '' ) : '';
+        } );
+    }
+
     let event          = null;  // raw DB row
-    let activeTab      = 'basic';
+    let activeTab      = initialTab();
     let saveTimer      = null;
     let saveStateTimer = null;
     let toastTimer     = null;
@@ -79,7 +107,9 @@
             if ( ! res.ok ) throw new Error( `HTTP ${ res.status }` );
             event = await res.json();
             buildShell();
+            syncTabAvailability();
             renderTab( activeTab );
+            loadNeighbours();
         } catch ( err ) {
             renderError( escHtml( T.errLoad ) + escHtml( err.message ) );
         }
@@ -92,10 +122,6 @@
 
         const colorDot = `<span class="me-evt-color-dot"
             style="background:${ escAttr( event.color || '#3b82f6' ) }"></span>`;
-
-        const deleteBtn = CAN_EDIT
-            ? `<button class="me-btn me-btn-danger" id="me-evt-del-btn">${ escHtml( T.btnDeleteEvt ) }</button>`
-            : '';
 
         const tabItems = TABS.map( t =>
             `<button class="me-tab-btn${ t.id === activeTab ? ' active' : '' }"
@@ -113,10 +139,18 @@
                     ${ colorDot }
                     <span id="me-evt-heading">${ escHtml( event.title ) }</span>
                 </h1>
+                <div class="me-evt-when-row">
+                    <p id="me-evt-when" style="margin:0;color:#cbd5e1;font-size:13px">${ escHtml( compactEventTime() ) }</p>
+                    <nav class="me-evt-nav" aria-label="${ escAttr( T.eventNavLabel || 'Browse events' ) }">
+                        <a class="me-evt-nav-btn is-disabled" id="me-evt-prev" role="button" aria-disabled="true"
+                           aria-label="${ escAttr( T.eventPrev || 'Previous event' ) }">&laquo;</a>
+                        <a class="me-evt-nav-btn is-disabled" id="me-evt-next" role="button" aria-disabled="true"
+                           aria-label="${ escAttr( T.eventNext || 'Next event' ) }">&raquo;</a>
+                    </nav>
+                </div>
             </div>
             <div class="me-header-right" style="align-items:flex-end;gap:10px">
                 <span class="me-save-indicator me-hidden" id="me-save-indicator">${ escHtml( T.stateSaving ) }</span>
-                ${ deleteBtn }
             </div>
         </div>
 
@@ -180,9 +214,6 @@
 
         // Delete
         if ( CAN_EDIT ) {
-            document.getElementById( 'me-evt-del-btn' )
-                .addEventListener( 'click', () =>
-                    document.getElementById( 'me-del-overlay' ).classList.remove( 'me-hidden' ) );
             document.getElementById( 'me-del-close'   ).addEventListener( 'click', closeDeleteModal );
             document.getElementById( 'me-del-cancel'  ).addEventListener( 'click', closeDeleteModal );
             document.getElementById( 'me-del-confirm' ).addEventListener( 'click', confirmDelete );
@@ -197,12 +228,75 @@
     }
 
     // ── Tab navigation ────────────────────────────────────────────
+    // The tab to open first: ?tab=… (kept when browsing to the previous/next event).
+    function initialTab() {
+        const wanted = new URLSearchParams( window.location.search ).get( 'tab' );
+        return TABS.some( t => t.id === wanted ) ? wanted : 'basic';
+    }
+
     function setActiveTab( tabId ) {
         activeTab = tabId;
         document.querySelectorAll( '.me-tab-btn' ).forEach( btn => {
             btn.classList.toggle( 'active', btn.dataset.tab === tabId );
         } );
+        rememberTab();
         renderTab( tabId );
+    }
+
+    // Reflect the active tab in the address bar and the previous/next links.
+    function rememberTab() {
+        const url = new URL( window.location.href );
+        if ( 'basic' === activeTab ) {
+            url.searchParams.delete( 'tab' );
+        } else {
+            url.searchParams.set( 'tab', activeTab );
+        }
+        window.history.replaceState( null, '', url );
+        document.querySelectorAll( '.me-evt-nav-btn[data-id]' ).forEach( a => { a.href = eventUrl( a.dataset.id ); } );
+    }
+
+    // ── Previous / next event (time order, honouring the calendar filter) ──
+    function eventUrl( id ) {
+        const base = ( PCIO_ME.eventBaseUrl || '' ).replace( /\/?$/, '/' ) + id + '/';
+        return 'basic' === activeTab ? base : base + '?tab=' + encodeURIComponent( activeTab );
+    }
+
+    async function loadNeighbours() {
+        try {
+            const res = await fetch( `${ FILTER_REST }/neighbours/${ EVENT_ID }`, { headers: { 'X-WP-Nonce': NONCE } } );
+            if ( ! res.ok ) return;
+            const data = await res.json();
+            setNavLink( 'me-evt-prev', data.prev, T.eventPrev || 'Previous event', data.filtered );
+            setNavLink( 'me-evt-next', data.next, T.eventNext || 'Next event', data.filtered );
+        } catch ( err ) {
+            // Navigation is optional; leave the buttons disabled.
+        }
+    }
+
+    function setNavLink( elId, target, label, filtered ) {
+        const a = document.getElementById( elId );
+        if ( ! a || ! target ) return;
+        const day = ( target.start_datetime || '' ).substring( 0, 10 ).split( '-' ).reverse().join( '/' );
+        let title = `${ label }: ${ target.title } (${ day })`;
+        if ( filtered ) title += ' \u2013 ' + ( T.eventNavFiltered || 'matching your calendar filter' );
+        a.dataset.id = String( target.id );
+        a.href       = eventUrl( target.id );
+        a.title      = title;
+        a.classList.remove( 'is-disabled' );
+        a.classList.toggle( 'is-filtered', Boolean( filtered ) );
+        a.removeAttribute( 'aria-disabled' );
+        a.setAttribute( 'aria-label', title );
+        a.addEventListener( 'click', async ( e ) => {
+            if ( e.ctrlKey || e.metaKey || e.shiftKey || 0 !== e.button ) return;
+            e.preventDefault();
+            // Save a pending basic-tab change before leaving the page.
+            if ( saveTimer ) {
+                clearTimeout( saveTimer );
+                saveTimer = null;
+                await saveBasic();
+            }
+            window.location.href = a.href;
+        } );
     }
 
     function renderTab( tabId ) {
@@ -210,16 +304,41 @@
         if ( ! container ) return;
         container.innerHTML = '';
 
+        const tab = TABS.find( t => t.id === tabId );
+        if ( ! isTabActive( tab ) ) {
+            container.innerHTML = `<div class="me-tab-card"><p class="me-tab-inactive-note">${ escHtml( tab.inactiveText || T.tabInactive || '' ) }</p></div>`;
+            return;
+        }
+
         switch ( tabId ) {
             case 'basic':       renderBasicTab( container );       break;
             case 'description': renderDescriptionTab( container ); break;
             case 'resources':   renderResourcesTab( container );   break;
+            case 'crew':        renderCrewTab( container );        break;
             case 'guests':      renderGuestsTab( container );      break;
             case 'photos':      renderPhotosTab( container );      break;
             case 'publish':     renderPublishTab( container );     break;
             case 'recurrence':  renderRecurrenceTab( container );  break;
+            case 'history':     renderHistoryTab( container );     break;
             default:            renderExtraTab( container, tabId ); break;
         }
+    }
+
+    // Delegate the History tab to the shared module (history.js).
+    function renderHistoryTab( container ) {
+        if ( ! window.PCIO_ME_History ) {
+            return;
+        }
+        window.PCIO_ME_History.render( container, {
+            rest: PCIO_ME.rest,
+            nonce: NONCE,
+            query: { event_id: EVENT_ID },
+            // Reload the event so every tab reflects the restored data.
+            onUndone: async ( data ) => {
+                await loadEvent();
+                showToast( data.message || '', 'success' );
+            },
+        } );
     }
 
     // Delegate the Recurrence tab to its own module (event-recurrence.js).
@@ -246,6 +365,22 @@
         }
     }
 
+    function compactEventTime() {
+        const start = event.start_datetime || '';
+        const end = event.end_datetime || '';
+        const date = value => {
+            const [ year, month, day ] = value.substring( 0, 10 ).split( '-' );
+            return year && month && day ? `${ day }/${ month }/${ year }` : '';
+        };
+        if ( ! start ) return '';
+        const allDay = Number( event.all_day ) === 1;
+        const sameDay = start.substring( 0, 10 ) === end.substring( 0, 10 );
+        const first = date( start ) + ( allDay ? '' : ` ${ start.substring( 11, 16 ) }` );
+        if ( ! end || ( allDay && sameDay ) ) return first;
+        const last = allDay ? date( end ) : `${ sameDay ? '' : date( end ) + ' ' }${ end.substring( 11, 16 ) }`;
+        return `${ first } \u2013 ${ last }`;
+    }
+
     // ── Tab: Basic ────────────────────────────────────────────────
     function renderBasicTab( container ) {
         const swatches = PRESET_COLORS.map( c =>
@@ -259,6 +394,8 @@
         const endISO    = ( event.end_datetime   || '' ).replace( ' ', 'T' );
         const startDate = startISO.substring( 0, 10 );
         const startTime = allDay ? '' : startISO.substring( 11, 16 );
+        const getInTime = ( event.get_in_datetime       || '' ).substring( 11, 16 );
+        const doorTime  = ( event.door_opening_datetime || '' ).substring( 11, 16 );
 
         // For all-day, display end as inclusive (stored as exclusive)
         let endDate = '';
@@ -338,22 +475,39 @@
                     </div>
                 </div>
 
+                <div class="me-form-row" id="g-b-pre-start"${ allDay ? ' hidden' : '' }>
+                    <div class="me-form-group">
+                        <label class="me-form-label" for="b-get-in-time">${ escHtml( T.fieldGetInTime || 'Get-in time' ) }</label>
+                        <input class="me-form-input" type="time" id="b-get-in-time"
+                               name="get_in_time" value="${ escAttr( getInTime ) }" ${ ro }>
+                    </div>
+                    <div class="me-form-group">
+                        <label class="me-form-label" for="b-door-time">${ escHtml( T.fieldDoorTime || 'Door opening' ) }</label>
+                        <input class="me-form-input" type="time" id="b-door-time"
+                               name="door_opening_time" value="${ escAttr( doorTime ) }" ${ ro }>
+                    </div>
+                </div>
+
                 <div class="me-form-row full">
                     <div class="me-form-group">
                         <label class="me-form-label" for="b-location">${ escHtml( T.fieldLocation ) }</label>
-                        <input class="me-form-input" type="text" id="b-location"
-                               name="location"
-                               value="${ escAttr( event.location || '' ) }"
-                               placeholder="${ escAttr( T.phLocation ) }" maxlength="200" ${ ro }>
+                        <div class="me-url-check-wrap">
+                            <input class="me-form-input" type="text" id="b-location"
+                                   name="location"
+                                   value="${ escAttr( event.location || '' ) }"
+                                   placeholder="${ escAttr( T.phLocation ) }" maxlength="200" ${ ro }>
+                            ${ CAN_EDIT ? `<button type="button" class="me-btn me-btn-sm me-btn-secondary" id="b-use-default-location">${ escHtml( T.btnDefaultLocation || 'Use default address' ) }</button>` : '' }
+                        </div>
                     </div>
                 </div>
 
                 <div class="me-form-row">
                     <div class="me-form-group">
                         <label class="me-form-label" for="b-event-type">${ escHtml( T.fieldEventType || 'Event type' ) }</label>
-                        <select class="me-form-input" id="b-event-type" name="event_type_id" ${ ro }>
-                            <option value="">${ escHtml( T.noEventType || '\u2014 None \u2014' ) }</option>
+                        <select class="me-form-input" id="b-event-type" name="event_type_id" required aria-required="true" ${ ro }>
+                            <option value="">${ escHtml( T.chooseEventType || '\u2014 Choose event type \u2014' ) }</option>
                         </select>
+                        <span class="me-field-error" id="err-b-event-type"></span>
                     </div>
                     <div class="me-form-group">
                         <label class="me-form-label">${ escHtml( T.fieldColour ) }</label>
@@ -365,19 +519,41 @@
                     </div>
                 </div>
 
-                <div class="me-form-row full">
+                <div class="me-form-row me-signup-row">
                     <div class="me-form-group">
                         <label class="me-form-label" for="b-signup-mode">${ escHtml( T.fieldSignupMode || 'Sign-up' ) }</label>
                         <select class="me-form-input" id="b-signup-mode" name="signup_mode" ${ ro }>
                             ${ signupModeOptions }
                         </select>
                     </div>
+                    <div class="me-form-group" id="g-b-external-url"${ 'external' === currentMode ? '' : ' hidden' }>
+                        <label class="me-form-label" for="b-external-url">${ escHtml( T.fieldExternalUrl || 'Ticket sale URL' ) }</label>
+                        <div class="me-url-check-wrap">
+                            <input class="me-form-input" type="url" id="b-external-url" name="external_url"
+                                   value="${ escAttr( event.external_url || '' ) }"
+                                   placeholder="https://" maxlength="500" ${ ro }>
+                            <span class="me-url-check" id="b-external-url-status" role="status"></span>
+                        </div>
+                    </div>
                 </div>
 
 
             </form>
+            ${ CAN_EDIT ? `<button type="button" class="me-btn me-btn-danger" id="me-evt-del-btn">${ escHtml( T.btnDeleteEvt ) }</button>` : '' }
         </div>
         `;
+        if ( CAN_EDIT ) {
+            document.getElementById( 'me-evt-del-btn' ).addEventListener( 'click', () =>
+                document.getElementById( 'me-del-overlay' ).classList.remove( 'me-hidden' ) );
+            document.getElementById( 'b-use-default-location' ).addEventListener( 'click', () => {
+                const input = document.getElementById( 'b-location' );
+                input.value = PCIO_ME.defaultLocation || '';
+                // Programmatic .value sets fire no events; the Basic tab
+                // autosaves on input/change only, so dispatch both.
+                input.dispatchEvent( new Event( 'input', { bubbles: true } ) );
+                input.dispatchEvent( new Event( 'change', { bubbles: true } ) );
+            } );
+        }
 
         // Load event types and populate the select.
         fetch( TYPES_REST, { headers: { 'X-WP-Nonce': NONCE } } )
@@ -386,7 +562,7 @@
                 const sel = document.getElementById( 'b-event-type' );
                 if ( ! sel ) return;
                 const current = String( event.event_type_id || '' );
-                sel.innerHTML = `<option value="">${ escHtml( T.noEventType || '\u2014 None \u2014' ) }</option>` +
+                sel.innerHTML = `<option value="">${ escHtml( T.chooseEventType || '\u2014 Choose event type \u2014' ) }</option>` +
                     ( types || [] ).map( t => `<option value="${ t.id }"${ String( t.id ) === current ? ' selected' : '' }>${ escHtml( t.name ) }</option>` ).join( '' );
                 // When type changes, suggest the type's color.
                 if ( CAN_EDIT ) {
@@ -405,6 +581,7 @@
             .catch( () => {} );
 
         syncBasicTimeVis();
+        initExternalUrl();
 
         if ( CAN_EDIT ) {
             function onBasicChange() {
@@ -432,6 +609,71 @@
         }
     }
 
+    // External ticket sale: show the URL field only for that mode and verify
+    // the URL (server-side, to avoid CORS) a moment after the user stops typing.
+    let urlCheckTimer = null;
+    let urlCheckSeq   = 0;
+
+    function initExternalUrl() {
+        const sel   = document.getElementById( 'b-signup-mode' );
+        const group = document.getElementById( 'g-b-external-url' );
+        const input = document.getElementById( 'b-external-url' );
+        if ( ! sel || ! group || ! input ) return;
+
+        sel.addEventListener( 'change', () => {
+            group.hidden = 'external' !== sel.value;
+            if ( ! group.hidden ) scheduleUrlCheck( input.value );
+        } );
+        input.addEventListener( 'input', () => scheduleUrlCheck( input.value ) );
+
+        if ( CAN_EDIT && ! group.hidden && input.value.trim() ) {
+            scheduleUrlCheck( input.value, 0 );
+        }
+    }
+
+    function setUrlStatus( state ) {
+        const el = document.getElementById( 'b-external-url-status' );
+        if ( ! el ) return;
+        const map = {
+            busy: [ '\u2026', T.urlChecking || 'Checking URL\u2026' ],
+            ok:   [ '\u2713', T.urlOk       || 'URL is reachable' ],
+            bad:  [ '\u2717', T.urlInvalid  || 'URL is invalid or not reachable' ],
+        };
+        el.className = 'me-url-check' + ( state ? ' is-' + state : '' );
+        el.textContent = state ? map[ state ][0] : '';
+        el.title = state ? map[ state ][1] : '';
+        el.setAttribute( 'aria-label', el.title );
+    }
+
+    function scheduleUrlCheck( raw, delay = 1500 ) {
+        clearTimeout( urlCheckTimer );
+        const url = String( raw || '' ).trim();
+        const seq = ++urlCheckSeq;
+        if ( ! url ) {
+            setUrlStatus( '' );
+            return;
+        }
+        if ( ! /^https?:\/\/[^\/\s]+/i.test( url ) ) {
+            setUrlStatus( 'bad' );
+            return;
+        }
+        setUrlStatus( 'busy' );
+        urlCheckTimer = setTimeout( async () => {
+            let ok = false;
+            try {
+                const res = await fetch( `${ EVENTS_REST }/check-url`, {
+                    method:  'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': NONCE },
+                    body:    JSON.stringify( { url } ),
+                } );
+                ok = res.ok && !! ( await res.json() ).ok;
+            } catch ( err ) {
+                ok = false;
+            }
+            if ( seq === urlCheckSeq ) setUrlStatus( ok ? 'ok' : 'bad' );
+        }, delay );
+    }
+
     function syncBasicTimeVis() {
         const allDay = document.getElementById( 'b-all-day' )?.checked;
         const vis    = allDay ? 'hidden' : 'visible';
@@ -439,6 +681,21 @@
             const el = document.getElementById( id );
             if ( el ) el.style.visibility = vis;
         } );
+        const pre = document.getElementById( 'g-b-pre-start' );
+        if ( pre ) pre.hidden = !! allDay;
+    }
+
+    // Get-in / door opening are entered as a time before the start. A time
+    // later than the start time belongs to the evening before the start date.
+    function preStartDatetime( startDate, startTime, time ) {
+        if ( ! time || ! startDate ) return null;
+        let day = startDate;
+        if ( time > startTime ) {
+            const d = new Date( startDate + 'T00:00:00Z' );
+            d.setUTCDate( d.getUTCDate() - 1 );
+            day = d.toISOString().substring( 0, 10 );
+        }
+        return day + ' ' + time + ':00';
     }
 
     function scheduleSave() {
@@ -492,6 +749,17 @@
             }
         }
 
+        // Every event needs a type; omit the field while the type list is still loading.
+        const typeSel = document.getElementById( 'b-event-type' );
+        const typeId  = parseInt( typeSel?.value || 0, 10 );
+        const typeErr = document.getElementById( 'err-b-event-type' );
+        if ( typeErr ) typeErr.textContent = '';
+        if ( ! typeId && typeSel && typeSel.options.length > 1 ) {
+            if ( typeErr ) typeErr.textContent = T.errEventTypeReq || 'Choose an event type.';
+            typeSel.focus();
+            return;
+        }
+
         showSaveState( 'saving' );
         try {
             const res = await fetch( `${ EVENTS_REST }/${ EVENT_ID }`, {
@@ -501,18 +769,23 @@
                     title,
                     start_datetime: startDatetime,
                     end_datetime:   endDatetime,
+                    get_in_datetime:       allDay ? undefined : preStartDatetime( startDate, startTime, document.getElementById( 'b-get-in-time' )?.value || '' ),
+                    door_opening_datetime: allDay ? undefined : preStartDatetime( startDate, startTime, document.getElementById( 'b-door-time' )?.value || '' ),
                     all_day:        allDay ? 1 : 0,
                     color:          document.getElementById( 'b-color'      ).value,
                     location:       document.getElementById( 'b-location'   ).value.trim(),
-                    event_type_id:  parseInt( document.getElementById( 'b-event-type' )?.value || 0, 10 ) || null,
+                    event_type_id:  typeId || undefined,
                     signup_mode:    document.getElementById( 'b-signup-mode' )?.value || 'simple',
+                    external_url:   ( document.getElementById( 'b-external-url' )?.value || '' ).trim(),
                 } ),
             } );
             if ( ! res.ok ) throw new Error( `HTTP ${ res.status }` );
             event = await res.json();
+            syncTabAvailability();
 
             // Update heading + color dot live
             document.getElementById( 'me-evt-heading' ).textContent = event.title;
+            document.getElementById( 'me-evt-when' ).textContent = compactEventTime();
             const dot = document.querySelector( '.me-evt-color-dot' );
             if ( dot ) dot.style.background = event.color || '#3b82f6';
 
@@ -523,116 +796,277 @@
     }
 
     // ── Tab: Description ──────────────────────────────────────────
-    function renderDescriptionTab( container ) {
-        if ( CAN_EDIT ) {
-            container.innerHTML = `
-            <div class="me-tab-card">
-                <label class="me-form-label" style="display:block;margin-bottom:8px">${ escHtml( T.fieldDesc ) }</label>
-                <div id="d-quill-editor"></div>
-                <textarea id="d-html-source" class="me-form-textarea me-hidden" rows="14" spellcheck="false"
-                          style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px"></textarea>
-                <div style="margin-top:16px;display:flex;gap:8px;align-items:center">
-                    <button class="me-btn me-btn-primary" id="d-save-btn" type="button" disabled>
-                        ${ escHtml( T.btnSaveDesc ) }
-                    </button>
-                    <button class="me-btn me-btn-secondary" id="d-html-btn" type="button">
-                        ${ escHtml( T.btnHtmlSource || 'Edit HTML' ) }
-                    </button>
-                </div>
+    const EDITOR_FONT_SIZES = [ '10px', '12px', '14px', '16px', '18px', '24px', '32px' ];
+    let   editorFormatsRegistered = false;
+
+    // Inline-style size/align attributors (same as the mail editor) so the
+    // saved HTML renders without Quill's CSS classes.
+    function registerEditorFormats() {
+        if ( editorFormatsRegistered ) return;
+        const size = Quill.import( 'attributors/style/size' );
+        size.whitelist = EDITOR_FONT_SIZES;
+        Quill.register( size, true );
+        Quill.register( Quill.import( 'attributors/style/align' ), true );
+        editorFormatsRegistered = true;
+    }
+
+    function richEditorHtml( id, label, labelExtra = '', actionsExtra = '' ) {
+        return `
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
+                <label class="me-form-label" id="${ id }-label">${ escHtml( label ) }</label>
+                ${ labelExtra }
             </div>
-            `;
+            <div id="${ id }-editor"></div>
+            <textarea id="${ id }-source" class="me-form-textarea me-hidden" rows="14" spellcheck="false"
+                      aria-labelledby="${ id }-label"
+                      style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px"></textarea>
+            <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                <button class="me-btn me-btn-secondary" id="${ id }-mode" type="button" aria-pressed="false">
+                    ${ escHtml( T.btnHtmlSource || 'Edit HTML' ) }
+                </button>
+                ${ actionsExtra }
+            </div>`;
+    }
 
-            const quill = new Quill( '#d-quill-editor', {
-                theme:   'snow',
-                modules: {
-                    toolbar: [
-                        [ 'bold', 'italic', 'underline' ],
-                        [ { color: [] }, { background: [] } ],
-                        [ { list: 'ordered' }, { list: 'bullet' } ],
-                        [ 'link' ],
-                        [ 'clean' ],
-                    ],
-                },
-                placeholder: T.phDesc,
-            } );
+    /**
+     * Quill editor with font-size toolbar and a raw-HTML toggle (mirrors the
+     * mail editor). Unedited content is returned verbatim so markup Quill
+     * cannot represent is not lost on save.
+     */
+    function createRichEditor( id, placeholder, onChange ) {
+        registerEditorFormats();
+        const quill = new Quill( `#${ id }-editor`, {
+            theme:   'snow',
+            modules: {
+                toolbar: [
+                    [ { size: [ false, ...EDITOR_FONT_SIZES ] } ],
+                    [ 'bold', 'italic', 'underline' ],
+                    [ { color: [] }, { background: [] } ],
+                    [ { list: 'ordered' }, { list: 'bullet' } ],
+                    [ 'link' ],
+                    [ { align: [] } ],
+                    [ 'clean' ],
+                ],
+            },
+            placeholder,
+        } );
+        const source  = document.getElementById( `${ id }-source` );
+        const button  = document.getElementById( `${ id }-mode` );
+        const toolbar = quill.getModule( 'toolbar' ).container;
+        const state   = { html: '', snapshot: '', sourceMode: false };
 
-            if ( event.description ) {
-                quill.clipboard.dangerouslyPasteHTML( event.description );
+        const updateMode = () => {
+            source.classList.toggle( 'me-hidden', ! state.sourceMode );
+            quill.container.classList.toggle( 'me-hidden', state.sourceMode );
+            toolbar.classList.toggle( 'me-hidden', state.sourceMode );
+            button.textContent = state.sourceMode ? ( T.btnVisualEditor || 'Visual editor' ) : ( T.btnHtmlSource || 'Edit HTML' );
+            button.setAttribute( 'aria-pressed', String( state.sourceMode ) );
+        };
+
+        const api = {
+            getHtml() {
+                const html = state.sourceMode ? source.value
+                    : ( quill.root.innerHTML === state.snapshot ? state.html : quill.root.innerHTML );
+                return html === '<p><br></p>' ? '' : html.trim();
+            },
+            setHtml( html ) {
+                quill.setContents( [] );
+                quill.clipboard.dangerouslyPasteHTML( html || '' );
                 quill.history.clear();
+                state.html       = html || '';
+                state.snapshot   = quill.root.innerHTML;
+                source.value     = state.html;
+                state.sourceMode = false;
+                updateMode();
+            },
+            getText() {
+                return state.sourceMode ? htmlToPlainText( source.value ) : quill.getText().trim();
+            },
+            isEmpty() {
+                return api.getText() === '' && ! /<img\b/i.test( api.getHtml() );
+            },
+            focus() {
+                ( state.sourceMode ? source : quill ).focus();
+            },
+        };
+
+        button.addEventListener( 'click', () => {
+            if ( state.sourceMode ) {
+                api.setHtml( source.value );
+            } else {
+                source.value     = api.getHtml();
+                state.sourceMode = true;
+                updateMode();
+                source.focus();
             }
+        } );
+        quill.on( 'text-change', ( delta, oldDelta, src ) => {
+            if ( src === 'user' ) onChange();
+        } );
+        source.addEventListener( 'input', onChange );
+        updateMode();
+        return api;
+    }
 
-            const saveBtn   = document.getElementById( 'd-save-btn' );
-            const htmlBtn   = document.getElementById( 'd-html-btn' );
-            const sourceTa  = document.getElementById( 'd-html-source' );
-            const editorEl  = document.getElementById( 'd-quill-editor' );
-            const toolbarEl = container.querySelector( '.ql-toolbar' );
-            let   htmlMode  = false;
+    // Resumes saved before rich-text support are plain text; keep their line breaks.
+    function resumeToHtml( value ) {
+        const str = String( value || '' );
+        if ( str === '' || /<[a-z][\s\S]*>/i.test( str ) ) return str;
+        return str.split( /\n{2,}/ )
+            .map( p => `<p>${ escHtml( p ).replace( /\n/g, '<br>' ) }</p>` )
+            .join( '' );
+    }
 
-            // Current description HTML from whichever editor is active.
-            const currentHtml = () => {
-                const raw = htmlMode ? sourceTa.value : quill.root.innerHTML;
-                return raw === '<p><br></p>' ? '' : raw;
-            };
-
-            quill.on( 'text-change', ( delta, oldDelta, source ) => {
-                if ( source === 'user' ) {
-                    markDirty();
-                    saveBtn.disabled = false;
-                }
-            } );
-
-            sourceTa.addEventListener( 'input', () => {
-                markDirty();
-                saveBtn.disabled = false;
-            } );
-
-            htmlBtn.addEventListener( 'click', () => {
-                htmlMode = ! htmlMode;
-                if ( htmlMode ) {
-                    // Switch to raw HTML editing.
-                    sourceTa.value = quill.root.innerHTML;
-                    sourceTa.classList.remove( 'me-hidden' );
-                    editorEl.classList.add( 'me-hidden' );
-                    toolbarEl?.classList.add( 'me-hidden' );
-                    htmlBtn.textContent = T.btnVisualEditor || 'Visual editor';
-                } else {
-                    // Apply the edited HTML back into the rich editor.
-                    quill.setContents( [] );
-                    quill.clipboard.dangerouslyPasteHTML( sourceTa.value );
-                    sourceTa.classList.add( 'me-hidden' );
-                    editorEl.classList.remove( 'me-hidden' );
-                    toolbarEl?.classList.remove( 'me-hidden' );
-                    htmlBtn.textContent = T.btnHtmlSource || 'Edit HTML';
-                }
-            } );
-
-            saveBtn.addEventListener( 'click', async () => {
-                saveBtn.disabled = true;
-                showSaveState( 'saving' );
-                try {
-                    const html = currentHtml();
-                    const res  = await fetch( `${ EVENTS_REST }/${ EVENT_ID }`, {
-                        method:  'PUT',
-                        headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': NONCE },
-                        body:    JSON.stringify( { description: html } ),
-                    } );
-                    if ( ! res.ok ) throw new Error( `HTTP ${ res.status }` );
-                    event = await res.json();
-                    markClean();
-                    showSaveState( 'saved' );
-                } catch ( err ) {
-                    saveBtn.disabled = false;
-                    showSaveState( 'error' );
-                }
-            } );
-
-        } else {
+    function renderDescriptionTab( container ) {
+        if ( ! CAN_EDIT ) {
             container.innerHTML = `
             <div class="me-tab-card">
                 <div class="me-desc-readonly">${ event.description || `<em style="color:#64748b">${ escHtml( T.noDesc ) }</em>` }</div>
+                ${ event.resume ? `
+                <div class="me-resume" style="margin-top:16px">
+                    <div class="me-form-label" style="margin-bottom:4px">${ escHtml( T.fieldResume || 'Resume' ) }</div>
+                    <div class="me-desc-readonly">${ resumeToHtml( event.resume ) }</div>
+                </div>` : '' }
             </div>
             `;
+            return;
         }
+
+        container.innerHTML = `
+        <div class="me-tab-card">
+            ${ richEditorHtml( 'd-desc', T.fieldDesc, '', `
+                <button class="me-btn me-btn-secondary" id="d-resume-create" type="button">
+                    ${ escHtml( T.btnCreateResume || 'Create Resume' ) }
+                </button>
+                ${ PCIO_ME.aiEnabled ? `
+                <button class="me-btn me-btn-secondary" id="d-resume-ai" type="button">
+                    <span aria-hidden="true">✨</span>
+                    <span class="d-resume-ai-label">${ escHtml( T.btnAiResume || 'Generate with AI' ) }</span>
+                </button>` : '' }` ) }
+            <div class="me-resume" style="margin-top:20px">
+                <div id="d-resume-box" class="me-hidden">
+                    ${ richEditorHtml( 'd-resume', T.fieldResume || 'Resume',
+                        '<span id="d-resume-count" aria-live="polite" style="font-size:12px;color:#64748b"></span>' ) }
+                </div>
+            </div>
+            <div style="margin-top:16px;display:flex;gap:8px;align-items:center">
+                <button class="me-btn me-btn-primary" id="d-save-btn" type="button" disabled>
+                    ${ escHtml( T.btnSaveDesc ) }
+                </button>
+            </div>
+        </div>
+        `;
+
+        const saveBtn     = document.getElementById( 'd-save-btn' );
+        const resumeBtn   = document.getElementById( 'd-resume-create' );
+        const resumeBox   = document.getElementById( 'd-resume-box' );
+        const resumeCount = document.getElementById( 'd-resume-count' );
+
+        const changed = () => {
+            markDirty();
+            saveBtn.disabled = false;
+        };
+
+        const updateResumeCount = () => {
+            const n = Array.from( resume.getText() ).length;
+            resumeCount.textContent = ( T.resumeChars || '%d characters' ).replace( '%d', String( n ) );
+        };
+
+        const setResumeOpen = ( open ) => {
+            resumeBox.classList.toggle( 'me-hidden', ! open );
+            resumeBtn.classList.toggle( 'me-hidden', open );
+            if ( open ) updateResumeCount();
+        };
+
+        const desc   = createRichEditor( 'd-desc', T.phDesc, changed );
+        const resume = createRichEditor( 'd-resume', T.phResume || '', () => {
+            changed();
+            if ( resume.isEmpty() ) {
+                resume.setHtml( '' );
+                setResumeOpen( false );
+                resumeBtn.focus();
+            } else {
+                updateResumeCount();
+            }
+        } );
+
+        desc.setHtml( event.description || '' );
+        resume.setHtml( resumeToHtml( event.resume ) );
+        setResumeOpen( ! resume.isEmpty() );
+
+        resumeBtn.addEventListener( 'click', () => {
+            resume.setHtml( desc.getHtml() );
+            setResumeOpen( true );
+            resume.focus();
+            changed();
+        } );
+
+        const aiBtn = document.getElementById( 'd-resume-ai' );
+        if ( aiBtn ) {
+            aiBtn.addEventListener( 'click', async () => {
+                const text = desc.getText().trim();
+                if ( ! text ) {
+                    showToast( T.noDesc, 'error' );
+                    return;
+                }
+                const labelEl = aiBtn.querySelector( '.d-resume-ai-label' );
+                const label   = labelEl.textContent;
+                aiBtn.disabled      = true;
+                labelEl.textContent = T.aiWorking || '…';
+                try {
+                    const res  = await fetch( `${ EVENTS_REST }/summarize`, {
+                        method:  'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': NONCE },
+                        body:    JSON.stringify( { text } ),
+                    } );
+                    const data = await res.json().catch( () => ( {} ) );
+                    if ( ! res.ok || ! data.text ) throw new Error( data.message || `HTTP ${ res.status }` );
+                    resume.setHtml( `<p>${ escHtml( data.text ) }</p>` );
+                    setResumeOpen( true );
+                    resume.focus();
+                    changed();
+                } catch ( err ) {
+                    showToast( ( T.errAiResume || '' ) + err.message, 'error' );
+                } finally {
+                    aiBtn.disabled      = false;
+                    labelEl.textContent = label;
+                }
+            } );
+        }
+
+        saveBtn.addEventListener( 'click', async () => {
+            saveBtn.disabled = true;
+            showSaveState( 'saving' );
+            try {
+                const res = await fetch( `${ EVENTS_REST }/${ EVENT_ID }`, {
+                    method:  'PUT',
+                    headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': NONCE },
+                    body:    JSON.stringify( {
+                        description: desc.getHtml(),
+                        resume:      resume.isEmpty() ? '' : resume.getHtml(),
+                    } ),
+                } );
+                if ( ! res.ok ) throw new Error( `HTTP ${ res.status }` );
+                event = await res.json();
+                markClean();
+                showSaveState( 'saved' );
+            } catch ( err ) {
+                saveBtn.disabled = false;
+                showSaveState( 'error' );
+            }
+        } );
+    }
+
+    /**
+     * Convert HTML to plain text, keeping line breaks between block elements.
+     * DOMParser documents are inert, so no scripts run.
+     */
+    function htmlToPlainText( html ) {
+        const doc = new DOMParser().parseFromString( String( html || '' ), 'text/html' );
+        doc.querySelectorAll( 'br' ).forEach( br => br.replaceWith( '\n' ) );
+        doc.querySelectorAll( 'p, div, li, h1, h2, h3, h4, h5, h6, blockquote, pre' )
+            .forEach( el => el.append( '\n' ) );
+        return ( doc.body.textContent || '' ).replace( /\n{3,}/g, '\n\n' ).trim();
     }
 
     // ── Tab: Photos ───────────────────────────────────────────────
@@ -972,6 +1406,11 @@
         const slug      = event.slug || '';
         const permalink = slug ? ( PCIO_ME.eventsPublicBase + slug + '/' ) : '';
         const shortcode = `[pcio_me_event id="${ EVENT_ID }"]`;
+        const flags = [
+            [ 'publish_homepage', T.publishHomepage ],
+            [ 'publish_poster', T.publishPoster ],
+            [ 'publish_facebook', T.publishFacebook ],
+        ];
 
         const permalinkRow = permalink
             ? `<div class="me-copy-row">
@@ -983,6 +1422,10 @@
         container.innerHTML = `
         <div class="me-tab-card me-publish-card">
             <h2 class="me-publish-heading">${ escHtml( T.publishHeading ) }</h2>
+            <div class="me-publish-field">
+                ${ flags.map( ( [ field, label ] ) => `<p><label class="me-form-label"><input type="checkbox" data-publish-field="${ field }" ${ Number( event[field] ) === 1 ? 'checked' : '' } ${ PCIO_ME.canPublish ? '' : 'disabled' }> ${ escHtml( label ) }</label></p>` ).join( '' ) }
+                <p class="me-publish-help">${ escHtml( T.publishFlagsHelp ) }</p>
+            </div>
 
             <div class="me-publish-field">
                 <label class="me-form-label">${ escHtml( T.permalinkLabel ) }</label>
@@ -1000,6 +1443,31 @@
             </div>
         </div>
         `;
+
+        container.querySelectorAll( '[data-publish-field]' ).forEach( checkbox => {
+            checkbox.addEventListener( 'change', async () => {
+                if ( ! PCIO_ME.canPublish ) return;
+                const field = checkbox.dataset.publishField;
+                const previous = Number( event[field] ) === 1;
+                container.querySelectorAll( '[data-publish-field]' ).forEach( input => { input.disabled = true; } );
+                try {
+                    const response = await fetch( `${ EVENTS_REST }/${ EVENT_ID }`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': NONCE },
+                        body: JSON.stringify( { [field]: checkbox.checked ? 1 : 0 } ),
+                    } );
+                    const saved = await response.json();
+                    if ( ! response.ok ) throw new Error( saved.message || `HTTP ${ response.status }` );
+                    event = saved;
+                    showSaveState( 'saved' );
+                } catch ( error ) {
+                    checkbox.checked = previous;
+                    showToast( T.publishSaveError + error.message, 'error' );
+                } finally {
+                    container.querySelectorAll( '[data-publish-field]' ).forEach( input => { input.disabled = false; } );
+                }
+            } );
+        } );
 
         container.querySelectorAll( '.me-copy-btn' ).forEach( btn => {
             btn.addEventListener( 'click', async () => {
@@ -1087,6 +1555,469 @@
             const loading = document.getElementById( 'rsc-loading' );
             if ( loading ) loading.textContent = err.message;
         } );
+    }
+
+    // ── Tab: Crew ─────────────────────────────────────────────────
+    function renderCrewTab( container ) {
+        const CREW_URL = `${ EVENTS_REST }/${ EVENT_ID }/crew`;
+
+        let crewList   = [];
+        let rolesList  = [];
+        let volunteers = [];
+
+        container.innerHTML = `<div class="me-tab-card"><p class="me-loading" style="padding:40px 20px;text-align:center;color:#64748b">${ escHtml( T.crewLoading || 'Loading crew…' ) }</p></div>`;
+
+        Promise.all( [
+            fetch( CREW_URL, { headers: { 'X-WP-Nonce': NONCE } } ).then( r => {
+                if ( ! r.ok ) throw new Error( `HTTP ${ r.status }` );
+                return r.json();
+            } ),
+            fetch( ROLES_REST, { headers: { 'X-WP-Nonce': NONCE } } ).then( r => {
+                if ( ! r.ok ) throw new Error( `HTTP ${ r.status }` );
+                return r.json();
+            } ),
+            fetch( `${ MEMBERS_REST }?type=volunteers`, { headers: { 'X-WP-Nonce': NONCE } } ).then( r => {
+                if ( ! r.ok ) throw new Error( `HTTP ${ r.status }` );
+                return r.json();
+            } ),
+        ] ).then( ( [ crewData, rolesData, volunteersData ] ) => {
+            crewList   = Array.isArray( crewData ) ? crewData : [];
+            rolesList  = Array.isArray( rolesData ) ? rolesData : [];
+            volunteers = Array.isArray( volunteersData ) ? volunteersData : [];
+
+            if ( volunteers.length === 0 ) {
+                fetch( `${ MEMBERS_REST }?type=all`, { headers: { 'X-WP-Nonce': NONCE } } )
+                    .then( r => r.ok ? r.json() : [] )
+                    .then( allMembers => {
+                        if ( Array.isArray( allMembers ) && allMembers.length > 0 ) {
+                            volunteers = allMembers;
+                        }
+                        buildCrewUI();
+                    } )
+                    .catch( () => buildCrewUI() );
+            } else {
+                buildCrewUI();
+            }
+        } ).catch( err => {
+            container.innerHTML = `<div class="me-tab-card"><p style="padding:30px;color:#ef4444;text-align:center">${ escHtml( ( T.errLoad || 'Failed to load: ' ) + err.message ) }</p></div>`;
+        } );
+
+        function toInputTime( dt ) {
+            if ( ! dt ) return '';
+            return dt.substring( 0, 16 ).replace( ' ', 'T' );
+        }
+
+        function toDBTime( val ) {
+            if ( ! val ) return '';
+            const trimmed = String( val ).trim().replace( 'T', ' ' );
+            return trimmed.length === 16 ? trimmed + ':00' : trimmed;
+        }
+
+        function checkTimeOutOfBounds( inputEl ) {
+            if ( ! inputEl ) return;
+            const crewTimeVal = inputEl.value;
+            const winStart    = event?.start_datetime;
+            const winEnd      = event?.end_datetime;
+
+            if ( ! winStart || ! winEnd || ! crewTimeVal ) {
+                inputEl.style.boxShadow   = '';
+                inputEl.style.borderColor = '';
+                return;
+            }
+
+            const crewDate = new Date( crewTimeVal );
+            const evStart  = new Date( winStart.replace( ' ', 'T' ) );
+            const evEnd    = new Date( winEnd.replace( ' ', 'T' ) );
+
+            if ( isNaN( crewDate.getTime() ) || isNaN( evStart.getTime() ) || isNaN( evEnd.getTime() ) ) {
+                inputEl.style.boxShadow   = '';
+                inputEl.style.borderColor = '';
+                return;
+            }
+
+            const tolerance150min = 150 * 60 * 1000;
+            const isStrictlyOut   = ( crewDate.getTime() < evStart.getTime() - tolerance150min ) ||
+                                    ( crewDate.getTime() > evEnd.getTime() + tolerance150min );
+            const isLooselyOut    = ( crewDate.getTime() < evStart.getTime() ) ||
+                                    ( crewDate.getTime() > evEnd.getTime() );
+
+            if ( isStrictlyOut ) {
+                inputEl.style.boxShadow   = '0 0 0 2px #ef4444';
+                inputEl.style.borderColor = '#ef4444';
+            } else if ( isLooselyOut ) {
+                inputEl.style.boxShadow   = '0 0 0 1.5px #f59e0b';
+                inputEl.style.borderColor = '#f59e0b';
+            } else {
+                inputEl.style.boxShadow   = '';
+                inputEl.style.borderColor = '';
+            }
+        }
+
+        function buildCrewUI() {
+            container.innerHTML = `
+            <div class="me-tab-card">
+                <div class="me-toolbar me-crew-toolbar" style="display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:#f8fafc;border-bottom:1px solid #e8edf2;gap:12px;flex-wrap:wrap">
+                    <span class="me-toolbar-info" id="me-crew-count" style="font-size:12.5px;color:#64748b"></span>
+                    <div class="me-toolbar-actions" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                        <button type="button" class="me-btn me-btn-secondary" id="me-crew-copy-emails">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            ${ escHtml( T.crewCopyEmails || 'Copy emails' ) }
+                        </button>
+                        ${ CAN_EDIT ? `
+                            <button type="button" class="me-btn me-btn-secondary" id="me-crew-reset-times">
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                                ${ escHtml( T.crewResetTimes || 'Ret tider til event' ) }
+                            </button>
+                            <button type="button" class="me-btn me-btn-primary" id="me-crew-add-person">
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px">
+                                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="8.5" cy="7" r="4"></circle>
+                                    <line x1="20" y1="8" x2="20" y2="14"></line>
+                                    <line x1="23" y1="11" x2="17" y2="11"></line>
+                                </svg>
+                                ${ escHtml( T.crewAddPerson || '+ Tilføj Person' ) }
+                            </button>
+                        ` : '' }
+                    </div>
+                </div>
+                <div class="me-table-wrap" style="overflow-x:auto">
+                    <table id="me-crew-table" class="me-table" style="width:100%;border-collapse:collapse;font-size:13.5px">
+                        <thead>
+                            <tr class="me-head-row" style="background:linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #334155 100%);color:#fff">
+                                <th style="padding:10px 14px;text-align:left;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#cbd5e1;min-width:140px">${ escHtml( T.crewRole || 'Role' ) }</th>
+                                <th style="padding:10px 14px;text-align:left;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#cbd5e1;min-width:180px">${ escHtml( T.crewVolunteer || 'Volunteer' ) }</th>
+                                <th style="padding:10px 14px;text-align:left;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#cbd5e1;min-width:170px">${ escHtml( T.crewStartTime || 'Start time' ) }</th>
+                                <th style="padding:10px 14px;text-align:left;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#cbd5e1;min-width:170px">${ escHtml( T.crewEndTime || 'End time' ) }</th>
+                                ${ CAN_EDIT ? `<th style="padding:10px 14px;text-align:center;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#cbd5e1;width:55px">${ escHtml( T.crewClone || 'Kopi' ) }</th>` : '' }
+                                ${ CAN_EDIT ? `<th style="padding:10px 14px;text-align:center;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#cbd5e1;width:55px">${ escHtml( T.crewDelete || 'Slet' ) }</th>` : '' }
+                                <th style="padding:10px 14px;text-align:center;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#cbd5e1;width:55px">${ escHtml( T.crewEmail || 'Email' ) }</th>
+                            </tr>
+                        </thead>
+                        <tbody id="me-crew-tbody"></tbody>
+                    </table>
+                </div>
+                <div id="me-crew-empty" class="me-empty-state me-hidden" style="padding:40px 20px;text-align:center;color:#64748b">
+                    <p>${ escHtml( T.crewEmpty || 'No crew members assigned yet.' ) }</p>
+                </div>
+            </div>`;
+
+            renderCrewRows();
+            wireCrewEvents();
+        }
+
+        function renderCrewRows() {
+            const tbody   = document.getElementById( 'me-crew-tbody' );
+            const countEl = document.getElementById( 'me-crew-count' );
+            const emptyEl = document.getElementById( 'me-crew-empty' );
+            if ( ! tbody ) return;
+
+            if ( countEl ) {
+                countEl.textContent = `${ crewList.length } ${ T.tabCrew || 'Crew' }`;
+            }
+
+            if ( crewList.length === 0 ) {
+                tbody.innerHTML = '';
+                emptyEl?.classList.remove( 'me-hidden' );
+                return;
+            }
+            emptyEl?.classList.add( 'me-hidden' );
+
+            tbody.innerHTML = crewList.map( cr => {
+                const roleOptions = rolesList.length > 0
+                    ? rolesList.map( r => `<option value="${ r.id }"${ Number( r.id ) === Number( cr.role_id ) ? ' selected' : '' }>${ escHtml( r.name ) }</option>` ).join( '' )
+                    : `<option value="0">${ escHtml( T.crewNoRoles || 'No roles' ) }</option>`;
+
+                let vList = volunteers.slice();
+                if ( cr.member_id > 0 && ! vList.some( v => Number( v.id ) === Number( cr.member_id ) ) ) {
+                    vList.unshift( {
+                        id: cr.member_id,
+                        name: cr.member_name || ( '#' + cr.member_id ),
+                        email: cr.member_email || '',
+                    } );
+                }
+
+                const volunteerOptions = [
+                    `<option value="0">${ escHtml( T.crewUnassigned || '— Unassigned —' ) }</option>`,
+                    ...vList.map( v => `<option value="${ v.id }"${ Number( v.id ) === Number( cr.member_id ) ? ' selected' : '' }>${ escHtml( v.name || ( '#' + v.id ) ) }</option>` )
+                ].join( '' );
+
+                const cloneCell = CAN_EDIT ? `
+                    <td style="text-align:center;padding:8px 10px">
+                        <button type="button" class="me-btn me-btn-secondary me-btn-sm me-crew-clone-btn" data-id="${ cr.id }" title="${ escAttr( T.crewClone || 'Duplicate' ) }">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                                <polyline points="2 17 12 22 22 17"></polyline>
+                                <polyline points="2 12 12 17 22 12"></polyline>
+                            </svg>
+                        </button>
+                    </td>` : '';
+
+                const deleteCell = CAN_EDIT ? `
+                    <td style="text-align:center;padding:8px 10px">
+                        <button type="button" class="me-btn me-btn-danger me-btn-sm me-crew-del-btn" data-id="${ cr.id }" data-member="${ cr.member_id }" data-name="${ escAttr( cr.member_name || '' ) }" data-role="${ escAttr( cr.role_name || '' ) }" title="${ escAttr( T.crewDelete || 'Delete' ) }">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                                <path d="M10 11v6"></path><path d="M14 11v6"></path>
+                                <path d="M9 6V4h6v2"></path>
+                            </svg>
+                        </button>
+                    </td>` : '';
+
+                const emailCell = cr.member_email ? `
+                    <td style="text-align:center;padding:8px 10px">
+                        <button type="button" class="me-btn me-btn-secondary me-btn-sm me-crew-email-btn" data-email="${ escAttr( cr.member_email ) }" title="${ escAttr( cr.member_email ) }">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                        </button>
+                    </td>` : `<td style="text-align:center;color:#94a3b8;padding:8px 10px">&mdash;</td>`;
+
+                return `
+                <tr id="me-crew-row-${ cr.id }" style="border-bottom:1px solid #f1f5f9">
+                    <td style="padding:8px 10px">
+                        <select class="me-form-input me-crew-role-select" data-id="${ cr.id }" ${ CAN_EDIT ? '' : 'disabled' } style="width:100%;min-width:130px;padding:6px 8px;font-size:13px">
+                            ${ roleOptions }
+                        </select>
+                    </td>
+                    <td style="padding:8px 10px">
+                        <select class="me-form-input me-crew-member-select" data-id="${ cr.id }" ${ CAN_EDIT ? '' : 'disabled' } style="width:100%;min-width:170px;padding:6px 8px;font-size:13px">
+                            ${ volunteerOptions }
+                        </select>
+                    </td>
+                    <td style="padding:8px 10px">
+                        <input type="datetime-local" class="me-form-input me-crew-time me-crew-start" data-id="${ cr.id }" value="${ escAttr( toInputTime( cr.start_datetime ) ) }" ${ CAN_EDIT ? '' : 'disabled' } style="width:100%;min-width:160px;padding:6px 8px;font-size:13px">
+                    </td>
+                    <td style="padding:8px 10px">
+                        <input type="datetime-local" class="me-form-input me-crew-time me-crew-end" data-id="${ cr.id }" value="${ escAttr( toInputTime( cr.end_datetime ) ) }" ${ CAN_EDIT ? '' : 'disabled' } style="width:100%;min-width:160px;padding:6px 8px;font-size:13px">
+                    </td>
+                    ${ cloneCell }
+                    ${ deleteCell }
+                    ${ emailCell }
+                </tr>`;
+            } ).join( '' );
+
+            tbody.querySelectorAll( '.me-crew-time' ).forEach( inp => checkTimeOutOfBounds( inp ) );
+        }
+
+        async function reloadCrew() {
+            try {
+                const res = await fetch( CREW_URL, { headers: { 'X-WP-Nonce': NONCE } } );
+                if ( ! res.ok ) throw new Error( `HTTP ${ res.status }` );
+                crewList = await res.json();
+                renderCrewRows();
+            } catch ( err ) {
+                showToast( err.message, 'error' );
+            }
+        }
+
+        async function updateCrewShift( id, patch ) {
+            showSaveState( 'saving' );
+            try {
+                const res = await fetch( `${ CREW_URL }/${ id }`, {
+                    method:  'PUT',
+                    headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': NONCE },
+                    body:    JSON.stringify( patch ),
+                } );
+                if ( ! res.ok ) throw new Error( `HTTP ${ res.status }` );
+                showSaveState( 'saved' );
+                showToast( T.crewToastSaved || 'Shift updated.', 'success' );
+                const item = crewList.find( c => Number( c.id ) === Number( id ) );
+                if ( item ) {
+                    Object.assign( item, patch );
+                    if ( patch.role_id !== undefined ) {
+                        const r = rolesList.find( rl => Number( rl.id ) === Number( patch.role_id ) );
+                        if ( r ) item.role_name = r.name;
+                    }
+                }
+            } catch ( err ) {
+                showSaveState( 'error' );
+                showToast( err.message, 'error' );
+            }
+        }
+
+        function wireCrewEvents() {
+            const tbody = document.getElementById( 'me-crew-tbody' );
+            if ( ! tbody ) return;
+
+            document.getElementById( 'me-crew-copy-emails' )?.addEventListener( 'click', () => {
+                const emails = crewList
+                    .map( c => ( c.member_email || '' ).trim() )
+                    .filter( Boolean );
+                const uniqueEmails = [ ...new Set( emails ) ];
+                if ( uniqueEmails.length === 0 ) {
+                    showToast( T.crewNoEmails || 'No crew emails to copy.', 'error' );
+                    return;
+                }
+                const emailStr = uniqueEmails.join( '; ' );
+                if ( navigator.clipboard && navigator.clipboard.writeText ) {
+                    navigator.clipboard.writeText( emailStr ).then( () => {
+                        showToast( T.crewEmailsCopied || 'Emails copied to clipboard.', 'success' );
+                    } ).catch( () => {
+                        prompt( 'Copy emails:', emailStr );
+                    } );
+                } else {
+                    prompt( 'Copy emails:', emailStr );
+                }
+            } );
+
+            if ( CAN_EDIT ) {
+                document.getElementById( 'me-crew-reset-times' )?.addEventListener( 'click', async () => {
+                    if ( ! confirm( T.crewResetConfirm || 'Reset all shift start and end times to the event start and end times?' ) ) {
+                        return;
+                    }
+                    showSaveState( 'saving' );
+                    try {
+                        const res = await fetch( `${ CREW_URL }/reset-times`, {
+                            method:  'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': NONCE },
+                        } );
+                        if ( ! res.ok ) throw new Error( `HTTP ${ res.status }` );
+                        showSaveState( 'saved' );
+                        showToast( T.crewToastReset || 'Shift times reset to event times.', 'success' );
+                        await reloadCrew();
+                    } catch ( err ) {
+                        showSaveState( 'error' );
+                        showToast( err.message, 'error' );
+                    }
+                } );
+
+                document.getElementById( 'me-crew-add-person' )?.addEventListener( 'click', async () => {
+                    showSaveState( 'saving' );
+                    const defaultRole  = ( rolesList && rolesList.length ) ? rolesList[0].id : 0;
+                    const defaultStart = event?.start_datetime || '';
+                    const defaultEnd   = event?.end_datetime   || defaultStart;
+                    try {
+                        const res = await fetch( CREW_URL, {
+                            method:  'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': NONCE },
+                            body:    JSON.stringify( {
+                                role_id:        defaultRole,
+                                member_id:      0,
+                                start_datetime: defaultStart,
+                                end_datetime:   defaultEnd,
+                            } ),
+                        } );
+                        if ( ! res.ok ) throw new Error( `HTTP ${ res.status }` );
+                        showSaveState( 'saved' );
+                        showToast( T.crewToastAdded || 'Shift added.', 'success' );
+                        await reloadCrew();
+                    } catch ( err ) {
+                        showSaveState( 'error' );
+                        showToast( err.message, 'error' );
+                    }
+                } );
+
+                tbody.addEventListener( 'change', async ( e ) => {
+                    const roleSel = e.target.closest( '.me-crew-role-select' );
+                    if ( roleSel ) {
+                        const id     = parseInt( roleSel.dataset.id, 10 );
+                        const roleId = parseInt( roleSel.value, 10 );
+                        await updateCrewShift( id, { role_id: roleId } );
+                        return;
+                    }
+
+                    const memSel = e.target.closest( '.me-crew-member-select' );
+                    if ( memSel ) {
+                        const id       = parseInt( memSel.dataset.id, 10 );
+                        const memberId = parseInt( memSel.value, 10 );
+                        await updateCrewShift( id, { member_id: memberId } );
+                        await reloadCrew();
+                        return;
+                    }
+
+                    const timeInp = e.target.closest( '.me-crew-time' );
+                    if ( timeInp ) {
+                        checkTimeOutOfBounds( timeInp );
+                        const id      = parseInt( timeInp.dataset.id, 10 );
+                        const isStart = timeInp.classList.contains( 'me-crew-start' );
+                        const val     = toDBTime( timeInp.value );
+                        await updateCrewShift( id, isStart ? { start_datetime: val } : { end_datetime: val } );
+                    }
+                } );
+
+                tbody.addEventListener( 'click', async ( e ) => {
+                    const cloneBtn = e.target.closest( '.me-crew-clone-btn' );
+                    if ( cloneBtn ) {
+                        const id = parseInt( cloneBtn.dataset.id, 10 );
+                        cloneBtn.disabled = true;
+                        showSaveState( 'saving' );
+                        try {
+                            const res = await fetch( `${ CREW_URL }/${ id }/duplicate`, {
+                                method:  'POST',
+                                headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': NONCE },
+                            } );
+                            if ( ! res.ok ) throw new Error( `HTTP ${ res.status }` );
+                            showSaveState( 'saved' );
+                            showToast( T.crewToastCloned || 'Shift duplicated.', 'success' );
+                            await reloadCrew();
+                        } catch ( err ) {
+                            showSaveState( 'error' );
+                            showToast( err.message, 'error' );
+                            cloneBtn.disabled = false;
+                        }
+                        return;
+                    }
+
+                    const delBtn = e.target.closest( '.me-crew-del-btn' );
+                    if ( delBtn ) {
+                        const id       = parseInt( delBtn.dataset.id, 10 );
+                        const memberId = parseInt( delBtn.dataset.member || '0', 10 );
+                        const name     = delBtn.dataset.name || '';
+                        const role     = delBtn.dataset.role || '';
+
+                        if ( memberId > 0 && name ) {
+                            const msg = ( T.crewConfirmDeleteNamed || 'Are you sure you want to delete %1$s %2$s?' )
+                                .replace( '%1$s', role )
+                                .replace( '%2$s', name );
+                            if ( ! confirm( msg ) ) return;
+                        } else {
+                            if ( ! confirm( T.crewConfirmDelete || 'Are you sure you want to delete this shift?' ) ) return;
+                        }
+
+                        delBtn.disabled = true;
+                        showSaveState( 'saving' );
+                        try {
+                            const res = await fetch( `${ CREW_URL }/${ id }`, {
+                                method:  'DELETE',
+                                headers: { 'X-WP-Nonce': NONCE },
+                            } );
+                            if ( ! res.ok && res.status !== 204 ) throw new Error( `HTTP ${ res.status }` );
+                            showSaveState( 'saved' );
+                            showToast( T.crewToastDeleted || 'Shift deleted.', 'success' );
+                            await reloadCrew();
+                        } catch ( err ) {
+                            showSaveState( 'error' );
+                            showToast( err.message, 'error' );
+                            delBtn.disabled = false;
+                        }
+                    }
+                } );
+            }
+
+            tbody.addEventListener( 'click', ( e ) => {
+                const btn = e.target.closest( '.me-crew-email-btn' );
+                if ( ! btn ) return;
+                const email = btn.dataset.email;
+                if ( ! email ) return;
+                if ( navigator.clipboard && navigator.clipboard.writeText ) {
+                    navigator.clipboard.writeText( email ).then( () => {
+                        showToast( ( T.copiedMsg || 'Copied to clipboard.' ) + ' (' + email + ')', 'success' );
+                    } ).catch( () => {
+                        prompt( 'Copy email:', email );
+                    } );
+                } else {
+                    prompt( 'Copy email:', email );
+                }
+            } );
+        }
     }
 
     // ── Tab: Guests ───────────────────────────────────────────────
@@ -1426,7 +2357,6 @@
     // ── Tab: Stub ─────────────────────────────────────────────────
     function renderStubTab( container, tabId ) {
         const icons = {
-            crew:    `<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>`,
             tickets: `<path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v2z"/>`,
             photos:  `<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>`,
             status:  `<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>`,

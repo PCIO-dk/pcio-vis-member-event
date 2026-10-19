@@ -18,7 +18,7 @@ show_admin_bar( false );
     <meta charset="<?php bloginfo( 'charset' ); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex,nofollow">
-    <title>Vis &mdash; <?php esc_html_e( 'Newsletters', 'pcio-vis-member-event' ); ?></title>
+    <title>Vis &mdash; <?php esc_html_e( 'Marketing', 'pcio-vis-member-event' ); ?></title>
     <?php wp_head(); ?>
 </head>
 <body class="pcio-me-body">
@@ -28,6 +28,7 @@ show_admin_bar( false );
     <?php $pcio_me_active_page = 'newsletters'; require __DIR__ . '/_nav.php'; ?>
 
     <main class="me-main">
+        <?php $pcio_me_section = 'mails'; require __DIR__ . '/_section-tabs.php'; ?>
         <div id="pcio-me-app">
             <div class="me-loading">
                 <div class="me-spinner"></div>

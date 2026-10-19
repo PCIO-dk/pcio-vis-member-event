@@ -1,0 +1,12 @@
+/* WP Admin → Vis → History */
+.pcio-me-history-admin .column-created_at { width: 150px; }
+.pcio-me-history-admin .column-user { width: 140px; }
+.pcio-me-history-admin .column-table_key { width: 130px; }
+.pcio-me-history-admin .column-undo { width: 110px; }
+.pcio-me-history-admin .pcio-me-history-row-undone .column-description { color: #787c82; text-decoration: line-through; }
+.pcio-me-history-admin .pcio-me-history-row-undone .row-actions { text-decoration: none; }
+.pcio-me-history-admin .pcio-me-history-state { color: #787c82; font-style: italic; }
+.pcio-me-history-admin .pcio-me-history-undone { color: #b32d2e; }
+.pcio-me-history-admin .pcio-me-history-id { color: #787c82; }
+.pcio-me-history-admin .row-actions.visible { position: static; }
+.pcio-me-history-undo-form { display: none; }

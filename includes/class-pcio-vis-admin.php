@@ -26,6 +26,8 @@ class PCIO_VIS_Admin {
     public function init(): void {
         add_action( 'admin_menu', [ $this, 'add_menu' ], 10 );
         add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_assets' ] );
+        add_action( 'admin_post_pcio_vis_user_cleanup', [ $this, 'handle_user_cleanup' ] );
+        add_action( 'admin_post_pcio_me_save_general', [ $this, 'handle_general_save' ] );
         add_filter(
             'plugin_action_links_' . plugin_basename( PCIO_VIS_PLUGIN_FILE ),
             [ $this, 'action_links' ]
@@ -47,26 +49,35 @@ class PCIO_VIS_Admin {
     // ── Admin menu ────────────────────────────────────────────────
 
     public function add_menu(): void {
-        // Top-level "Vis" menu — first submenu (Document Types) is the landing page.
-        // Document Types is gated by vis_manage_settings (consistent with the
-        // REST layer) so a Vis admin role does not need the core manage_options cap.
+        // Top-level "Vis" menu. The landing page is General (default event address);
+        // its submenu entry shares the parent slug so it is the first item.
         add_menu_page(
             __( 'Vis', 'pcio-vis-member-event' ),
             __( 'Vis', 'pcio-vis-member-event' ),
             'vis_manage_settings',
             'pcio-me-settings',
-            [ $this, 'render_doc_types_page' ],
+            [ $this, 'render_general_page' ],
             'dashicons-groups',
             30
         );
 
-        // First submenu: Document Types (replaces the auto-generated parent link)
+        // First submenu: General.
+        add_submenu_page(
+            'pcio-me-settings',
+            __( 'General', 'pcio-vis-member-event' ),
+            __( 'General', 'pcio-vis-member-event' ),
+            'vis_manage_settings',
+            'pcio-me-settings',
+            [ $this, 'render_general_page' ]
+        );
+
+        // Document Types (gated by vis_manage_settings, consistent with the REST layer).
         $this->hooks['doc_types'] = add_submenu_page(
             'pcio-me-settings',
             __( 'Document Types', 'pcio-vis-member-event' ),
             __( 'Document Types', 'pcio-vis-member-event' ),
             'vis_manage_settings',
-            'pcio-me-settings',
+            'pcio-me-doc-types',
             [ $this, 'render_doc_types_page' ]
         );
 
@@ -90,8 +101,8 @@ class PCIO_VIS_Admin {
             [ $this, 'render_sync_page' ]
         );
 
-        // Fourth submenu: WP User Cleanup: read-only report of unlinked WordPress accounts.
-        add_submenu_page(
+        // Fourth submenu: WP User Cleanup.
+        $this->hooks['cleanup'] = add_submenu_page(
             'pcio-me-settings',
             __( 'WP User Cleanup', 'pcio-vis-member-event' ),
             __( 'WP User Cleanup', 'pcio-vis-member-event' ),
@@ -121,12 +132,60 @@ class PCIO_VIS_Admin {
         );
     }
 
+    /** General page: default event address applied to new events. */
+    public function render_general_page(): void {
+        if ( ! current_user_can( 'vis_manage_settings' ) ) {
+            wp_die( esc_html__( 'You do not have permission to access this page.', 'pcio-vis-member-event' ), '', [ 'response' => 403 ] );
+        }
+        ?>
+        <div class="wrap">
+            <h1><?php esc_html_e( 'General', 'pcio-vis-member-event' ); ?></h1>
+            <?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only status flag for the post-redirect-get notice.
+            if ( isset( $_GET['updated'] ) ) : ?>
+                <div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Settings updated.', 'pcio-vis-member-event' ); ?></p></div>
+            <?php endif; ?>
+            <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+                <input type="hidden" name="action" value="pcio_me_save_general">
+                <?php wp_nonce_field( 'pcio_me_save_general' ); ?>
+                <table class="form-table" role="presentation">
+                    <tr>
+                        <th scope="row"><label for="default_location"><?php esc_html_e( 'Default Event Address', 'pcio-vis-member-event' ); ?></label></th>
+                        <td>
+                            <input type="text" name="default_location" id="default_location" class="regular-text" maxlength="200"
+                                   value="<?php echo esc_attr( PCIO_VIS_Events_DB::get_default_location() ); ?>">
+                            <p class="description"><?php esc_html_e( 'Every new event is created with this address. It can be changed per event afterwards.', 'pcio-vis-member-event' ); ?></p>
+                        </td>
+                    </tr>
+                </table>
+                <?php submit_button( __( 'Update', 'pcio-vis-member-event' ) ); ?>
+            </form>
+        </div>
+        <?php
+    }
+
+    /** Save the General settings (admin-post). */
+    public function handle_general_save(): void {
+        if ( ! current_user_can( 'vis_manage_settings' ) ) {
+            wp_die( esc_html__( 'You do not have permission to do this.', 'pcio-vis-member-event' ), '', [ 'response' => 403 ] );
+        }
+        check_admin_referer( 'pcio_me_save_general' );
+        $default_location = isset( $_POST['default_location'] ) ? sanitize_text_field( wp_unslash( (string) $_POST['default_location'] ) ) : '';
+        PCIO_VIS_Events_DB::set_default_location( $default_location );
+        wp_safe_redirect( add_query_arg( [ 'page' => 'pcio-me-settings', 'updated' => '1' ], admin_url( 'admin.php' ) ) );
+        exit;
+    }
+
     /**
      * Enqueue inline admin scripts/styles only on the pages that need them.
      *
      * @param string $hook Current admin page hook suffix.
      */
     public function enqueue_admin_assets( string $hook ): void {
+        if ( isset( $this->hooks['cleanup'] ) && $hook === $this->hooks['cleanup'] ) {
+            wp_register_script( 'pcio-me-user-cleanup', false, [], '1.0.0', true );
+            wp_enqueue_script( 'pcio-me-user-cleanup' );
+            wp_add_inline_script( 'pcio-me-user-cleanup', $this->cleanup_inline_js() );
+        }
         if ( isset( $this->hooks['doc_types'] ) && $hook === $this->hooks['doc_types'] ) {
             wp_register_script( 'pcio-me-doc-types', false, [], PCIO_VIS_DB_VERSION, true );
             wp_enqueue_script( 'pcio-me-doc-types' );
@@ -510,84 +569,95 @@ JS;
         <?php
     }
 
-    // ── WP User Cleanup report ────────────────────────────────────
+    /** Checkbox selection and confirmation for the cleanup form. */
+    private function cleanup_inline_js(): string {
+        return <<<'JS'
+( function() {
+    const form = document.getElementById( 'pcio-vis-user-cleanup' );
+    if ( ! form ) { return; }
+    const selectAll = form.querySelector( '[data-select-all]' );
+    const checkboxes = Array.from( form.querySelectorAll( 'input[name="user_ids[]"]:not(:disabled)' ) );
+    if ( selectAll ) {
+        selectAll.addEventListener( 'change', function() {
+            checkboxes.forEach( function( checkbox ) { checkbox.checked = selectAll.checked; } );
+        } );
+        checkboxes.forEach( function( checkbox ) {
+            checkbox.addEventListener( 'change', function() {
+                selectAll.checked = checkboxes.length > 0 && checkboxes.every( function( item ) { return item.checked; } );
+                selectAll.indeterminate = ! selectAll.checked && checkboxes.some( function( item ) { return item.checked; } );
+            } );
+        } );
+    }
+    form.addEventListener( 'submit', function( event ) {
+        const button = event.submitter;
+        if ( ! button ) { event.preventDefault(); return; }
+        if ( button.value === 'selected' && ! checkboxes.some( function( checkbox ) { return checkbox.checked; } ) ) {
+            event.preventDefault();
+            window.alert( form.dataset.selectMessage );
+            return;
+        }
+        if ( ! window.confirm( button.dataset.confirm ) ) { event.preventDefault(); }
+    } );
+} )();
+JS;
+    }
 
     /**
-     * Read-only report of WordPress accounts not linked to any active member.
-     *
-     * This plugin never deletes WordPress users. Any deletion is performed on the
-     * native Users screen, which enforces the delete_users capability and any
-     * security-plugin protections.
+     * Delete requested cleanup candidates through a nonce-protected admin POST.
      */
+    public function handle_user_cleanup(): void {
+        if ( ! PCIO_VIS_User_Cleanup::can_delete_users() ) {
+            wp_die( esc_html__( 'Insufficient permissions.', 'pcio-vis-member-event' ), '', [ 'response' => 403 ] );
+        }
+        check_admin_referer( 'pcio_vis_user_cleanup' );
+        $mode = isset( $_POST['cleanup_mode'] ) && is_string( $_POST['cleanup_mode'] )
+            ? sanitize_key( wp_unslash( $_POST['cleanup_mode'] ) ) : '';
+        $ids = [];
+        if ( isset( $_POST['user_ids'] ) ) {
+            if ( ! is_array( $_POST['user_ids'] ) ) {
+                wp_die( esc_html__( 'Invalid user selection.', 'pcio-vis-member-event' ), '', [ 'response' => 400 ] );
+            }
+            foreach ( array_map( 'sanitize_text_field', (array) wp_unslash( $_POST['user_ids'] ) ) as $id ) {
+                if ( '' === $id || ! ctype_digit( $id ) || absint( $id ) < 1 ) {
+                    wp_die( esc_html__( 'Invalid user selection.', 'pcio-vis-member-event' ), '', [ 'response' => 400 ] );
+                }
+                $ids[] = absint( $id );
+            }
+        }
+        $result = PCIO_VIS_User_Cleanup::delete_users( $mode, $ids );
+        if ( is_wp_error( $result ) ) {
+            $data = $result->get_error_data();
+            wp_die( esc_html( $result->get_error_message() ), '', [ 'response' => is_array( $data ) ? absint( $data['status'] ?? 500 ) : 500 ] );
+        }
+        $token = wp_generate_uuid4();
+        if ( ! set_transient( 'pcio_vis_cleanup_' . get_current_user_id() . '_' . $token, $result, 5 * MINUTE_IN_SECONDS ) ) {
+            wp_die( esc_html__( 'Cleanup finished, but its result could not be saved. Review the user list before retrying.', 'pcio-vis-member-event' ) );
+        }
+        wp_safe_redirect( add_query_arg( 'cleanup_result', $token, admin_url( 'admin.php?page=pcio-me-cleanup' ) ) );
+        exit;
+    }
+
+    /** Render unlinked accounts with their current deletion eligibility. */
     public function render_cleanup_page(): void {
         if ( ! current_user_can( 'manage_options' ) ) {
             wp_die( esc_html__( 'Insufficient permissions.', 'pcio-vis-member-event' ) );
         }
-
-        // Exclude administrators — they are never cleanup candidates.
-        $orphans = array_filter(
-            PCIO_VIS_Roles_DB::get_orphan_wp_users(),
-            static function ( array $u ): bool {
-                return ! user_can( (int) $u['ID'], 'manage_options' );
+        $orphans    = PCIO_VIS_User_Cleanup::get_candidates();
+        $can_delete = PCIO_VIS_User_Cleanup::can_delete_users();
+        $result     = false;
+        // phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only lookup of a random one-time result token scoped to the current user.
+        $token      = isset( $_GET['cleanup_result'] ) && is_string( $_GET['cleanup_result'] )
+            ? sanitize_key( wp_unslash( $_GET['cleanup_result'] ) ) : '';
+        // phpcs:enable WordPress.Security.NonceVerification.Recommended
+        if ( '' !== $token ) {
+            $key    = 'pcio_vis_cleanup_' . get_current_user_id() . '_' . $token;
+            $result = get_transient( $key );
+            delete_transient( $key );
+            if ( false === $result ) {
+                $result = new WP_Error( 'pcio_vis_cleanup_result_expired', __( 'Cleanup result is no longer available. Review the current user list.', 'pcio-vis-member-event' ) );
             }
-        );
-        ?>
-        <div class="wrap">
-            <h1><?php esc_html_e( 'WP User Cleanup', 'pcio-vis-member-event' ); ?></h1>
-
-            <p>
-                <?php
-                printf(
-                    /* translators: %d: number of unlinked WordPress users */
-                    esc_html( _n(
-                        '%d WordPress user is not linked to an active member.',
-                        '%d WordPress users are not linked to an active member.',
-                        count( $orphans ),
-                        'pcio-vis-member-event'
-                    ) ),
-                    (int) count( $orphans )
-                );
-                ?>
-            </p>
-            <p class="description">
-                <?php esc_html_e( 'This plugin never deletes WordPress accounts. If you want to remove any of these users, use the WordPress Users screen, which applies the normal capability and security checks.', 'pcio-vis-member-event' ); ?>
-            </p>
-            <p>
-                <a class="button button-primary" href="<?php echo esc_url( admin_url( 'users.php' ) ); ?>">
-                    <?php esc_html_e( 'Open WordPress → Users', 'pcio-vis-member-event' ); ?>
-                </a>
-            </p>
-
-            <?php if ( empty( $orphans ) ) : ?>
-                <p><?php esc_html_e( 'Every WordPress user is linked to an active member. Nothing to clean up.', 'pcio-vis-member-event' ); ?></p>
-            <?php else : ?>
-                <table class="wp-list-table widefat fixed striped">
-                    <thead>
-                        <tr>
-                            <th><?php esc_html_e( 'Username', 'pcio-vis-member-event' ); ?></th>
-                            <th><?php esc_html_e( 'Email', 'pcio-vis-member-event' ); ?></th>
-                            <th><?php esc_html_e( 'Registered', 'pcio-vis-member-event' ); ?></th>
-                            <th><?php esc_html_e( 'Action', 'pcio-vis-member-event' ); ?></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ( $orphans as $u ) : ?>
-                            <tr>
-                                <td><?php echo esc_html( $u['user_login'] ); ?></td>
-                                <td><?php echo esc_html( $u['user_email'] ); ?></td>
-                                <td><?php echo esc_html( mysql2date( get_option( 'date_format' ), $u['user_registered'] ) ); ?></td>
-                                <td>
-                                    <a href="<?php echo esc_url( get_edit_user_link( (int) $u['ID'] ) ); ?>">
-                                        <?php esc_html_e( 'Edit user', 'pcio-vis-member-event' ); ?>
-                                    </a>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            <?php endif; ?>
-        </div>
-        <?php
+        }
+        require PCIO_VIS_PLUGIN_DIR . 'templates/admin-user-cleanup.php';
     }
 
     // ── Roles & Capabilities admin page ──────────────────────────
@@ -688,12 +758,18 @@ JS;
                 ?></span>
             </form>
 
+            <h2><?php esc_html_e( 'Membership capability', 'pcio-vis-member-event' ); ?></h2>
+            <p><code><?php echo esc_html( PCIO_VIS_Caps::MEMBER_CAP ); ?></code></p>
+            <p class="description"><?php
+                esc_html_e( 'This capability is granted to individual WordPress accounts when they are linked or provisioned as Vis members, and revoked when membership is removed. It is managed separately from event-system roles and cannot be selected as a role capability.', 'pcio-vis-member-event' );
+            ?></p>
+
             <!-- ════════════════════════════════════════════════════════
                  SECTION 1 — Vis role definitions (stored in DB)
                  ════════════════════════════════════════════════════════ -->
             <h2><?php esc_html_e( 'Event-system roles', 'pcio-vis-member-event' ); ?></h2>
             <p class="description" style="margin-bottom:12px"><?php
-                esc_html_e( 'These are the event-system roles you can assign to members. Each role grants a set of vis_* capabilities.', 'pcio-vis-member-event' );
+                esc_html_e( 'These roles grant additional vis_* capabilities to accounts that already have vis_member. The default Member role has no additional capabilities; member access comes from the separate membership capability.', 'pcio-vis-member-event' );
             ?></p>
 
             <!-- Add / Edit vis role form -->
@@ -773,6 +849,9 @@ JS;
                         <td><code><?php echo esc_html( $vr['slug'] ); ?></code></td>
                         <td><?php echo esc_html( $vr['name'] ); ?></td>
                         <td>
+                            <?php if ( [] === $vr['caps'] ) : ?>
+                                <span class="description"><?php esc_html_e( 'No additional capabilities (membership is managed separately).', 'pcio-vis-member-event' ); ?></span>
+                            <?php endif; ?>
                             <?php foreach ( $vr['caps'] as $cap ) : ?>
                                 <code style="font-size:11px;margin-right:4px"><?php echo esc_html( $cap ); ?></code>
                             <?php endforeach; ?>
@@ -1311,7 +1390,7 @@ JS;
 
             <!-- ─────────────────────────────────────────────────── -->
             <h2 id="sc-event"><?php esc_html_e( '[pcio_me_event]', 'pcio-vis-member-event' ); ?></h2>
-            <p><?php esc_html_e( 'Renders an event card with cover image, title, date, location, description, and sign-up buttons for logged-in members.', 'pcio-vis-member-event' ); ?></p>
+            <p><?php esc_html_e( 'Renders an event. Left empty on the Event page — the single WordPress page that serves every public event at /events/{slug}/ — it renders the full detail layout and resolves the event from the URL. Anywhere else it renders a compact card.', 'pcio-vis-member-event' ); ?></p>
 
             <table class="pcio-sc-table wp-list-table widefat">
                 <thead><tr>
@@ -1322,10 +1401,22 @@ JS;
                 </tr></thead>
                 <tbody>
                     <tr>
-                        <td><code class="pcio-sc-code">id</code> <span style="color:#ef4444">*</span></td>
+                        <td><code class="pcio-sc-code">id</code></td>
                         <td><?php esc_html_e( 'integer', 'pcio-vis-member-event' ); ?></td>
                         <td>—</td>
-                        <td><?php esc_html_e( 'The numeric ID of the event (required). Find it in the URL when viewing an event at /vis/events/{id}/.', 'pcio-vis-member-event' ); ?></td>
+                        <td><?php esc_html_e( 'The numeric ID of the event. Find it in the URL when viewing an event at /vis/events/{id}/. When omitted, the event is taken from the slug attribute or from the /events/{slug}/ URL.', 'pcio-vis-member-event' ); ?></td>
+                    </tr>
+                    <tr>
+                        <td><code class="pcio-sc-code">slug</code></td>
+                        <td><?php esc_html_e( 'string', 'pcio-vis-member-event' ); ?></td>
+                        <td>—</td>
+                        <td><?php esc_html_e( 'The event slug, as used in the public URL /events/{slug}/. Alternative to id.', 'pcio-vis-member-event' ); ?></td>
+                    </tr>
+                    <tr>
+                        <td><code class="pcio-sc-code">layout</code></td>
+                        <td><?php esc_html_e( 'string', 'pcio-vis-member-event' ); ?></td>
+                        <td><code>card</code></td>
+                        <td><?php esc_html_e( 'card (compact embed) or detail (full-width detail page). The Event page defaults to detail; a standalone embed defaults to card.', 'pcio-vis-member-event' ); ?></td>
                     </tr>
                 </tbody>
             </table>
@@ -1342,8 +1433,12 @@ JS;
                 </li>
             </ul>
 
-            <strong style="display:block;margin-top:16px"><?php esc_html_e( 'Example', 'pcio-vis-member-event' ); ?></strong>
-            <code class="pcio-sc-block">[pcio_me_event id="42"]</code>
+            <strong style="display:block;margin-top:16px"><?php esc_html_e( 'Examples', 'pcio-vis-member-event' ); ?></strong>
+            <code class="pcio-sc-block">[pcio_me_event]
+[pcio_me_event id="42"]
+[pcio_me_event slug="summer-festival" layout="detail"]</code>
+
+            <p style="margin-top:8px"><?php esc_html_e( 'The Event page itself (slug "event") is created automatically on activation and must not be deleted: /events/{slug}/ is rewritten onto it so the public event pages use the theme header and footer.', 'pcio-vis-member-event' ); ?></p>
 
             <hr style="margin:32px 0">
 

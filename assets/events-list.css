@@ -113,6 +113,38 @@
     text-transform: lowercase;
 }
 
+/* Sold-out banner, tilted 45° across the upper-right of the image */
+.me-events-thumb {
+    overflow: hidden;
+    container-type: inline-size;
+}
+
+.me-events-soldout {
+    position: absolute;
+    top: 40%;
+    right: 3%;
+    width: 52%;
+    transform: translateY( -50% ) rotate( 45deg );
+    padding: 6px 4px;
+    background: #ffeb00;
+    border: 2px solid #1d2bd8;
+    box-shadow: 0 3px 10px rgba( 0, 0, 0, 0.35 );
+    text-align: center;
+    pointer-events: none;
+}
+
+.me-events-soldout span {
+    display: block;
+    color: #1d2bd8;
+    font-size: 26px;
+    font-size: clamp( 16px, 8cqw, 34px );
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
 /* Texts */
 .me-events-title {
     font-size: 19px;

@@ -140,7 +140,7 @@ class PCIO_VIS_Roles_DB {
 
     public static function create_role( array $data ): int|false {
         global $wpdb;
-        $ok = $wpdb->insert( $wpdb->prefix . 'me_vis_roles', [
+        $ok = PCIO_VIS_History::insert( 'vis_roles', [
             'slug' => sanitize_key( $data['slug'] ?? '' ),
             'name' => sanitize_text_field( $data['name'] ?? '' ),
             'caps' => wp_json_encode( array_values( (array) ( $data['caps'] ?? [] ) ) ),
@@ -149,27 +149,21 @@ class PCIO_VIS_Roles_DB {
     }
 
     public static function update_role( int $id, array $data ): bool {
-        global $wpdb;
         $fields = [];
         if ( isset( $data['slug'] ) ) $fields['slug'] = sanitize_key( $data['slug'] );
         if ( isset( $data['name'] ) ) $fields['name'] = sanitize_text_field( $data['name'] );
         if ( isset( $data['caps'] ) ) $fields['caps'] = wp_json_encode( array_values( (array) $data['caps'] ) );
         if ( empty( $fields ) ) return false;
-        return (bool) $wpdb->update( $wpdb->prefix . 'me_vis_roles', $fields, [ 'id' => $id ] );
+        return (bool) PCIO_VIS_History::update( 'vis_roles', $fields, [ 'id' => $id ] );
     }
 
     public static function delete_role( int $id ): bool {
-        global $wpdb;
         // Clear member assignments pointing to this role slug first
         $role = self::get_role( $id );
         if ( $role ) {
-            $wpdb->query( $wpdb->prepare(
-                "UPDATE %i SET vis_role='' WHERE vis_role=%s",
-                $wpdb->prefix . 'me_member_roles',
-                $role['slug']
-            ) );
+            PCIO_VIS_History::update( 'member_roles', [ 'vis_role' => '' ], [ 'vis_role' => $role['slug'] ] );
         }
-        return (bool) $wpdb->delete( $wpdb->prefix . 'me_vis_roles', [ 'id' => $id ] );
+        return (bool) PCIO_VIS_History::delete( 'vis_roles', [ 'id' => $id ] );
     }
 
     private static function decode_caps( array $row ): array {
@@ -178,6 +172,27 @@ class PCIO_VIS_Roles_DB {
     }
 
     // ── Member role assignments ───────────────────────────────────
+
+    /**
+     * Display membership when no explicit Vis role is assigned.
+     *
+     * Does not change the stored role slug or grant role capabilities.
+     *
+     * @param array|null $assignment Stored member role/account assignment.
+     * @return string Role label for member lists and details.
+     */
+    public static function display_role_name( ?array $assignment ): string {
+        if ( null === $assignment ) {
+            return '';
+        }
+        if ( '' !== (string) ( $assignment['vis_role'] ?? '' ) ) {
+            return (string) ( $assignment['vis_role_name'] ?? '' );
+        }
+        $uid = (int) ( $assignment['wp_user_id'] ?? 0 );
+        return PCIO_VIS_Caps::is_member( $uid )
+            ? __( 'Member', 'pcio-vis-member-event' )
+            : '';
+    }
 
     /**
      * Returns assignment row for one member, or null.
@@ -299,23 +314,22 @@ class PCIO_VIS_Roles_DB {
      * Pass $wp_user_id = 0 to clear the WP user link.
      */
     public static function set_member_role( int $member_id, string $vis_role, int $wp_user_id = 0 ): bool {
-        global $wpdb;
-        return (bool) $wpdb->replace( $wpdb->prefix . 'me_member_roles', [
-            'member_id'  => $member_id,
-            'vis_role'   => sanitize_key( $vis_role ),
-            'wp_user_id' => $wp_user_id ?: null,
-        ] );
+        return PCIO_VIS_History::upsert(
+            'member_roles',
+            [
+                'member_id'  => $member_id,
+                'vis_role'   => sanitize_key( $vis_role ),
+                'wp_user_id' => $wp_user_id ?: null,
+            ],
+            [ 'member_id' ]
+        );
     }
 
     /**
      * Remove a member's role assignment entirely.
      */
     public static function clear_member_role( int $member_id ): bool {
-        global $wpdb;
-        return (bool) $wpdb->delete(
-            $wpdb->prefix . 'me_member_roles',
-            [ 'member_id' => $member_id ]
-        );
+        return (bool) PCIO_VIS_History::delete( 'member_roles', [ 'member_id' => $member_id ] );
     }
 
     /**
@@ -383,18 +397,21 @@ class PCIO_VIS_Roles_DB {
     /**
      * WordPress users that are NOT linked to any member.
      *
-     * Used by the admin cleanup report. Deletion is intentionally left to the
-     * native WordPress Users screen (with its own delete_users capability and
-     * security-plugin checks) — this plugin never deletes accounts.
+     * Includes content ownership across all post types and statuses, comments
+     * and legacy links so cleanup never removes an account with WP content.
      *
-     * @return array<int,array> Rows: ID, user_login, user_email, user_registered.
+     * @return array<int,array>|WP_Error User rows with has_content, or a query error.
      */
-    public static function get_orphan_wp_users(): array {
+    public static function get_orphan_wp_users(): array|WP_Error {
         global $wpdb;
-        return $wpdb->get_results(
+        $rows = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT u.ID, u.user_login, u.user_email, u.user_registered
-                 FROM {$wpdb->users} u
+                "SELECT u.ID, u.user_login, u.user_email, u.user_registered,
+                    ( EXISTS ( SELECT 1 FROM %i p WHERE p.post_author = u.ID )
+                      OR EXISTS ( SELECT 1 FROM %i c WHERE c.user_id = u.ID )
+                      OR EXISTS ( SELECT 1 FROM %i l WHERE l.link_owner = u.ID )
+                    ) AS has_content
+                 FROM %i u
                  WHERE u.ID NOT IN (
                      SELECT mr.wp_user_id
                      FROM   %i mr
@@ -402,9 +419,17 @@ class PCIO_VIS_Roles_DB {
                        AND  mr.wp_user_id > 0
                  )
                  ORDER BY u.user_registered ASC",
+                $wpdb->posts,
+                $wpdb->comments,
+                $wpdb->links,
+                $wpdb->users,
                 $wpdb->prefix . 'me_member_roles'
             ),
             ARRAY_A
-        ) ?: [];
+        );
+        if ( null === $rows || '' !== $wpdb->last_error ) {
+            return new WP_Error( 'pcio_vis_cleanup_query', __( 'Could not check users and content. No accounts were deleted.', 'pcio-vis-member-event' ), [ 'status' => 500 ] );
+        }
+        return $rows;
     }
 }

@@ -21,6 +21,8 @@ $pcio_me_tables = [
     'me_event_signups',
     'me_event_recurrence',
     'me_event_types',
+    'me_event_roles',
+    'me_event_crew',
     'me_resources',
     'me_event_resources',
     'me_event_type_resources',
@@ -31,10 +33,15 @@ $pcio_me_tables = [
     'me_documents',
     'me_document_types',
     'me_rolling_texts',
+    'me_calendar_filters',
     'me_finance_journal',
     'me_sync',
+    'me_google_calendars',
+    'me_google_event_map',
     'me_statistics',
     'me_sponsor_clicks',
+    'me_change_history',
+    'me_change_undo',
 ];
 
 foreach ( $pcio_me_tables as $pcio_me_table ) {
@@ -42,8 +49,16 @@ foreach ( $pcio_me_tables as $pcio_me_table ) {
     $wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . $pcio_me_table );
 }
 
+wp_clear_scheduled_hook( 'pcio_vis_history_purge' );
+
 delete_option( 'pcio_me_db_version' );
 delete_option( 'pcio_me_caps_version' );
 delete_option( 'pcio_me_link_backfilled' );
 delete_option( 'pcio_me_member_cap_backfilled' );
 delete_option( 'pcio_vis_welcome_mail_seeded' );
+delete_option( 'pcio_me_google_key' );
+delete_option( 'pcio_me_google_location' );
+delete_option( 'pcio_me_google_clip_types' );
+delete_option( 'pcio_me_ai_resume_prompt' );
+delete_option( 'pcio_me_gemini_key' ); // Legacy: briefly stored before the WP AI Client was used.
+delete_option( 'pcio_me_google_sync_lock' );

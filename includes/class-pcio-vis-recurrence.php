@@ -390,16 +390,27 @@ class PCIO_VIS_Recurrence {
         $new_start_ts = strtotime( $start );
         $end          = $duration > 0 ? gmdate( 'Y-m-d H:i:s', $new_start_ts + $duration ) : null;
 
+        // Keep get-in / door opening at the same offset before the start.
+        $pre_start = [];
+        foreach ( PCIO_VIS_Events_DB::PRE_START_FIELDS as $field ) {
+            $ts                  = ! empty( $anchor[ $field ] ) ? strtotime( (string) $anchor[ $field ] ) : 0;
+            $pre_start[ $field ] = ( $ts && $start_ts ) ? gmdate( 'Y-m-d H:i:s', $new_start_ts - ( $start_ts - $ts ) ) : null;
+        }
+
         $new_id = PCIO_VIS_Events_DB::create( [
             'title'          => $anchor['title'] ?? '',
             'description'    => $anchor['description'] ?? '',
+            'resume'         => $anchor['resume'] ?? '',
             'start_datetime' => $start,
             'end_datetime'   => $end,
+            'get_in_datetime'       => $pre_start['get_in_datetime'],
+            'door_opening_datetime' => $pre_start['door_opening_datetime'],
             'all_day'        => $anchor['all_day'] ?? 0,
             'color'          => $anchor['color'] ?? '',
             'location'       => $anchor['location'] ?? '',
             'event_type_id'  => $anchor['event_type_id'] ?? null,
             'signup_mode'    => $anchor['signup_mode'] ?? 'simple',
+            'external_url'   => $anchor['external_url'] ?? '',
         ] );
         if ( ! $new_id ) {
             return 0;

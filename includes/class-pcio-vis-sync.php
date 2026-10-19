@@ -169,6 +169,7 @@ class PCIO_VIS_Sync {
         $callables = [
             'PCIO_VIS_Sync::run_sync_wp_users'   => __( 'Sync WP Users', 'pcio-vis-member-event' ),
             'PCIO_VIS_Sync::run_import_wp_users' => __( 'Import WP Users', 'pcio-vis-member-event' ),
+            'PCIO_VIS_Crew_Reminder::run'        => __( 'Crew shift reminders', 'pcio-vis-member-event' ),
         ];
 
         /**

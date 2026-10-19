@@ -3,7 +3,7 @@
 Plugin Name:  PCIO VIS Member Event
 Plugin URI:   https://www.pcio.dk/
 Description:  Manages members and events for a voluntary organization.
-Version:      1.5.0
+Version:      1.6.0
 Author:       PCIO
 Author URI:   https://www.pcio.dk
 Requires at least: 6.2
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'PCIO_VIS_PLUGIN_FILE', __FILE__ );
 define( 'PCIO_VIS_PLUGIN_DIR',  plugin_dir_path( __FILE__ ) );
 define( 'PCIO_VIS_REST_NS',     'pcio-vis/v1' );
-define( 'PCIO_VIS_DB_VERSION',  '1.10.0' );
+define( 'PCIO_VIS_DB_VERSION',  '1.21.0' );
 
 // Vendored libraries (Dompdf + php-qrcode) shared with extensions for PDF generation.
 if ( is_readable( PCIO_VIS_PLUGIN_DIR . 'vendor/autoload.php' ) ) {
@@ -30,6 +30,11 @@ if ( is_readable( PCIO_VIS_PLUGIN_DIR . 'vendor/autoload.php' ) ) {
 
 require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-caps.php';
 require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-roles-db.php';
+require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-user-cleanup.php';
+require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-history-db.php';
+require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-history-tables.php';
+require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-history.php';
+require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-history-rest.php';
 require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-db.php';
 require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-meta-db.php';
 require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-rest.php';
@@ -37,6 +42,10 @@ require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-events-db.php';
 require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-events-rest.php';
 require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-event-types-db.php';
 require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-event-types-rest.php';
+require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-event-roles-db.php';
+require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-event-roles-rest.php';
+require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-event-crew-db.php';
+require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-event-crew-rest.php';
 require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-resources-db.php';
 require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-resources-rest.php';
 require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-recurrence-db.php';
@@ -60,13 +69,24 @@ require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-statistics-db.php';
 require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-statistics-rest.php';
 require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-sync-db.php';
 require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-sync.php';
+require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-google-db.php';
+require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-google-client.php';
+require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-google-sync.php';
+require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-google-admin.php';
+require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-ai.php';
 require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-rolling-text-db.php';
 require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-rolling-text-rest.php';
+require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-calendar-filter-db.php';
+require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-calendar-filter.php';
+require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-calendar-filter-rest.php';
 require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-admin.php';
 require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-installer.php';
 require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-member-signup.php';
 require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-member-signup-rest.php';
 require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-member-signup-fulfillment.php';
+require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-crew-reminder.php';
+require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-navigation.php';
+require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-event-page.php';
 require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-plugin.php';
 
 register_activation_hook( __FILE__, function () {
@@ -77,6 +97,9 @@ register_activation_hook( __FILE__, function () {
     // at all — an unusable plugin that still looks activated.
     PCIO_VIS_Caps::activate();
     PCIO_VIS_Installer::install();
+    // The public event permalink /events/{slug}/ is rewritten onto this page,
+    // so create it before flushing the rules.
+    PCIO_VIS_Event_Page::create();
     // Register rewrite rules then flush so /events/{slug}/ works immediately.
     PCIO_VIS_Plugin::instance()->register_rewrites();
     flush_rewrite_rules();
@@ -84,7 +107,9 @@ register_activation_hook( __FILE__, function () {
 
 register_deactivation_hook( __FILE__, function () {
     PCIO_VIS_Caps::deactivate();
+    PCIO_VIS_History::unschedule_purge();
     flush_rewrite_rules();
 } );
 
+PCIO_VIS_History::init();
 PCIO_VIS_Plugin::instance();

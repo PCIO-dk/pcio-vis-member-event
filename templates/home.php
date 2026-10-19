@@ -94,16 +94,18 @@ show_admin_bar( false );
                 <div class="me-home-card-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
                          stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                        <polyline points="22,6 12,13 2,6"/>
+                        <path d="M3 10v4a1 1 0 0 0 1 1h3l6 4V5L7 9H4a1 1 0 0 0-1 1z"/>
+                        <path d="M7 15l1.5 5h3L10 16.5"/>
+                        <path d="M17 9a4 4 0 0 1 0 6"/>
+                        <path d="M19.5 6.5a7.5 7.5 0 0 1 0 11"/>
                     </svg>
                 </div>
                 <div class="me-home-card-body">
                     <h2 class="me-home-card-title">
-                        <?php esc_html_e( 'Mails', 'pcio-vis-member-event' ); ?>
+                        <?php esc_html_e( 'Marketing', 'pcio-vis-member-event' ); ?>
                     </h2>
                     <p class="me-home-card-desc">
-                        <?php esc_html_e( 'Compose and send bulk emails to all members.', 'pcio-vis-member-event' ); ?>
+                        <?php esc_html_e( 'Send mails to members and publish newsletters.', 'pcio-vis-member-event' ); ?>
                     </p>
                 </div>
                 <div class="me-home-card-arrow">
@@ -114,31 +116,6 @@ show_admin_bar( false );
                 </div>
             </a>
 
-            <a class="me-home-card" href="<?php echo esc_url( home_url( 'vis/newsletters' ) ); ?>">
-                <div class="me-home-card-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                         stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                        <polyline points="14 2 14 8 20 8"/>
-                        <line x1="16" y1="13" x2="8" y2="13"/>
-                        <line x1="16" y1="17" x2="8" y2="17"/>
-                    </svg>
-                </div>
-                <div class="me-home-card-body">
-                    <h2 class="me-home-card-title">
-                        <?php esc_html_e( 'Newsletters', 'pcio-vis-member-event' ); ?>
-                    </h2>
-                    <p class="me-home-card-desc">
-                        <?php esc_html_e( 'Generated newsletter PDFs.', 'pcio-vis-member-event' ); ?>
-                    </p>
-                </div>
-                <div class="me-home-card-arrow">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M5 12h14M12 5l7 7-7 7"/>
-                    </svg>
-                </div>
-            </a>
             <?php endif; ?>
 
             <a class="me-home-card" href="<?php echo esc_url( home_url( 'vis/documents' ) ); ?>">
@@ -168,8 +145,9 @@ show_admin_bar( false );
                 </div>
             </a>
 
-            <?php if ( current_user_can( 'vis_manage_finance' ) ) : ?>
-            <a class="me-home-card" href="<?php echo esc_url( home_url( 'vis/finance' ) ); ?>">
+            <?php $pcio_me_home_sections = PCIO_VIS_Navigation::items(); ?>
+            <?php if ( isset( $pcio_me_home_sections['finance'] ) ) : ?>
+            <a class="me-home-card" href="<?php echo esc_url( $pcio_me_home_sections['finance']['url'] ); ?>">
                 <div class="me-home-card-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
                          stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -193,6 +171,8 @@ show_admin_bar( false );
                 </div>
             </a>
             <?php endif; ?>
+
+            <?php do_action( 'pcio_me_home_cards' ); ?>
 
             <?php if ( current_user_can( 'vis_manage_users' ) ) : ?>
             <a class="me-home-card" href="<?php echo esc_url( home_url( 'vis/members/statistics' ) ); ?>">
@@ -221,15 +201,6 @@ show_admin_bar( false );
                 </div>
             </a>
             <?php endif; ?>
-
-            <?php
-            /**
-             * Action: pcio_me_home_cards
-             * Lets extensions add their own cards to the /vis/ landing page.
-             * Echo one or more <a class="me-home-card">…</a> blocks.
-             */
-            do_action( 'pcio_me_home_cards' );
-            ?>
 
         </div>
     </main>

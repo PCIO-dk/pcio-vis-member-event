@@ -8,6 +8,15 @@ class PCIO_VIS_Plugin {
     private static ?PCIO_VIS_Plugin $_instance = null;
 
     /**
+     * Per-request cache of prepared public-event view data, keyed by event ID.
+     * Shared by the head meta, the asset enqueue and the shortcode so an event
+     * is resolved and formatted only once per request.
+     *
+     * @var array<int,array>
+     */
+    private array $public_event_views = [];
+
+    /**
      * Pages served via rewrite rules.
      * Key   = query var value  (pcio_me_page)
      * Value = template file basename inside /templates/
@@ -18,6 +27,7 @@ class PCIO_VIS_Plugin {
         'workgroups'  => 'workgroups.php',
         'calendar'    => 'calendar.php',
         'event'       => 'event.php',
+        'member'      => 'member.php',
         'mails'       => 'mails.php',
         'newsletters' => 'newsletters.php',
         'documents'   => 'documents.php',
@@ -67,17 +77,54 @@ class PCIO_VIS_Plugin {
         return self::$_instance;
     }
 
+    /**
+     * Register shared data-entry dialog protection for the core and extensions.
+     *
+     * @return void
+     */
+    public function register_modal_guard(): void {
+        wp_register_script(
+            'pcio-vis-modal-guard',
+            plugins_url( 'assets/modal-guard.js', PCIO_VIS_PLUGIN_FILE ),
+            [],
+            '1.0.0',
+            true
+        );
+        wp_add_inline_script(
+            'pcio-vis-modal-guard',
+            'window.PCIO_VIS_MODAL = ' . wp_json_encode( [
+                'i18n' => [
+                    'confirmDiscard' => __( 'You have unsaved changes. Discard them?', 'pcio-vis-member-event' ),
+                ],
+            ] ) . ';',
+            'before'
+        );
+    }
+
     private function __construct() {
         add_action( 'admin_init',        [ 'PCIO_VIS_Installer', 'maybe_upgrade' ] );
         add_action( 'admin_init',        [ 'PCIO_VIS_Member_Signup_Fulfillment', 'seed_mail' ] );
+        add_action( 'admin_init',        [ 'PCIO_VIS_Crew_Reminder', 'seed_mail' ] );
+        // Heal the event detail page if it was deleted after activation.
+        add_action( 'admin_init',        [ 'PCIO_VIS_Event_Page', 'maybe_create' ] );
         add_action( 'rest_api_init',     [ $this, 'register_rest'     ] );
         add_action( 'init',              [ $this, 'register_rewrites'  ] );
+        add_action( 'init',              [ $this, 'register_modal_guard' ] );
         add_action( 'template_redirect', [ $this, 'serve_templates'    ] );
+        // The Event page uses the plugin's own full-width page template.
+        add_filter( 'theme_page_templates', [ $this, 'register_event_page_template' ] );
+        // Late priority so the plugin template wins over theme/builder overrides.
+        add_filter( 'template_include',     [ $this, 'load_event_page_template' ], 99 );
         add_action( 'admin_bar_menu',    [ $this, 'add_admin_bar_node' ], 90 );
         add_action( 'wp_login',          [ $this, 'on_user_login'      ], 10, 2 );
         add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_front_end' ] );
+        // Public event detail: assets + social meta, shared by the page route
+        // and the standalone fallback template.
+        add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_public_event_assets_for_request' ] );
+        add_action( 'wp_head',           [ $this, 'public_event_head_meta' ], 5 );
         ( new PCIO_VIS_Member_Signup() )->register();
         ( new PCIO_VIS_Member_Signup_Fulfillment() )->register();
+        ( new PCIO_VIS_Crew_Reminder() )->register();
         add_shortcode( 'pcio_me_members',       [ $this, 'shortcode_members'       ] );
         add_shortcode( 'pcio_me_documents',     [ $this, 'shortcode_documents'     ] );
         add_shortcode( 'pcio_me_edit_profile',  [ $this, 'shortcode_edit_profile'  ] );
@@ -90,9 +137,15 @@ class PCIO_VIS_Plugin {
         add_shortcode( 'pcio_me_rolling_text',   [ $this, 'shortcode_rolling_text'   ] );
         PCIO_VIS_Caps::init();
         PCIO_VIS_Sync::init();
+        PCIO_VIS_Google_Sync::init();
         PCIO_VIS_Recurrence::init();
+        add_action( 'pcio_me_event_deleted',  [ 'PCIO_VIS_Event_Crew_DB', 'delete_for_event' ] );
+        add_action( 'pcio_me_member_deleted', [ 'PCIO_VIS_Event_Crew_DB', 'unassign_member' ] );
         if ( is_admin() ) {
             ( new PCIO_VIS_Admin() )->init();
+            ( new PCIO_VIS_Google_Admin() )->init();
+            require_once PCIO_VIS_PLUGIN_DIR . 'includes/class-pcio-vis-history-admin.php';
+            ( new PCIO_VIS_History_Admin() )->init();
         }
     }
 
@@ -109,10 +162,14 @@ class PCIO_VIS_Plugin {
         ( new PCIO_VIS_Journal_Rest()     )->register();
         ( new PCIO_VIS_Statistics_Rest()  )->register();
         ( new PCIO_VIS_Event_Types_Rest() )->register();
+        ( new PCIO_VIS_Event_Roles_Rest() )->register();
+        ( new PCIO_VIS_Event_Crew_Rest()  )->register();
         ( new PCIO_VIS_Resources_Rest()   )->register();
         ( new PCIO_VIS_Recurrence_Rest()  )->register();
         ( new PCIO_VIS_Workgroups_Rest()    )->register();
         ( new PCIO_VIS_Rolling_Text_Rest() )->register();
+        ( new PCIO_VIS_Calendar_Filter_Rest() )->register();
+        ( new PCIO_VIS_History_Rest()     )->register();
     }
 
     // ── Front-end URL rewrites ─────────────────────────────────────
@@ -130,10 +187,21 @@ class PCIO_VIS_Plugin {
         );
         add_rewrite_tag( '%pcio_me_id%', '(\d+)' );
 
-        // Public event permalink: /events/{slug}/  (no login required)
+        // Member detail: /vis/members/{id}/
+        add_rewrite_rule(
+            '^vis/members/(\d+)/?$',
+            'index.php?pcio_me_page=member&pcio_me_id=$matches[1]',
+            'top'
+        );
+
+        // Public event permalink: /events/{slug}/  (no login required).
+        // Rewritten onto the real "Event" page (PCIO_VIS_Event_Page) which hosts
+        // the [pcio_me_event] shortcode. Rendering through a real queried object
+        // makes the active theme output its header/footer (classic, block and
+        // Divi Theme Builder alike) and returns a normal 200 page, not a 404.
         add_rewrite_rule(
             '^events/([^/]+)/?$',
-            'index.php?pcio_me_event_slug=$matches[1]',
+            'index.php?pagename=' . PCIO_VIS_Event_Page::SLUG . '&pcio_me_event_slug=$matches[1]',
             'top'
         );
         add_rewrite_tag( '%pcio_me_event_slug%', '([^&]+)' );
@@ -142,6 +210,7 @@ class PCIO_VIS_Plugin {
         foreach ( array_keys( self::PAGES ) as $slug ) {
             if ( $slug === 'home'       ) continue;
             if ( $slug === 'event'      ) continue; // handled above
+            if ( $slug === 'member'     ) continue; // handled above
             if ( $slug === 'statistics' ) continue; // handled below
             add_rewrite_rule(
                 '^vis/' . preg_quote( $slug, '/' ) . '/?$',
@@ -157,11 +226,37 @@ class PCIO_VIS_Plugin {
     // ── Public event permalink ────────────────────────────────────
 
     /**
-     * Serve the public, no-login event page at /events/{slug}/.
-     * Looks the event up by slug and renders the public template, or a 404.
+     * Resolve an event from its public slug.
+     *
+     * Published events resolve for everyone. Users who may inspect unpublished
+     * events (editors/publishers) also resolve drafts, so they can preview
+     * imported or not-yet-published events on the public URL.
+     *
+     * @param string $slug Event slug.
+     * @return array|null Event row, or null when missing (or unpublished for guests).
+     */
+    private function resolve_public_event( string $slug ): ?array {
+        $event = PCIO_VIS_Events_DB::get_by_slug( sanitize_title( $slug ) );
+        if ( ! $event ) {
+            return null;
+        }
+        if ( PCIO_VIS_Events_DB::is_published( $event ) ) {
+            return $event;
+        }
+        return PCIO_VIS_Events_DB::can_view_unpublished() ? $event : null;
+    }
+
+    /**
+     * Legacy standalone renderer for /events/{slug}/.
+     *
+     * Used only when the real Event page is missing (see PCIO_VIS_Event_Page).
+     * When the page exists the request renders through the normal template
+     * hierarchy instead, so the active theme's header/footer are used and the
+     * response is a real 200 page. This path keeps the route working before the
+     * page is created and forces a 200 status when it does render.
      */
     private function serve_public_event( string $slug ): void {
-        $event = PCIO_VIS_Events_DB::get_by_slug( sanitize_title( $slug ) );
+        $event = $this->resolve_public_event( $slug );
         if ( ! $event ) {
             global $wp_query;
             $wp_query->set_404();
@@ -174,22 +269,41 @@ class PCIO_VIS_Plugin {
             return;
         }
 
-        $event_id = (int) $event['id'];
-        $assets   = plugins_url( 'assets/', PCIO_VIS_PLUGIN_FILE );
+        // A published event is a real, indexable page — never a 404.
+        status_header( 200 );
+        global $wp_query;
+        if ( $wp_query instanceof WP_Query ) {
+            $wp_query->is_404 = false;
+        }
 
-        // Stylesheet for the public detail layout. Enqueue before the theme header.
-        wp_enqueue_style( 'pcio-me-app', $assets . 'members.css', [], '1.3.0' );
-        wp_enqueue_style( 'pcio-me-public-event', $assets . 'public-event.css', [ 'pcio-me-app' ], '1.0.3' );
+        // Exposed to the template. phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+        $pcio_me_event = $event;
+        $pcio_me_view  = $this->prepare_public_event_view( $event );
+        $this->enqueue_public_event_assets( $pcio_me_view );
+        require $template;
+        exit;
+    }
+
+    /**
+     * Build the data the public event layout needs, cached per request.
+     *
+     * @param array $event Raw event row.
+     * @return array Prepared view data.
+     */
+    private function prepare_public_event_view( array $event ): array {
+        $event_id = (int) $event['id'];
+        if ( isset( $this->public_event_views[ $event_id ] ) ) {
+            return $this->public_event_views[ $event_id ];
+        }
 
         // Resolve both images.
-        $banner_id   = ! empty( $event['image_id'] ) ? (int) $event['image_id'] : 0;
-        $thumb_id    = ! empty( $event['thumb_image_id'] ) ? (int) $event['thumb_image_id'] : 0;
-        $banner_url  = $banner_id ? wp_get_attachment_image_url( $banner_id, 'large' ) : ( $thumb_id ? wp_get_attachment_image_url( $thumb_id, 'large' ) : '' );
-        $thumb_url   = $thumb_id ? wp_get_attachment_image_url( $thumb_id, 'large' ) : '';
+        $banner_id  = ! empty( $event['image_id'] ) ? (int) $event['image_id'] : 0;
+        $thumb_id   = ! empty( $event['thumb_image_id'] ) ? (int) $event['thumb_image_id'] : 0;
+        $banner_url = $banner_id ? wp_get_attachment_image_url( $banner_id, 'large' ) : ( $thumb_id ? wp_get_attachment_image_url( $thumb_id, 'large' ) : '' );
+        $thumb_url  = $thumb_id ? wp_get_attachment_image_url( $thumb_id, 'large' ) : '';
 
         // Date label + start/day badge.
         $tz       = wp_timezone();
-        $all_day  = (bool) intval( $event['all_day'] );
         $start_dt = new DateTimeImmutable( $event['start_datetime'], $tz );
         $date_str = $this->format_event_date_range( $event );
         $day_num  = wp_date( 'j', $start_dt->getTimestamp() );
@@ -229,49 +343,153 @@ class PCIO_VIS_Plugin {
 
         $permalink = home_url( 'events/' . rawurlencode( $event['slug'] ?? '' ) . '/' );
 
-        if ( $can_signup ) {
-            wp_enqueue_script( 'pcio-me-event-signup', $assets . 'event-signup.js', [], '1.0.1', true );
-            wp_add_inline_script(
-                'pcio-me-event-signup',
-                'const PCIO_VIS_EVENT = ' . wp_json_encode( [
-                    'rest'          => rest_url( PCIO_VIS_REST_NS ),
-                    'nonce'         => wp_create_nonce( 'wp_rest' ),
-                    'eventId'       => $event_id,
-                    'currentStatus' => $my_status,
-                    'i18n'          => [
-                        'joining'    => __( 'Joining',     'pcio-vis-member-event' ),
-                        'interested' => __( 'Interested',  'pcio-vis-member-event' ),
-                        'notJoining' => __( 'Not joining', 'pcio-vis-member-event' ),
-                        'errSave'    => __( 'Failed to save your response. Please try again.', 'pcio-vis-member-event' ),
-                    ],
-                ] ) . ';',
-                'before'
-            );
-        }
-
-        // Exposed to the template. phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-        $pcio_me_event   = $event;
-        $pcio_me_view    = [
-            'id'         => $event_id,
-            'title'      => (string) $event['title'],
-            'description'=> (string) ( $event['description'] ?? '' ),
-            'location'   => (string) ( $event['location'] ?? '' ),
-            'color'      => ! empty( $event['color'] ) ? $event['color'] : '#3b82f6',
-            'banner_url' => $banner_url,
-            'thumb_url'  => $thumb_url,
-            'date_str'   => $date_str,
-            'day_num'    => $day_num,
-            'mon_abbr'   => $mon_abbr,
-            'can_signup' => $can_signup,
-            'signup_mode'=> $signup_mode,
-            'my_status'  => $my_status,
-            'is_logged'  => is_user_logged_in(),
-            'login_url'  => wp_login_url( $permalink ),
-            'permalink'  => $permalink,
+        $view = [
+            'id'           => $event_id,
+            'title'        => (string) $event['title'],
+            'description'  => (string) ( $event['description'] ?? '' ),
+            'location'     => (string) ( $event['location'] ?? '' ),
+            'color'        => ! empty( $event['color'] ) ? $event['color'] : '#3b82f6',
+            'banner_url'   => $banner_url,
+            'thumb_url'    => $thumb_url,
+            'date_str'     => $date_str,
+            'day_num'      => $day_num,
+            'mon_abbr'     => $mon_abbr,
+            'can_signup'   => $can_signup,
+            'signup_mode'  => $signup_mode,
+            'external_url' => 'external' === $signup_mode ? (string) ( $event['external_url'] ?? '' ) : '',
+            'my_status'    => $my_status,
+            'is_logged'    => is_user_logged_in(),
+            'login_url'    => wp_login_url( $permalink ),
+            'permalink'    => $permalink,
         ];
-        // phpcs:enable VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-        require $template;
-        exit;
+
+        $this->public_event_views[ $event_id ] = $view;
+        return $view;
+    }
+
+    /**
+     * Enqueue the styles (and, when relevant, the signup script) for the public
+     * event detail layout. Safe to call more than once; the inline signup config
+     * is printed at most once so the top-level `const PCIO_VIS_EVENT` in
+     * event-signup.js cannot be declared twice.
+     *
+     * @param array $view Prepared view data.
+     */
+    private function enqueue_public_event_assets( array $view ): void {
+        $assets = plugins_url( 'assets/', PCIO_VIS_PLUGIN_FILE );
+        wp_enqueue_style( 'pcio-me-app', $assets . 'members.css', [], '1.4.7' );
+        wp_enqueue_style( 'pcio-me-public-event', $assets . 'public-event.css', [ 'pcio-me-app' ], '1.0.3' );
+
+        if ( empty( $view['can_signup'] ) || wp_script_is( 'pcio-me-event-signup', 'enqueued' ) ) {
+            return;
+        }
+        wp_enqueue_script( 'pcio-me-event-signup', $assets . 'event-signup.js', [], '1.0.1', true );
+        wp_add_inline_script(
+            'pcio-me-event-signup',
+            'const PCIO_VIS_EVENT = ' . wp_json_encode( [
+                'rest'          => rest_url( PCIO_VIS_REST_NS ),
+                'nonce'         => wp_create_nonce( 'wp_rest' ),
+                'eventId'       => (int) $view['id'],
+                'currentStatus' => $view['my_status'],
+                'i18n'          => [
+                    'joining'    => __( 'Joining',     'pcio-vis-member-event' ),
+                    'interested' => __( 'Interested',  'pcio-vis-member-event' ),
+                    'notJoining' => __( 'Not joining', 'pcio-vis-member-event' ),
+                    'errSave'    => __( 'Failed to save your response. Please try again.', 'pcio-vis-member-event' ),
+                ],
+            ] ) . ';',
+            'before'
+        );
+    }
+
+    /**
+     * Enqueue the public event assets when the request is /events/{slug}/.
+     * Hooked on wp_enqueue_scripts so the stylesheet is printed in the theme
+     * <head> rather than late, after the content.
+     */
+    public function enqueue_public_event_assets_for_request(): void {
+        $slug = (string) get_query_var( 'pcio_me_event_slug' );
+        if ( '' === $slug ) {
+            return;
+        }
+        $event = $this->resolve_public_event( $slug );
+        if ( ! $event ) {
+            return;
+        }
+        $this->enqueue_public_event_assets( $this->prepare_public_event_view( $event ) );
+    }
+
+    /**
+     * Print Open Graph meta for the public event being viewed.
+     * Hooked on wp_head, so it works on both the real page and the fallback.
+     */
+    public function public_event_head_meta(): void {
+        $slug = (string) get_query_var( 'pcio_me_event_slug' );
+        if ( '' === $slug ) {
+            return;
+        }
+        $event = $this->resolve_public_event( $slug );
+        if ( ! $event ) {
+            return;
+        }
+        $view = $this->prepare_public_event_view( $event );
+        $img  = $view['thumb_url'] ?: $view['banner_url'];
+        echo '<meta property="og:title" content="' . esc_attr( $view['title'] ) . '">' . "\n";
+        if ( $img ) {
+            echo '<meta property="og:image" content="' . esc_url( $img ) . '">' . "\n";
+        }
+        echo '<meta property="og:type" content="event">' . "\n";
+        echo '<meta property="og:url" content="' . esc_url( $view['permalink'] ) . '">' . "\n";
+    }
+
+    /**
+     * Render the public event detail markup without the theme header/footer.
+     * Used by the [pcio_me_event] shortcode on the event page.
+     *
+     * @param array $event Raw event row.
+     * @return string Detail HTML.
+     */
+    private function render_public_event( array $event ): string {
+        // Exposed to the body template. phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+        $pcio_me_v = $this->prepare_public_event_view( $event );
+        $this->enqueue_public_event_assets( $pcio_me_v );
+
+        ob_start();
+        require PCIO_VIS_PLUGIN_DIR . 'templates/event-public-body.php';
+        return (string) ob_get_clean();
+    }
+
+    // ── Event page template ───────────────────────────────────────
+
+    /**
+     * Offer the plugin's full-width page template in the page editor.
+     *
+     * @param array $templates Registered page templates (file => label).
+     * @return array
+     */
+    public function register_event_page_template( array $templates ): array {
+        if ( PCIO_VIS_Event_Page::uses_full_width_template() ) {
+            $templates[ PCIO_VIS_Event_Page::TEMPLATE ] = __( 'Event detail (full width)', 'pcio-vis-member-event' );
+        }
+        return $templates;
+    }
+
+    /**
+     * Load the plugin's page template when the Event page uses it. The template
+     * lives in the plugin (not the theme), so WordPress cannot resolve it on its
+     * own; this filter points the page at templates/event-page.php, which renders
+     * full width inside the theme header/footer and without the blog sidebar.
+     *
+     * @param string $template Resolved template path.
+     * @return string
+     */
+    public function load_event_page_template( $template ) {
+        if ( ! PCIO_VIS_Event_Page::uses_full_width_template()
+            || PCIO_VIS_Event_Page::TEMPLATE !== get_page_template_slug() ) {
+            return $template;
+        }
+        $plugin_template = PCIO_VIS_PLUGIN_DIR . 'templates/event-page.php';
+        return file_exists( $plugin_template ) ? $plugin_template : $template;
     }
 
     /**
@@ -304,6 +522,14 @@ class PCIO_VIS_Plugin {
             $same_day = wp_date( 'Y-m-d', $start ) === wp_date( 'Y-m-d', $end );
             $date_str .= ' – ' . wp_date( $same_day ? $time_format : $date_format . ' ' . $time_format, $end );
         }
+        if ( ! empty( $event['door_opening_datetime'] ) ) {
+            $door      = ( new DateTimeImmutable( $event['door_opening_datetime'], $tz ) )->getTimestamp();
+            $date_str .= ' ' . sprintf(
+                /* translators: %s: door opening time. */
+                __( '(doors open %s)', 'pcio-vis-member-event' ),
+                wp_date( $time_format, $door )
+            );
+        }
         return $date_str;
     }
 
@@ -327,8 +553,132 @@ class PCIO_VIS_Plugin {
          * @param array<string,string> $modes value => label pairs.
          */
         $modes = apply_filters( 'pcio_me_event_signup_modes', $modes );
+        if ( ! is_array( $modes ) ) {
+            $modes = [];
+        }
 
-        return is_array( $modes ) ? $modes : [];
+        // Appended after extension modes so it stays last in the dropdown.
+        $modes['external'] = __( 'External ticket sale', 'pcio-vis-member-event' );
+
+        return $modes;
+    }
+
+    /**
+     * Enqueue the shared History tab module (event + member detail pages).
+     *
+     * @param string $assets Base URL of the assets directory.
+     */
+    private static function enqueue_history_assets( string $assets ): void {
+        wp_enqueue_style( 'pcio-me-history', $assets . 'history.css', [ 'pcio-me-app' ], '1.0.0' );
+        wp_enqueue_script( 'pcio-me-history', $assets . 'history.js', [], '1.0.0', true );
+        wp_add_inline_script(
+            'pcio-me-history',
+            'window.PCIO_ME_HISTORY_I18N = ' . wp_json_encode( [
+                'title'       => __( 'Change history', 'pcio-vis-member-event' ),
+                'note'        => __( 'Newest first. Undo restores the stored data only; e-mails, payments and user accounts are not reverted.', 'pcio-vis-member-event' ),
+                'refresh'     => __( 'Refresh', 'pcio-vis-member-event' ),
+                'loadMore'    => __( 'Load more', 'pcio-vis-member-event' ),
+                'empty'       => __( 'No changes logged yet.', 'pcio-vis-member-event' ),
+                'errLoad'     => __( 'Could not load the history:', 'pcio-vis-member-event' ),
+                'colDate'     => __( 'Date', 'pcio-vis-member-event' ),
+                'colUser'     => __( 'User', 'pcio-vis-member-event' ),
+                'colChange'   => __( 'Change', 'pcio-vis-member-event' ),
+                'undo'        => __( 'Undo', 'pcio-vis-member-event' ),
+                'undone'      => __( 'Undone', 'pcio-vis-member-event' ),
+                'expired'     => __( 'Expired', 'pcio-vis-member-event' ),
+                'notUndoable' => __( 'Not undoable', 'pcio-vis-member-event' ),
+                'confirmUndo' => __( 'Undo this change?', 'pcio-vis-member-event' ),
+                'undoneOk'    => __( 'Change undone.', 'pcio-vis-member-event' ),
+            ] ) . ';',
+            'before'
+        );
+    }
+
+    /**
+     * Enqueue assets + config for the member detail page (/vis/members/{id}/).
+     * Access (vis_manage_users) is already enforced by serve_templates().
+     *
+     * @param string $assets Base URL of the assets directory.
+     */
+    private function enqueue_member_page( string $assets ): void {
+        $member_id = (int) get_query_var( 'pcio_me_id' );
+        if ( $member_id < 1 || ! PCIO_VIS_DB::get( $member_id ) ) {
+            wp_safe_redirect( home_url( 'vis/members' ) );
+            exit;
+        }
+
+        wp_enqueue_style( 'pcio-me-member', $assets . 'member.css', [ 'pcio-me-app' ], '1.0.0' );
+        self::enqueue_history_assets( $assets );
+        wp_enqueue_script( 'pcio-me-member', $assets . 'member.js', [ 'pcio-me-history' ], '1.0.0', true );
+
+        /**
+         * Filter: pcio_me_member_tabs
+         * Lets extensions register extra tabs on the member detail page.
+         * Each entry must be an array with keys: id, label, html (already escaped
+         * by the extension, same contract as pcio_me_event_tabs).
+         *
+         * @param array $tabs      Extra tab definitions.
+         * @param int   $member_id Current member ID.
+         */
+        $extra_tabs_raw = apply_filters( 'pcio_me_member_tabs', [], $member_id );
+        $extra_tabs     = [];
+        if ( is_array( $extra_tabs_raw ) ) {
+            foreach ( $extra_tabs_raw as $tab ) {
+                if ( ! is_array( $tab ) || empty( $tab['id'] ) ) {
+                    continue;
+                }
+                $extra_tabs[] = [
+                    'id'    => sanitize_key( (string) $tab['id'] ),
+                    'label' => (string) ( $tab['label'] ?? $tab['id'] ),
+                    'html'  => (string) ( $tab['html'] ?? '' ),
+                ];
+            }
+        }
+
+        wp_add_inline_script(
+            'pcio-me-member',
+            'window.PCIO_ME = ' . wp_json_encode( [
+                'rest'         => rest_url( PCIO_VIS_REST_NS ),
+                'nonce'        => wp_create_nonce( 'wp_rest' ),
+                'memberId'     => $member_id,
+                'listUrl'      => home_url( 'vis/members/' ),
+                'canHistory'   => current_user_can( 'vis_manage_users' ),
+                'memberFields' => PCIO_VIS_DB::get_field_definitions(),
+                'extraTabs'    => $extra_tabs,
+                'i18n'         => [
+                    'tabSettings'    => __( 'Settings', 'pcio-vis-member-event' ),
+                    'tabHistory'     => __( 'History', 'pcio-vis-member-event' ),
+                    'tabsLabel'      => __( 'Member sections', 'pcio-vis-member-event' ),
+                    'backToList'     => __( 'Members', 'pcio-vis-member-event' ),
+                    'errNoId'        => __( 'No member selected.', 'pcio-vis-member-event' ),
+                    'errLoad'        => __( 'Failed to load member: ', 'pcio-vis-member-event' ),
+                    'roleSectionHdr' => __( 'Role assignment', 'pcio-vis-member-event' ),
+                    'fieldVisRole'   => __( 'Event-system role', 'pcio-vis-member-event' ),
+                    'noRole'         => __( '— none —', 'pcio-vis-member-event' ),
+                    'fieldVolunteer' => __( 'Volunteer', 'pcio-vis-member-event' ),
+                    /* translators: %d: WordPress user ID */
+                    'wpLinked'       => __( 'Linked to WordPress user #%d.', 'pcio-vis-member-event' ),
+                    'wpNotLinked'    => __( 'Not linked to a WordPress user.', 'pcio-vis-member-event' ),
+                    'btnSave'        => __( 'Save member', 'pcio-vis-member-event' ),
+                    'btnCancel'      => __( 'Cancel', 'pcio-vis-member-event' ),
+                    'btnDelete'      => __( 'Delete', 'pcio-vis-member-event' ),
+                    'titleDelete'    => __( 'Delete Member', 'pcio-vis-member-event' ),
+                    'confirmDel'     => __( 'Confirm deletion', 'pcio-vis-member-event' ),
+                    'deleteHint'     => __( 'The deletion is logged in the change history and can be undone there.', 'pcio-vis-member-event' ),
+                    'closeDialog'    => __( 'Close dialog', 'pcio-vis-member-event' ),
+                    'errName'        => __( 'Name is required.', 'pcio-vis-member-event' ),
+                    'errEmail'       => __( 'Enter a valid email address.', 'pcio-vis-member-event' ),
+                    'stateSaving'    => __( 'Saving…', 'pcio-vis-member-event' ),
+                    'stateDeleting'  => __( 'Deleting…', 'pcio-vis-member-event' ),
+                    'toastUpdated'   => __( 'Member updated.', 'pcio-vis-member-event' ),
+                    'errSave'        => __( 'Save failed: ', 'pcio-vis-member-event' ),
+                    'errDelete'      => __( 'Delete failed: ', 'pcio-vis-member-event' ),
+                    'errRoleSave'    => __( 'Role save failed: ', 'pcio-vis-member-event' ),
+                    'confirmDiscard' => __( 'You have unsaved changes. Discard them?', 'pcio-vis-member-event' ),
+                ],
+            ] ) . ';',
+            'before'
+        );
     }
 
     // ── Admin bar ─────────────────────────────────────────────────
@@ -348,25 +698,7 @@ class PCIO_VIS_Plugin {
             'meta'  => [ 'title' => __( 'Open the Vis member area', 'pcio-vis-member-event' ) ],
         ] );
 
-        // Build the same core items as _nav.php, then apply the shared filter so
-        // extensions (Shop, Deliveries, Boats, Galleries…) appear here automatically.
-        $items = [
-            'members'   => [ 'label' => __( 'Members',    'pcio-vis-member-event' ), 'url' => home_url( 'vis/members'    ) ],
-            'calendar'  => [ 'label' => __( 'Calendar',   'pcio-vis-member-event' ), 'url' => home_url( 'vis/calendar'   ) ],
-            'documents' => [ 'label' => __( 'Documents',  'pcio-vis-member-event' ), 'url' => home_url( 'vis/documents'  ) ],
-        ];
-        if ( current_user_can( 'vis_manage_finance' ) ) {
-            $items['finance'] = [ 'label' => __( 'Finance', 'pcio-vis-member-event' ), 'url' => home_url( 'vis/finance' ) ];
-        }
-        if ( current_user_can( 'vis_manage_users' ) ) {
-            $items['workgroups'] = [ 'label' => __( 'Workgroups', 'pcio-vis-member-event' ), 'url' => home_url( 'vis/workgroups' ) ];
-            $items['statistics'] = [ 'label' => __( 'Statistics', 'pcio-vis-member-event' ), 'url' => home_url( 'vis/members/statistics' ) ];
-        }
-        if ( current_user_can( 'vis_manage_settings' ) ) {
-            $items['mails']       = [ 'label' => __( 'Mails',       'pcio-vis-member-event' ), 'url' => home_url( 'vis/mails'       ) ];
-            $items['newsletters'] = [ 'label' => __( 'Newsletters', 'pcio-vis-member-event' ), 'url' => home_url( 'vis/newsletters' ) ];
-        }
-        $items = (array) apply_filters( 'pcio_me_nav_items', $items, '' );
+        $items = PCIO_VIS_Navigation::items();
 
         foreach ( $items as $key => $item ) {
             if ( empty( $item['url'] ) ) {
@@ -378,6 +710,14 @@ class PCIO_VIS_Plugin {
                 'title'  => (string) ( $item['label'] ?? '' ),
                 'href'   => (string) $item['url'],
             ] );
+            foreach ( $item['children'] ?? [] as $child_key => $child ) {
+                $bar->add_node( [
+                    'parent' => 'pcio-me-vis-' . sanitize_key( (string) $key ),
+                    'id'     => 'pcio-me-vis-' . sanitize_key( (string) $key ) . '-' . sanitize_key( (string) $child_key ),
+                    'title'  => (string) $child['label'],
+                    'href'   => (string) $child['url'],
+                ] );
+            }
         }
     }
 
@@ -385,8 +725,22 @@ class PCIO_VIS_Plugin {
 
     public function serve_templates(): void {
         // Public event permalink: /events/{slug}/ — no login required.
+        //
+        // The URL is rewritten onto the real Event page (PCIO_VIS_Event_Page),
+        // which renders the [pcio_me_event] shortcode through the normal
+        // template hierarchy, so the active theme's header/footer are used and
+        // the response is a normal 200 page. Only fall back to the standalone
+        // renderer when that page is missing.
         $event_slug = get_query_var( 'pcio_me_event_slug' );
         if ( $event_slug ) {
+            if ( PCIO_VIS_Event_Page::is_current() ) {
+                if ( ! $this->resolve_public_event( (string) $event_slug ) ) {
+                    global $wp_query;
+                    $wp_query->set_404();
+                    status_header( 404 );
+                }
+                return; // Let WordPress render the page (or the 404 template).
+            }
             $this->serve_public_event( (string) $event_slug );
             return;
         }
@@ -409,6 +763,7 @@ class PCIO_VIS_Plugin {
         $page_caps = [
             'home'        => 'vis_member',
             'members'     => 'vis_manage_users',
+            'member'      => 'vis_manage_users',
             'workgroups'  => 'vis_manage_users',
             'calendar'    => 'vis_member',
             'event'       => 'vis_member',
@@ -440,17 +795,19 @@ class PCIO_VIS_Plugin {
         $assets = plugins_url( 'assets/', PCIO_VIS_PLUGIN_FILE );
 
         // Shared stylesheet loaded on every vis/ page.
-        wp_enqueue_style( 'pcio-me-app', $assets . 'members.css', [], '1.3.4' );
+        wp_enqueue_style( 'pcio-me-app', $assets . 'members.css', [], '1.4.7' );
 
         // Page-specific JS
         if ( $page === 'members' ) {
-            wp_enqueue_script( 'pcio-me-members', $assets . 'members.js', [], '1.2.7', true );
+            wp_enqueue_script( 'pcio-me-members', $assets . 'members.js', [ 'pcio-vis-modal-guard' ], '1.3.1', true );
+            wp_enqueue_style( 'pcio-me-member', $assets . 'member.css', [ 'pcio-me-app' ], '1.0.0' );
             wp_add_inline_script(
                 'pcio-me-members',
-                'const PCIO_ME = ' . wp_json_encode( [
+                'window.PCIO_ME = ' . wp_json_encode( [
                     'rest'         => rest_url( PCIO_VIS_REST_NS ),
                     'nonce'        => wp_create_nonce( 'wp_rest' ),
                     'canEdit'      => current_user_can( 'vis_manage_users' ),
+                    'memberBaseUrl' => home_url( 'vis/members/' ),
                     'ownMemberId'  => PCIO_VIS_Roles_DB::get_member_id_by_wp_user( get_current_user_id() ),
                     'memberFields' => PCIO_VIS_DB::get_field_definitions(),
                     'i18n'         => [
@@ -520,23 +877,7 @@ class PCIO_VIS_Plugin {
                         'toastCopyNone'  => __( 'No email addresses in current view.',              'pcio-vis-member-event' ),
                         'toastCopyFail'  => __( 'Could not copy to clipboard.',                    'pcio-vis-member-event' ),
                     ],
-                    'subnav' => array_values( array_filter( [
-                        [
-                            'label'  => __( 'Members', 'pcio-vis-member-event' ),
-                            'url'    => home_url( 'vis/members' ),
-                            'active' => true,
-                        ],
-                        current_user_can( 'vis_manage_users' ) ? [
-                            'label'  => __( 'Workgroups', 'pcio-vis-member-event' ),
-                            'url'    => home_url( 'vis/workgroups' ),
-                            'active' => false,
-                        ] : null,
-                        current_user_can( 'vis_manage_users' ) ? [
-                            'label'  => __( 'Statistics', 'pcio-vis-member-event' ),
-                            'url'    => home_url( 'vis/members/statistics' ),
-                            'active' => false,
-                        ] : null,
-                    ] ) ),
+                    'subnav' => PCIO_VIS_Navigation::tabs( 'members', 'members' ),
                     'typeTabs' => [
                         [ 'type' => 'all',        'label' => __( 'Members',    'pcio-vis-member-event' ) ],
                         [ 'type' => 'volunteers',  'label' => __( 'Volunteers', 'pcio-vis-member-event' ) ],
@@ -545,6 +886,8 @@ class PCIO_VIS_Plugin {
                 ] ) . ';',
                 'before'
             );
+        } elseif ( $page === 'member' ) {
+            $this->enqueue_member_page( $assets );
         } elseif ( $page === 'event' ) {
             $event_id = (int) get_query_var( 'pcio_me_id' );
             if ( ! $event_id ) {
@@ -586,7 +929,13 @@ class PCIO_VIS_Plugin {
                     [], '2.1.1', true
                 );
             }
-            wp_enqueue_script( 'pcio-me-event', $assets . 'event.js', [ 'quill' ], '1.2.2', true );
+            wp_enqueue_script( 'pcio-me-event', $assets . 'event.js', [ 'quill' ], '1.11.0', true );
+
+            // History tab (event managers; Undo additionally needs vis_undo_changes).
+            $can_history = current_user_can( 'vis_edit_all_events' );
+            if ( $can_history ) {
+                self::enqueue_history_assets( $assets );
+            }
 
             // Recurrence tab (editors only) — depends on the event script for its shared PCIO_ME config.
             if ( current_user_can( 'vis_edit_all_events' ) ) {
@@ -604,7 +953,9 @@ class PCIO_VIS_Plugin {
 
             /**
              * Allow extensions to register extra tabs on the event detail page.
-             * Each entry must be an array with keys: id, label, html.
+             * Each entry must be an array with keys: id, label, html. Optional:
+             * signup_modes (string[]) limits the tab to those sign-up modes; in
+             * other modes it is greyed out and shows inactive_text instead.
              *
              * @param array $tabs     Extra tab definitions.
              * @param int   $event_id Current event ID.
@@ -616,23 +967,31 @@ class PCIO_VIS_Plugin {
                     if ( ! is_array( $tab ) || empty( $tab['id'] ) ) {
                         continue;
                     }
-                    $extra_tabs[] = [
+                    $extra_tab = [
                         'id'    => (string) $tab['id'],
                         'label' => (string) ( $tab['label'] ?? $tab['id'] ),
                         'html'  => (string) ( $tab['html'] ?? '' ),
                     ];
+                    if ( ! empty( $tab['signup_modes'] ) && is_array( $tab['signup_modes'] ) ) {
+                        $extra_tab['signupModes']  = array_values( array_map( 'sanitize_key', $tab['signup_modes'] ) );
+                        $extra_tab['inactiveText'] = (string) ( $tab['inactive_text'] ?? '' );
+                    }
+                    $extra_tabs[] = $extra_tab;
                 }
             }
 
             wp_add_inline_script(
                 'pcio-me-event',
-                'const PCIO_ME = ' . wp_json_encode( [
+                'window.PCIO_ME = ' . wp_json_encode( [
                     'rest'       => rest_url( PCIO_VIS_REST_NS ),
                     'nonce'      => wp_create_nonce( 'wp_rest' ),
                     'canEdit'    => current_user_can( 'vis_edit_all_events' ),
+                    'canPublish' => current_user_can( 'vis_publish_events' ),
+                    'aiEnabled'  => current_user_can( 'vis_edit_all_events' ) && PCIO_VIS_AI::is_available(),
                     'eventId'    => $event_id,
                     'calUrl'     => home_url( 'vis/calendar' ),
                     'eventBaseUrl' => home_url( 'vis/events/' ),
+                    'defaultLocation' => PCIO_VIS_Events_DB::get_default_location(),
                     'imageId'    => $event_image_id ?: null,
                     'imageUrl'   => $event_image_url ?: null,
                     'thumbImageId'  => $event_thumb_id ?: null,
@@ -653,17 +1012,52 @@ class PCIO_VIS_Plugin {
                     ],
                     'eventsPublicBase' => home_url( 'events/' ),
                     'extraTabs'  => $extra_tabs,
+                    'canHistory' => $can_history,
                     'signupModes' => self::get_signup_modes(),
                     'i18n'      => [
+                        'tabHistory'     => __( 'History',                                        'pcio-vis-member-event' ),
                         'tabBasic'       => __( 'Basic',                                          'pcio-vis-member-event' ),
                         'tabDesc'        => __( 'Description',                                    'pcio-vis-member-event' ),
                         'tabResources'   => __( 'Resources',                                      'pcio-vis-member-event' ),
+                        'tabCrew'        => __( 'Crew',                                           'pcio-vis-member-event' ),
+                        'crewRole'       => __( 'Role',                                           'pcio-vis-member-event' ),
+                        'crewVolunteer'  => __( 'Volunteer',                                      'pcio-vis-member-event' ),
+                        'crewStartTime'  => __( 'Start time',                                     'pcio-vis-member-event' ),
+                        'crewEndTime'    => __( 'End time',                                       'pcio-vis-member-event' ),
+                        'crewClone'      => __( 'Duplicate',                                      'pcio-vis-member-event' ),
+                        'crewDelete'     => __( 'Delete',                                         'pcio-vis-member-event' ),
+                        'crewEmail'      => __( 'Email',                                          'pcio-vis-member-event' ),
+                        'crewAddPerson'  => __( 'Add person',                                     'pcio-vis-member-event' ),
+                        'crewResetTimes' => __( 'Reset shift times to default',                   'pcio-vis-member-event' ),
+                        'crewCopyEmails' => __( 'Copy emails',                                    'pcio-vis-member-event' ),
+                        'crewUnassigned' => __( '— Unassigned —',                                 'pcio-vis-member-event' ),
+                        'crewNoRoles'    => __( 'No event roles defined yet. Add them under Calendar → Event roles.', 'pcio-vis-member-event' ),
+                        'crewEmpty'      => __( 'No crew members assigned yet.',                  'pcio-vis-member-event' ),
+                        'crewLoading'    => __( 'Loading crew…',                                 'pcio-vis-member-event' ),
+                        'crewConfirmDelete' => __( 'Are you sure you want to delete this shift?', 'pcio-vis-member-event' ),
+                        /* translators: 1: role name, 2: volunteer name */
+                        'crewConfirmDeleteNamed' => __( 'Are you sure you want to delete %1$s %2$s?', 'pcio-vis-member-event' ),
+                        'crewResetConfirm' => __( 'Reset all shift start and end times to the event start and end times?', 'pcio-vis-member-event' ),
+                        'crewEmailsCopied' => __( 'Emails copied to clipboard.',                  'pcio-vis-member-event' ),
+                        'crewNoEmails'   => __( 'No crew emails to copy.',                        'pcio-vis-member-event' ),
+                        'crewToastSaved' => __( 'Shift updated.',                                 'pcio-vis-member-event' ),
+                        'crewToastAdded' => __( 'Shift added.',                                   'pcio-vis-member-event' ),
+                        'crewToastDeleted' => __( 'Shift deleted.',                               'pcio-vis-member-event' ),
+                        'crewToastCloned' => __( 'Shift duplicated.',                             'pcio-vis-member-event' ),
+                        'crewToastReset' => __( 'Shift times reset to event times.',              'pcio-vis-member-event' ),
                         'tabGuests'      => __( 'Guests',                                         'pcio-vis-member-event' ),
+                        'guestsInactive' => __( 'The guest list is only used for events with the sign-up option "Simple: join / interested / not joining". Change it on the Basic tab to use this tab.', 'pcio-vis-member-event' ),
+                        'tabInactive'    => __( 'This tab is not used with the current sign-up option of the event.', 'pcio-vis-member-event' ),
                         'tabPhotos'      => __( 'Photos',                                         'pcio-vis-member-event' ),
                         'tabPublish'     => __( 'Publish',                                        'pcio-vis-member-event' ),
                         'publishHeading' => __( 'Publish & share',                               'pcio-vis-member-event' ),
+                        'publishHomepage' => __( 'Publish on homepage', 'pcio-vis-member-event' ),
+                        'publishPoster' => __( 'Publish to poster', 'pcio-vis-member-event' ),
+                        'publishFacebook' => __( 'Publish to Facebook', 'pcio-vis-member-event' ),
+                        'publishFlagsHelp' => __( 'Homepage approval enables public viewing and signup. Poster and Facebook flags are reserved for future publishing.', 'pcio-vis-member-event' ),
+                        'publishSaveError' => __( 'Could not save publication settings: ', 'pcio-vis-member-event' ),
                         'permalinkLabel' => __( 'Public link (permalink)',                        'pcio-vis-member-event' ),
-                        'permalinkHelp'  => __( 'Anyone with this link can view the event — no login required.', 'pcio-vis-member-event' ),
+                        'permalinkHelp'  => __( 'This link is accessible only after homepage publication is approved.', 'pcio-vis-member-event' ),
                         'shortcodeLabel' => __( 'Page embed code',                                'pcio-vis-member-event' ),
                         'shortcodeHelp'  => __( 'Paste this shortcode into any WordPress page or post to display the event there.', 'pcio-vis-member-event' ),
                         'copyBtn'        => __( 'Copy',                                           'pcio-vis-member-event' ),
@@ -677,6 +1071,10 @@ class PCIO_VIS_Plugin {
                         'colorPink'      => __( 'Pink',                                           'pcio-vis-member-event' ),
                         'colorSlate'     => __( 'Slate',                                          'pcio-vis-member-event' ),
                         'backToCalendar' => __( 'Calendar',                                       'pcio-vis-member-event' ),
+                        'eventNavLabel'    => __( 'Browse events', 'pcio-vis-member-event' ),
+                        'eventPrev'        => __( 'Previous event', 'pcio-vis-member-event' ),
+                        'eventNext'        => __( 'Next event', 'pcio-vis-member-event' ),
+                        'eventNavFiltered' => __( 'matching your calendar filter', 'pcio-vis-member-event' ),
                         'stateSaving'    => __( 'Saving…',                                   'pcio-vis-member-event' ),
                         'stateSaved'     => __( '✓ Saved',                                   'pcio-vis-member-event' ),
                         'stateError'     => __( '✕ Error',                                   'pcio-vis-member-event' ),
@@ -695,12 +1093,20 @@ class PCIO_VIS_Plugin {
                         'fieldStartTime' => __( 'Start time',                                     'pcio-vis-member-event' ),
                         'fieldEndDate'   => __( 'End date',                                       'pcio-vis-member-event' ),
                         'fieldEndTime'   => __( 'End time',                                       'pcio-vis-member-event' ),
+                        'fieldGetInTime' => __( 'Get-in time',                                    'pcio-vis-member-event' ),
+                        'fieldDoorTime'  => __( 'Door opening',                                   'pcio-vis-member-event' ),
                         'fieldLocation'  => __( 'Location',                                       'pcio-vis-member-event' ),
                         'phLocation'     => __( 'Venue or address',                               'pcio-vis-member-event' ),
+                        'btnDefaultLocation' => __( 'Use default address',                        'pcio-vis-member-event' ),
                         'fieldColour'    => __( 'Colour',                                         'pcio-vis-member-event' ),
                         'fieldEventType' => __( 'Event type',                                     'pcio-vis-member-event' ),
                         'fieldSignupMode'=> __( 'Sign-up',                                        'pcio-vis-member-event' ),
-                        'noEventType'    => __( '— None —',                                       'pcio-vis-member-event' ),
+                        'fieldExternalUrl' => __( 'Ticket sale URL',                              'pcio-vis-member-event' ),
+                        'urlChecking'    => __( 'Checking URL…',                                  'pcio-vis-member-event' ),
+                        'urlOk'          => __( 'URL is reachable',                               'pcio-vis-member-event' ),
+                        'urlInvalid'     => __( 'URL is invalid or not reachable',                'pcio-vis-member-event' ),
+                        'chooseEventType' => __( '— Choose event type —',                         'pcio-vis-member-event' ),
+                        'errEventTypeReq' => __( 'Choose an event type.',                         'pcio-vis-member-event' ),
                         'fieldResources' => __( 'Resources',                                      'pcio-vis-member-event' ),
                         'noResources'    => __( 'No resources defined yet. Add them in the Calendar → Resources tab.', 'pcio-vis-member-event' ),
                         'conflictWarning'=> __( 'Resource conflict: ',                            'pcio-vis-member-event' ),
@@ -710,6 +1116,14 @@ class PCIO_VIS_Plugin {
                         'btnHtmlSource'  => __( 'Edit HTML',                                      'pcio-vis-member-event' ),
                         'btnVisualEditor'=> __( 'Visual editor',                                  'pcio-vis-member-event' ),
                         'noDesc'         => __( 'No description.',                                'pcio-vis-member-event' ),
+                        'fieldResume'    => __( 'Resume',                                         'pcio-vis-member-event' ),
+                        'btnCreateResume'=> __( 'Create Resume',                                  'pcio-vis-member-event' ),
+                        'phResume'       => __( 'Short version of the description…',              'pcio-vis-member-event' ),
+                        /* translators: %d: number of characters in the resume. */
+                        'resumeChars'    => __( '%d characters',                                  'pcio-vis-member-event' ),
+                        'btnAiResume'    => __( 'Generate with AI',                               'pcio-vis-member-event' ),
+                        'aiWorking'      => __( 'Generating…',                                    'pcio-vis-member-event' ),
+                        'errAiResume'    => __( 'Could not generate the short text: ',            'pcio-vis-member-event' ),
                         'comingSoon'     => __( 'This section is coming soon.',                   'pcio-vis-member-event' ),
                         'errNoId'        => __( 'No event ID.',                                   'pcio-vis-member-event' ),
                         'errLoad'        => __( 'Failed to load event: ',                         'pcio-vis-member-event' ),
@@ -862,18 +1276,68 @@ class PCIO_VIS_Plugin {
                 // initialises; otherwise the localised header title can render blank.
                 $cal_deps[] = 'fullcalendar-locale';
             }
-            wp_enqueue_script( 'pcio-me-calendar', $assets . 'calendar.js', $cal_deps, '1.4.5', true );
+            $cal_deps[] = 'pcio-vis-modal-guard';
+            wp_enqueue_script( 'pcio-me-calendar', $assets . 'calendar.js', $cal_deps, '1.5.4', true );
+
+            // The saved personal filter (if any) drives both the Filter button state
+            // and the list-view date range shown by calendar.js. The range is set
+            // whenever the date rule shows matches (not excluded); an empty bound
+            // means open-ended (all past / all future).
+            $cal_filter       = PCIO_VIS_Calendar_Filter_DB::get( get_current_user_id() );
+            $cal_filter_date  = $cal_filter['date'] ?? [];
+            $cal_filter_range = (
+                ! empty( $cal_filter_date['on'] )
+                && empty( $cal_filter_date['exclude'] )
+            ) ? [
+                'from' => (string) ( $cal_filter_date['from'] ?? '' ),
+                'to'   => (string) ( $cal_filter_date['to'] ?? '' ),
+            ] : null;
+
             wp_add_inline_script(
                 'pcio-me-calendar',
-                'const PCIO_ME = ' . wp_json_encode( [
+                'window.PCIO_ME = ' . wp_json_encode( [
                     'rest'         => rest_url( PCIO_VIS_REST_NS ),
                     'nonce'        => wp_create_nonce( 'wp_rest' ),
                     'canEdit'      => current_user_can( 'vis_create_own_events' ),
+                    'filterActive' => null !== $cal_filter,
+                    'filterRange'  => $cal_filter_range,
                     'fcLocale'     => $fc_locale,
                     'eventBaseUrl' => home_url( 'vis/events/' ),
                     'i18n'         => [
                         'pageTitle'     => __( 'Calendar',                        'pcio-vis-member-event' ),
                         'btnNew'        => __( '+ New Event',                      'pcio-vis-member-event' ),
+                        // Personal calendar filter
+                        'btnFilter'              => __( 'Filter', 'pcio-vis-member-event' ),
+                        'filterActiveTitle'      => __( 'Personal filter in use', 'pcio-vis-member-event' ),
+                        'filterTitle'            => __( 'Calendar filter', 'pcio-vis-member-event' ),
+                        'filterColUse'           => __( 'Filter', 'pcio-vis-member-event' ),
+                        'filterColExclude'       => __( 'Exclude', 'pcio-vis-member-event' ),
+                        'filterColCriterion'     => __( 'Criterion', 'pcio-vis-member-event' ),
+                        /* translators: %s: filter criterion, e.g. "Date" */
+                        'filterUseRule'          => __( 'Use filter: %s', 'pcio-vis-member-event' ),
+                        /* translators: %s: filter criterion, e.g. "Date" */
+                        'filterExcludeRule'      => __( 'Hide matches: %s', 'pcio-vis-member-event' ),
+                        'filterDate'             => __( 'Date', 'pcio-vis-member-event' ),
+                        'filterFrom'             => __( 'From', 'pcio-vis-member-event' ),
+                        'filterTo'               => __( 'To', 'pcio-vis-member-event' ),
+                        'filterText'             => __( 'Text', 'pcio-vis-member-event' ),
+                        'filterTextPh'           => __( 'Search title, resume and description', 'pcio-vis-member-event' ),
+                        'filterPerson'           => __( 'Crew member', 'pcio-vis-member-event' ),
+                        'filterMissingVolunteer' => __( 'Missing volunteer (open shift)', 'pcio-vis-member-event' ),
+                        'filterMe'               => __( 'Me', 'pcio-vis-member-event' ),
+                        'filterPublished'        => __( 'Published on homepage', 'pcio-vis-member-event' ),
+                        'filterRoles'            => __( 'Crew role', 'pcio-vis-member-event' ),
+                        'filterNone'             => __( 'None', 'pcio-vis-member-event' ),
+                        'filterQuickInternal'    => __( 'Internal', 'pcio-vis-member-event' ),
+                        'filterQuickPublic'      => __( 'Public', 'pcio-vis-member-event' ),
+                        'filterQuickCafe'        => __( 'Cafe', 'pcio-vis-member-event' ),
+                        'filterQuickNone'        => __( 'Clear', 'pcio-vis-member-event' ),
+                        'filterClear'            => __( 'Clear', 'pcio-vis-member-event' ),
+                        'filterOk'               => __( 'OK', 'pcio-vis-member-event' ),
+                        'filterHelp'             => __( 'Tick "Filter" to use a criterion. Tick "Exclude" to hide the matching events instead of showing them. Your settings are remembered until you change them or press Clear. The Filter button is green while a personal filter is in use. Clear returns to the default view with all events.', 'pcio-vis-member-event' ),
+                        'filterErrLoad'          => __( 'Could not load the filter: ', 'pcio-vis-member-event' ),
+                        'filterErrSave'          => __( 'Could not save the filter: ', 'pcio-vis-member-event' ),
+                        'filterErrDates'         => __( 'The end date cannot be before the start date.', 'pcio-vis-member-event' ),
                         'titleCreate'   => __( 'New Event',                        'pcio-vis-member-event' ),
                         'fieldTitle'    => __( 'Title',                           'pcio-vis-member-event' ),
                         'phTitle'       => __( 'Event title',                     'pcio-vis-member-event' ),
@@ -910,6 +1374,12 @@ class PCIO_VIS_Plugin {
                         'btnList'       => __( 'List',                            'pcio-vis-member-event' ),
                         /* translators: Week-view title prefix, e.g. "Week 37". */
                         'weekLabel'     => __( 'Week',                            'pcio-vis-member-event' ),
+                        /* translators: %s: a date, e.g. "13 Oct 2026". List-view title for an open start. */
+                        'listFrom'      => __( 'From %s',                         'pcio-vis-member-event' ),
+                        /* translators: %s: a date, e.g. "17 Nov 2026". List-view title for an open end. */
+                        'listUntil'     => __( 'Until %s',                        'pcio-vis-member-event' ),
+                        /* translators: List-view title when the date filter has no bounds. */
+                        'listAll'       => __( 'All events',                      'pcio-vis-member-event' ),
                         'errFcLoad'     => __( 'FullCalendar could not be loaded.', 'pcio-vis-member-event' ),
                         'errLoadEvents' => __( 'Could not load events: ',         'pcio-vis-member-event' ),
                         'toastMoved'    => __( 'Event moved.',                    'pcio-vis-member-event' ),
@@ -932,7 +1402,8 @@ class PCIO_VIS_Plugin {
                         'tabResources'     => __( 'Resources',     'pcio-vis-member-event' ),
                         // Event type fields
                         'fieldEventType'   => __( 'Event type',    'pcio-vis-member-event' ),
-                        'noEventType'      => __( '— None —',      'pcio-vis-member-event' ),
+                        'chooseEventType'  => __( '— Choose event type —', 'pcio-vis-member-event' ),
+                        'errEventTypeReq'  => __( 'Choose an event type.', 'pcio-vis-member-event' ),
                         'accessPublic'     => __( 'Public',        'pcio-vis-member-event' ),
                         'accessMembers'    => __( 'Members only',  'pcio-vis-member-event' ),
                         'accessVolunteers' => __( 'Volunteers only', 'pcio-vis-member-event' ),
@@ -941,7 +1412,11 @@ class PCIO_VIS_Plugin {
                         'titleNewType'     => __( 'New Event Type', 'pcio-vis-member-event' ),
                         'fieldTypeName'    => __( 'Name',          'pcio-vis-member-event' ),
                         'fieldTypeAccess'  => __( 'Access',        'pcio-vis-member-event' ),
+                        'colScope'         => __( 'Scope',         'pcio-vis-member-event' ),
                         'fieldTypeColor'   => __( 'Colour',        'pcio-vis-member-event' ),
+                        'fieldInCafeTime'  => __( 'During cafe opening hours', 'pcio-vis-member-event' ),
+                        'systemEventType'  => __( 'System event type', 'pcio-vis-member-event' ),
+                        'systemTypeHelp'   => __( 'System event types cannot be deleted.', 'pcio-vis-member-event' ),
                         'toastTypeCreated' => __( 'Event type created.', 'pcio-vis-member-event' ),
                         'toastTypeUpdated' => __( 'Event type updated.', 'pcio-vis-member-event' ),
                         'toastTypeDeleted' => __( 'Event type deleted.', 'pcio-vis-member-event' ),
@@ -955,6 +1430,18 @@ class PCIO_VIS_Plugin {
                         'toastRscCreated'     => __( 'Resource created.', 'pcio-vis-member-event' ),
                         'toastRscUpdated'     => __( 'Resource updated.', 'pcio-vis-member-event' ),
                         'toastRscDeleted'     => __( 'Resource deleted.', 'pcio-vis-member-event' ),
+                        // Event roles fields
+                        'tabEventRoles'       => __( 'Event Roles',      'pcio-vis-member-event' ),
+                        'btnNewRole'          => __( '+ New role',       'pcio-vis-member-event' ),
+                        'titleNewRole'        => __( 'New Event Role',   'pcio-vis-member-event' ),
+                        'titleEditRole'       => __( 'Edit Event Role',  'pcio-vis-member-event' ),
+                        'fieldRoleName'       => __( 'Name',             'pcio-vis-member-event' ),
+                        'fieldRoleDesc'       => __( 'Description',      'pcio-vis-member-event' ),
+                        'toastRoleCreated'    => __( 'Event role created.', 'pcio-vis-member-event' ),
+                        'toastRoleUpdated'    => __( 'Event role updated.', 'pcio-vis-member-event' ),
+                        'toastRoleDeleted'    => __( 'Event role deleted.', 'pcio-vis-member-event' ),
+                        /* translators: %s: event role name */
+                        'confirmDelRole'      => __( 'Are you sure you want to delete %s?', 'pcio-vis-member-event' ),
                         // Rolling Text tab
                         'tabRollingText'      => __( 'Rolling Texts', 'pcio-vis-member-event' ),
                         'btnNewRollingText'   => __( '+ New entry', 'pcio-vis-member-event' ),
@@ -985,7 +1472,7 @@ class PCIO_VIS_Plugin {
                 $assets . 'lib/quill/quill.js',
                 [], '2.0.3', true
             );
-            wp_enqueue_script( 'pcio-me-mails', $assets . 'mails.js', [ 'quill' ], '1.1.0', true );
+            wp_enqueue_script( 'pcio-me-mails', $assets . 'mails.js', [ 'quill', 'pcio-vis-modal-guard' ], '1.2.2', true );
             wp_add_inline_script(
                 'pcio-me-mails',
                 'const PCIO_ME = ' . wp_json_encode( [
@@ -993,7 +1480,7 @@ class PCIO_VIS_Plugin {
                     'nonce'   => wp_create_nonce( 'wp_rest' ),
                     'canEdit' => current_user_can( 'vis_manage_settings' ),
                     'i18n'    => [
-                        'pageTitle'     => __( 'Mails',                                                              'pcio-vis-member-event' ),
+                        'pageTitle'     => __( 'Marketing',                                                            'pcio-vis-member-event' ),
                         'btnNew'        => __( '+ New Mail',                                                         'pcio-vis-member-event' ),
                         'colSubject'    => __( 'Subject',                                                            'pcio-vis-member-event' ),
                         'colCreated'    => __( 'Created',                                                            'pcio-vis-member-event' ),
@@ -1066,6 +1553,15 @@ class PCIO_VIS_Plugin {
                         'newsletterMaxDate'    => __( 'Include events until',                                         'pcio-vis-member-event' ),
                         'newsletterMaxDateHint' => __( 'Defaults to the end of next month.',                          'pcio-vis-member-event' ),
                         'newsletterFooter'     => __( 'Footer',                                                       'pcio-vis-member-event' ),
+                        'newsletterHeader'     => __( 'Header', 'pcio-vis-member-event' ),
+                        'editHtml'             => __( 'Edit HTML', 'pcio-vis-member-event' ),
+                        'editVisual'           => __( 'Visual editor', 'pcio-vis-member-event' ),
+                        'rawHtml'              => __( 'HTML source', 'pcio-vis-member-event' ),
+                        'newsletterLogo'       => __( 'Insert organization logo', 'pcio-vis-member-event' ),
+                        'newsletterEditTemplate' => __( 'Edit newsletter template', 'pcio-vis-member-event' ),
+                        'newsletterSharedHint' => __( 'Header and footer come from the shared newsletter template for both email and PDF. Edit the template to change them for all newsletters.', 'pcio-vis-member-event' ),
+                        'newsletterTemplateHint' => __( 'Use the header for your organization logo and title. This header and footer are used by all newsletters when sending email or generating a PDF.', 'pcio-vis-member-event' ),
+                        'newsletterTemplateNoSend' => __( 'The newsletter template cannot be sent directly.', 'pcio-vis-member-event' ),
                         'newsletterFooterPh'   => __( 'Closing text shown at the bottom of the newsletter…',     'pcio-vis-member-event' ),
                         'newsletterGenerate'   => __( 'Generate newsletter PDF',                                      'pcio-vis-member-event' ),
                         'newsletterGenerating' => __( 'Generating…',                                            'pcio-vis-member-event' ),
@@ -1083,7 +1579,7 @@ class PCIO_VIS_Plugin {
             );
         } elseif ( $page === 'newsletters' ) {
             wp_enqueue_style( 'pcio-me-newsletters', $assets . 'newsletters.css', [ 'pcio-me-app' ], '1.0.0' );
-            wp_enqueue_script( 'pcio-me-newsletters', $assets . 'newsletters.js', [], '1.0.0', true );
+            wp_enqueue_script( 'pcio-me-newsletters', $assets . 'newsletters.js', [], '1.0.1', true );
             wp_add_inline_script(
                 'pcio-me-newsletters',
                 'const PCIO_ME = ' . wp_json_encode( [
@@ -1092,7 +1588,7 @@ class PCIO_VIS_Plugin {
                     'canEdit' => current_user_can( 'vis_manage_settings' ),
                     'mailsUrl' => home_url( 'vis/mails' ),
                     'i18n'    => [
-                        'pageTitle'    => __( 'Newsletters',                          'pcio-vis-member-event' ),
+                        'pageTitle'    => __( 'Marketing',                              'pcio-vis-member-event' ),
                         'colTitle'     => __( 'Title',                                'pcio-vis-member-event' ),
                         'colEvents'    => __( 'Events',                               'pcio-vis-member-event' ),
                         'colMaxDate'   => __( 'Until',                                'pcio-vis-member-event' ),
@@ -1126,7 +1622,7 @@ class PCIO_VIS_Plugin {
         } elseif ( $page === 'documents' ) {
             // wp_enqueue_media() loads the WP media library JS (needed for the file picker)
             wp_enqueue_media();
-            wp_enqueue_script( 'pcio-me-documents', $assets . 'documents.js', [], '1.0.0', true );
+            wp_enqueue_script( 'pcio-me-documents', $assets . 'documents.js', [ 'pcio-vis-modal-guard' ], '1.0.1', true );
             wp_add_inline_script(
                 'pcio-me-documents',
                 'const PCIO_ME = ' . wp_json_encode( [
@@ -1190,7 +1686,7 @@ class PCIO_VIS_Plugin {
             // The WP media library powers the "attach a receipt" picker.
             wp_enqueue_media();
             wp_enqueue_style( 'pcio-me-finance', $assets . 'finance.css', [ 'pcio-me-app' ], '1.0.3' );
-            wp_enqueue_script( 'pcio-me-finance', $assets . 'finance.js', [], '1.0.3', true );
+            wp_enqueue_script( 'pcio-me-finance', $assets . 'finance.js', [ 'pcio-vis-modal-guard' ], '1.0.5', true );
 
             $currency = apply_filters( 'pcio_me_finance_currency', 'DKK' );
             $can_edit = current_user_can( 'vis_manage_finance' );
@@ -1226,6 +1722,13 @@ class PCIO_VIS_Plugin {
              * @param array $lists Existing list descriptors.
              */
             $lists = apply_filters( 'pcio_me_finance_lists', $lists );
+            $list_order = [ 'journal', 'shop-orders', 'orders' ];
+            usort( $lists, static function ( array $left, array $right ) use ( $list_order ): int {
+                $left_index = array_search( $left['id'], $list_order, true );
+                $right_index = array_search( $right['id'], $list_order, true );
+                return ( false === $left_index ? count( $list_order ) : $left_index )
+                    <=> ( false === $right_index ? count( $list_order ) : $right_index );
+            } );
 
             wp_add_inline_script(
                 'pcio-me-finance',
@@ -1235,6 +1738,7 @@ class PCIO_VIS_Plugin {
                     'currency' => $currency,
                     'locale'   => str_replace( '_', '-', get_locale() ),
                     'lists'    => array_values( $lists ),
+                    'tabs'     => PCIO_VIS_Navigation::finance_tabs(),
                     'i18n'     => [
                         'pageTitle'     => __( 'Finance',                                          'pcio-vis-member-event' ),
                         'btnNew'        => __( '+ New entry',                                       'pcio-vis-member-event' ),
@@ -1306,28 +1810,12 @@ class PCIO_VIS_Plugin {
                         'sponsorUrl'     => __( 'URL',                        'pcio-vis-member-event' ),
                         'sponsorClicks'  => __( 'Clicks',                     'pcio-vis-member-event' ),
                     ],
-                    'subnav' => [
-                        [
-                            'label'  => __( 'Members', 'pcio-vis-member-event' ),
-                            'url'    => home_url( 'vis/members' ),
-                            'active' => false,
-                        ],
-                        [
-                            'label'  => __( 'Workgroups', 'pcio-vis-member-event' ),
-                            'url'    => home_url( 'vis/workgroups' ),
-                            'active' => false,
-                        ],
-                        [
-                            'label'  => __( 'Statistics', 'pcio-vis-member-event' ),
-                            'url'    => home_url( 'vis/members/statistics' ),
-                            'active' => true,
-                        ],
-                    ],
+                    'subnav' => [],
                 ] ) . ';',
                 'before'
             );
         } elseif ( $page === 'workgroups' ) {
-            wp_enqueue_script( 'pcio-me-workgroups', $assets . 'workgroups.js', [], '1.1.0', true );
+            wp_enqueue_script( 'pcio-me-workgroups', $assets . 'workgroups.js', [ 'pcio-vis-modal-guard' ], '1.1.1', true );
             wp_add_inline_script(
                 'pcio-me-workgroups',
                 'const PCIO_ME = ' . wp_json_encode( [
@@ -1335,7 +1823,7 @@ class PCIO_VIS_Plugin {
                     'nonce'   => wp_create_nonce( 'wp_rest' ),
                     'canEdit' => current_user_can( 'vis_manage_users' ),
                     'i18n'    => [
-                        'pageTitle'       => __( 'Workgroups',                         'pcio-vis-member-event' ),
+                        'pageTitle'       => __( 'Members',                            'pcio-vis-member-event' ),
                         'btnNew'          => __( '+ New workgroup',                    'pcio-vis-member-event' ),
                         'fieldName'       => __( 'Name',                               'pcio-vis-member-event' ),
                         'fieldDesc'       => __( 'Description',                        'pcio-vis-member-event' ),
@@ -1364,11 +1852,7 @@ class PCIO_VIS_Plugin {
                         'toastCopyNone'   => __( 'No email addresses in this workgroup.', 'pcio-vis-member-event' ),
                         'toastCopyFail'   => __( 'Could not copy to clipboard.',          'pcio-vis-member-event' ),
                     ],
-                    'subnav' => [
-                        [ 'label' => __( 'Members', 'pcio-vis-member-event' ), 'url' => home_url( 'vis/members' ), 'active' => false ],
-                        [ 'label' => __( 'Workgroups', 'pcio-vis-member-event' ), 'url' => home_url( 'vis/workgroups' ), 'active' => true ],
-                        [ 'label' => __( 'Statistics', 'pcio-vis-member-event' ), 'url' => home_url( 'vis/members/statistics' ), 'active' => false ],
-                    ],
+                    'subnav' => PCIO_VIS_Navigation::tabs( 'members', 'workgroups' ),
                 ] ) . ';',
                 'before'
             );
@@ -1414,17 +1898,18 @@ class PCIO_VIS_Plugin {
                 $url  = $d['attachment_url'];
                 $name = $d['display_name'];
                 echo '<li class="pcio-me-documents-item">';
+                if ( $d['document_date'] ) {
+                    // Date first, always as yyyy-mm-dd (the stored date column value).
+                    echo '<time class="pcio-me-doc-date" datetime="' . esc_attr( $d['document_date'] ) . '">'
+                        . esc_html( substr( (string) $d['document_date'], 0, 10 ) )
+                        . '</time> ';
+                }
                 if ( $url ) {
                     echo '<a class="pcio-me-doc-link" href="' . esc_url( $url ) . '" target="_blank" rel="noopener">'
                         . esc_html( $name )
                         . '</a>';
                 } else {
                     echo esc_html( $name );
-                }
-                if ( $d['document_date'] ) {
-                    echo ' <time class="pcio-me-doc-date" datetime="' . esc_attr( $d['document_date'] ) . '">'
-                        . esc_html( wp_date( get_option( 'date_format' ), strtotime( $d['document_date'] ) ) )
-                        . '</time>';
                 }
                 echo '</li>';
             }
@@ -1455,7 +1940,7 @@ class PCIO_VIS_Plugin {
         }
 
         $assets = plugins_url( 'assets/', PCIO_VIS_PLUGIN_FILE );
-        wp_enqueue_style( 'pcio-me-app',     $assets . 'members.css', [], '1.2.0' );
+        wp_enqueue_style( 'pcio-me-app',     $assets . 'members.css', [], '1.4.7' );
      
         // Subscription renewal URL (requires pcio-vis-products).
         $renew_url         = '';
@@ -1684,28 +2169,54 @@ class PCIO_VIS_Plugin {
     }
 
     // ── Shortcode [pcio_me_event] ──────────────────────────────────
-    // Renders a public-facing event card with image, info, and signup controls.
+    // Renders an event. On the Event detail page (the single page that hosts
+    // this shortcode) it renders the full public detail layout and resolves the
+    // event from the /events/{slug}/ URL; elsewhere it renders a compact card.
     //
     // Attributes:
-    //   id  (int, required) — the event ID
+    //   id     (int)    — the event ID.
+    //   slug   (string) — the event slug (alternative to id).
+    //   layout (string) — 'card' (default) or 'detail'.
     //
-    // Example: [pcio_me_event id="42"]
+    // Examples: [pcio_me_event]  ·  [pcio_me_event id="42"]
+    //           [pcio_me_event slug="summer-festival" layout="detail"]
 
     public function shortcode_event( array $atts ): string {
-        $atts     = shortcode_atts( [ 'id' => 0 ], $atts, 'pcio_me_event' );
+        $atts     = shortcode_atts( [ 'id' => 0, 'slug' => '', 'layout' => '' ], $atts, 'pcio_me_event' );
         $event_id = absint( $atts['id'] );
-        if ( ! $event_id ) {
-            return '';
+        $slug     = sanitize_title( (string) $atts['slug'] );
+        $layout   = sanitize_key( (string) $atts['layout'] );
+
+        // Bare shortcode on the Event page: take the event from /events/{slug}/.
+        $from_query = false;
+        if ( ! $event_id && '' === $slug ) {
+            $query_slug = sanitize_title( (string) get_query_var( 'pcio_me_event_slug' ) );
+            if ( '' !== $query_slug ) {
+                $slug       = $query_slug;
+                $from_query = true;
+            }
         }
 
-        $event = PCIO_VIS_Events_DB::get( $event_id );
+        $event = $event_id
+            ? PCIO_VIS_Events_DB::get( $event_id )
+            : ( '' !== $slug ? PCIO_VIS_Events_DB::get_by_slug( $slug ) : null );
         if ( ! $event ) {
             return '';
+        }
+        $event_id = (int) $event['id'];
+        if ( ! PCIO_VIS_Events_DB::is_published( $event ) && ! PCIO_VIS_Events_DB::can_view_unpublished() ) {
+            return '<p>' . esc_html__( 'This event has not been published yet.', 'pcio-vis-member-event' ) . '</p>';
+        }
+
+        // The full detail layout is used on the Event page (or when asked for);
+        // a plain [pcio_me_event id=".."] embed stays a compact card.
+        if ( 'detail' === $layout || ( '' === $layout && $from_query ) ) {
+            return $this->render_public_event( $event );
         }
 
         // Stylesheet (shared with the /vis/ app) — enqueue on any page using the shortcode.
         $assets = plugins_url( 'assets/', PCIO_VIS_PLUGIN_FILE );
-        wp_enqueue_style( 'pcio-me-app', $assets . 'members.css', [], '1.3.0' );
+        wp_enqueue_style( 'pcio-me-app', $assets . 'members.css', [], '1.4.7' );
 
         // Resolve cover image.
         $image_id  = ! empty( $event['image_id'] ) ? (int) $event['image_id'] : 0;
@@ -1836,6 +2347,17 @@ class PCIO_VIS_Plugin {
                         </button>
                         <?php endforeach; ?>
                     </div>
+                </div>
+                <?php endif; ?>
+
+                <?php
+                $external_url = 'external' === ( $event['signup_mode'] ?? '' ) ? (string) ( $event['external_url'] ?? '' ) : '';
+                if ( '' !== $external_url ) :
+                    ?>
+                <div class="me-sc-signup-area">
+                    <a class="me-btn me-btn-primary me-sc-external-tickets" href="<?php echo esc_url( $external_url ); ?>" target="_blank" rel="noopener noreferrer">
+                        <?php esc_html_e( 'Buy tickets', 'pcio-vis-member-event' ); ?> <span aria-hidden="true">↗</span>
+                    </a>
                 </div>
                 <?php endif; ?>
             </div>
@@ -2102,8 +2624,17 @@ class PCIO_VIS_Plugin {
 
         $events = PCIO_VIS_Events_DB::get_upcoming( $limit );
 
+        /**
+         * Filters which of the listed events are sold out (shown with a banner).
+         *
+         * @param int[] $soldout   Sold-out event IDs (default none).
+         * @param int[] $event_ids IDs of the events being rendered.
+         */
+        $soldout_ids = (array) apply_filters( 'pcio_me_events_soldout_ids', [], array_map( 'intval', array_column( $events, 'id' ) ) );
+        $soldout_ids = array_fill_keys( array_map( 'intval', $soldout_ids ), true );
+
         $assets = plugins_url( 'assets/', PCIO_VIS_PLUGIN_FILE );
-        wp_enqueue_style( 'pcio-me-events-list', $assets . 'events-list.css', [], '1.0.0' );
+        wp_enqueue_style( 'pcio-me-events-list', $assets . 'events-list.css', [], '1.1.0' );
         if ( $show_search ) {
             wp_enqueue_script( 'pcio-me-events-list', $assets . 'events-list.js', [], '1.0.0', true );
         }
@@ -2153,6 +2684,9 @@ class PCIO_VIS_Plugin {
                                 <div class="me-events-date-day"><?php echo esc_html( $day_num ); ?></div>
                                 <div class="me-events-date-mon"><?php echo esc_html( $mon_abbr ); ?></div>
                             </div>
+                            <?php if ( isset( $soldout_ids[ (int) $event['id'] ] ) ) : ?>
+                            <div class="me-events-soldout"><span><?php esc_html_e( 'SOLD OUT!', 'pcio-vis-member-event' ); ?></span></div>
+                            <?php endif; ?>
                         </div>
                         <div class="me-events-title"><?php echo esc_html( $event['title'] ); ?></div>
                         <div class="me-events-info">

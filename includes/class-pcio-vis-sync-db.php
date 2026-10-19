@@ -80,6 +80,28 @@ class PCIO_VIS_Sync_DB {
             'frequence'    => 24,
             'enabled'      => 0,
         ] );
+        self::seed_job( [
+            'name'         => 'Sync Google Calendar',
+            'description'  => 'Pushes Vis events (one year back to one year ahead) to the Google calendars configured '
+                . 'under Vis → Google: creates missing events, updates changed ones and removes Google events '
+                . 'that no longer match a Vis event.',
+            'cron_name'    => 'pcio_me_sync_google_calendar',
+            'php_function' => 'PCIO_VIS_Google_Sync::run',
+            'sync_url'     => 'https://www.googleapis.com/calendar/v3',
+            'frequence'    => 1,
+            'enabled'      => 0,
+        ] );
+        self::seed_job( [
+            'name'         => 'Crew shift reminders',
+            'description'  => 'Emails every member with a crew shift starting tomorrow, using the editable '
+                . '"crew_shift_reminder" system mail under Vis ? Mails. Each shift is reminded only once, '
+                . 'so running the job more often than daily is safe.',
+            'cron_name'    => 'pcio_me_crew_shift_reminder',
+            'php_function' => 'PCIO_VIS_Crew_Reminder::run',
+            'sync_url'     => '',
+            'frequence'    => 24,
+            'enabled'      => 0,
+        ] );
     }
 
     /**

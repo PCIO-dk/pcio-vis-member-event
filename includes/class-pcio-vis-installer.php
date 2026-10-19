@@ -26,6 +26,12 @@ class PCIO_VIS_Installer {
             return;
         }
         self::install();
+        // Ensure the Event detail page exists before the front-end rules are
+        // flushed; /events/{slug}/ is rewritten onto it (see PCIO_VIS_Event_Page).
+        PCIO_VIS_Event_Page::maybe_create();
+        // New front-end routes ship with schema bumps (e.g. /vis/members/{id}/ in 1.11.0);
+        // the rules were registered on init, so a soft flush picks them up.
+        flush_rewrite_rules( false );
     }
 
     /**
@@ -51,11 +57,16 @@ class PCIO_VIS_Installer {
         PCIO_VIS_Roles_DB::install();
         PCIO_VIS_Signups_DB::install();
         PCIO_VIS_Sync_DB::install();
+        PCIO_VIS_Google_DB::install();
         PCIO_VIS_Event_Types_DB::install();
+        PCIO_VIS_Event_Roles_DB::install();
+        PCIO_VIS_Event_Crew_DB::install();
         PCIO_VIS_Resources_DB::install();
         PCIO_VIS_Recurrence_DB::install();
         PCIO_VIS_Workgroups_DB::install();
         PCIO_VIS_Rolling_Text_DB::install();
+        PCIO_VIS_Calendar_Filter_DB::install();
+        PCIO_VIS_History_DB::install();
 
         // One-time: seed the stored member↔WP-user link (me_member_roles.wp_user_id)
         // from matching emails, now that runtime email auto-detection has been removed.
@@ -347,7 +358,7 @@ class PCIO_VIS_Installer {
     /** Drop an index only when it is actually there. */
     private static function drop_index( string $table, string $index ): void {
         if ( self::index_exists( $table, $index ) ) {
-            self::run_schema( "ALTER TABLE %i DROP KEY `%s`", $table, $index );
+            self::run_schema( 'ALTER TABLE %i DROP KEY %i', $table, $index );
         }
     }
 
@@ -362,7 +373,7 @@ class PCIO_VIS_Installer {
 
         $suppress = $wpdb->suppress_errors( true );
 
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql is always a hard-coded SQL template from plugin schema definitions.
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $sql is always a hard-coded SQL template from plugin schema definitions.
         $wpdb->query( $wpdb->prepare( $sql, ...$args ) );
 
         $wpdb->suppress_errors( $suppress );

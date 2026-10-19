@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: PCIO VIS Member Event 1.5.0\n"
 "Report-Msgid-Bugs-To: https://www.pcio.dk/\n"
 "POT-Creation-Date: 2026-10-02T15:57:06+00:00\n"
-"PO-Revision-Date: 2026-10-02 18:01+0200\n"
+"PO-Revision-Date: 2026-10-18 22:12+0200\n"
 "Last-Translator: PCIO <info@pcio.dk>\n"
 "Language-Team: Danish\n"
 "Language: da_DK\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Domain: pcio-vis-member-event\n"
-"X-Generator: Poedit 3.9\n"
+"X-Generator: Poedit 3.10\n"
 
 #. Description of the plugin
 #: pcio-vis-member-event.php
@@ -1067,6 +1067,21 @@ msgstr "Dag"
 msgid "List"
 msgstr "Liste"
 
+#. translators: %s: a date, e.g. "13 Oct 2026". Calendar list-view title for an open start.
+#: includes/class-pcio-vis-plugin.php:1369
+msgid "From %s"
+msgstr "Fra %s"
+
+#. translators: %s: a date, e.g. "17 Nov 2026". Calendar list-view title for an open end.
+#: includes/class-pcio-vis-plugin.php:1371
+msgid "Until %s"
+msgstr "Til %s"
+
+#. translators: Calendar list-view title when the date filter has no bounds.
+#: includes/class-pcio-vis-plugin.php:1373
+msgid "All events"
+msgstr "Alle begivenheder"
+
 #: includes/class-pcio-vis-plugin.php:913
 msgid "FullCalendar could not be loaded."
 msgstr "FullCalendar kunne ikke indlæses."
@@ -1497,7 +1512,7 @@ msgstr "Kunne ikke indlæse nyhedsbreve: "
 #: includes/class-pcio-vis-plugin.php:1239 templates/finance.php:22
 #: templates/home.php:182 templates/_nav.php:20
 msgid "Finance"
-msgstr "Økonomi"
+msgstr "Finans"
 
 #: includes/class-pcio-vis-plugin.php:960
 #: includes/class-pcio-vis-plugin.php:1240
@@ -1850,8 +1865,20 @@ msgid "Could not delete vis role."
 msgstr "Kunne ikke slette Vis-rolle."
 
 #: includes/class-pcio-vis-admin.php:696
-msgid "These are the event-system roles you can assign to members. Each role grants a set of vis_* capabilities."
-msgstr "Dette er de begivenhedsroller du kan tildele til medlemmer. Hver rolle giver et sæt vis_*-rettigheder."
+msgid "These roles grant additional vis_* capabilities to accounts that already have vis_member. The default Member role has no additional capabilities; member access comes from the separate membership capability."
+msgstr "Disse roller giver yderligere vis_*-rettigheder til konti, der allerede har vis_member. Standardrollen Member har ingen yderligere rettigheder; medlemsadgang kommer fra den separate medlemsrettighed."
+
+#: includes/class-pcio-vis-admin.php
+msgid "Membership capability"
+msgstr "Medlemsrettighed"
+
+#: includes/class-pcio-vis-admin.php
+msgid "This capability is granted to individual WordPress accounts when they are linked or provisioned as Vis members, and revoked when membership is removed. It is managed separately from event-system roles and cannot be selected as a role capability."
+msgstr "Denne rettighed tildeles individuelle WordPress-konti, når de tilknyttes eller oprettes som Vis-medlemmer, og fjernes, når medlemskabet ophører. Den administreres separat fra begivenhedsroller og kan ikke vælges som en rollerettighed."
+
+#: includes/class-pcio-vis-admin.php
+msgid "No additional capabilities (membership is managed separately)."
+msgstr "Ingen yderligere rettigheder (medlemskab administreres separat)."
 
 #: includes/class-pcio-vis-admin.php:712 includes/class-pcio-vis-admin.php:764
 msgid "Slug"
@@ -1890,9 +1917,99 @@ msgstr "Åbn WordPress → Brugere"
 msgid "WP User Cleanup"
 msgstr "WP-brugerrydning"
 
-#: includes/class-pcio-vis-admin.php:553
-msgid "This plugin never deletes WordPress accounts. If you want to remove any of these users, use the WordPress Users screen, which applies the normal capability and security checks."
-msgstr "Dette plugin sletter aldrig WordPress-konti. Ønsker du at fjerne nogen af disse brugere, brug WordPress Brugerskærmen, som anvender de normale rettigheds- og sikkerhedstjek."
+#: templates/admin-user-cleanup.php
+msgid "Delete All applies only to the unlinked users listed here. Users with WordPress content are kept. Account deletion cannot be undone."
+msgstr "Slet alle gælder kun de viste brugere uden medlemstilknytning. Brugere med WordPress-indhold bevares. Sletning af konti kan ikke fortrydes."
+
+#: templates/admin-user-cleanup.php
+msgid "Delete selected"
+msgstr "Slet valgte"
+
+#: templates/admin-user-cleanup.php
+msgid "Delete All"
+msgstr "Slet alle"
+
+#: templates/admin-user-cleanup.php
+msgid "Select all eligible users"
+msgstr "Vælg alle brugere, der kan slettes"
+
+#: includes/class-pcio-vis-user-cleanup.php
+msgid "Has WordPress content — not deleted."
+msgstr "Har WordPress-indhold — slettes ikke."
+
+#: includes/class-pcio-vis-user-cleanup.php
+msgid "Deletion is unavailable on WordPress Multisite."
+msgstr "Sletning er ikke tilgængelig på WordPress Multisite."
+
+#: includes/class-pcio-vis-user-cleanup.php
+msgid "Current user — not deleted."
+msgstr "Aktuel bruger — slettes ikke."
+
+#: includes/class-pcio-vis-user-cleanup.php
+msgid "Insufficient deletion permissions."
+msgstr "Utilstrækkelige rettigheder til at slette."
+
+#: includes/class-pcio-vis-user-cleanup.php
+msgid "Can be deleted."
+msgstr "Kan slettes."
+
+#: includes/class-pcio-vis-user-cleanup.php templates/admin-user-cleanup.php
+msgid "Only WordPress administrators with deletion permissions can delete these accounts. Multisite deletion is not supported."
+msgstr "Kun WordPress-administratorer med sletterettigheder kan slette disse konti. Sletning på Multisite understøttes ikke."
+
+#: includes/class-pcio-vis-user-cleanup.php
+msgid "Invalid cleanup action."
+msgstr "Ugyldig oprydningshandling."
+
+#: includes/class-pcio-vis-user-cleanup.php templates/admin-user-cleanup.php
+msgid "Select at least one user to delete."
+msgstr "Vælg mindst én bruger, der skal slettes."
+
+#: includes/class-pcio-vis-user-cleanup.php
+msgid "User is no longer a cleanup candidate."
+msgstr "Brugeren er ikke længere en oprydningskandidat."
+
+#. translators: 1: WordPress user ID, 2: reason the user was not deleted.
+#: includes/class-pcio-vis-user-cleanup.php
+#, php-format
+msgid "User #%1$d: %2$s"
+msgstr "Bruger #%1$d: %2$s"
+
+#. translators: %d: WordPress user ID.
+#: includes/class-pcio-vis-user-cleanup.php
+#, php-format
+msgid "Could not delete user #%d."
+msgstr "Kunne ikke slette bruger #%d."
+
+#: includes/class-pcio-vis-roles-db.php
+msgid "Could not check users and content. No accounts were deleted."
+msgstr "Kunne ikke kontrollere brugere og indhold. Ingen konti blev slettet."
+
+#: includes/class-pcio-vis-admin.php
+msgid "Invalid user selection."
+msgstr "Ugyldigt brugervalg."
+
+#: includes/class-pcio-vis-admin.php
+msgid "Cleanup finished, but its result could not be saved. Review the user list before retrying."
+msgstr "Oprydningen er afsluttet, men resultatet kunne ikke gemmes. Kontrollér brugerlisten, før du prøver igen."
+
+#: includes/class-pcio-vis-admin.php
+msgid "Cleanup result is no longer available. Review the current user list."
+msgstr "Oprydningsresultatet er ikke længere tilgængeligt. Kontrollér den aktuelle brugerliste."
+
+#. translators: 1: deleted count, 2: skipped count, 3: failed count.
+#: templates/admin-user-cleanup.php
+#, php-format
+msgid "Cleanup: %1$d deleted, %2$d skipped, %3$d failed."
+msgstr "Oprydning: %1$d slettet, %2$d sprunget over, %3$d mislykkedes."
+
+#: templates/admin-user-cleanup.php
+msgid "Permanently delete the selected eligible users? Users with WordPress content will be kept."
+msgstr "Slet de valgte brugere, der kan slettes, permanent? Brugere med WordPress-indhold bevares."
+
+#: templates/admin-user-cleanup.php
+msgid "Permanently delete all eligible unlinked users listed here? Users with WordPress content will be kept."
+msgstr "Slet alle viste brugere uden medlemstilknytning, der kan slettes, permanent? Brugere med WordPress-indhold bevares."
 
 #: includes/class-pcio-vis-admin.php:562
 msgid "Every WordPress user is linked to an active member. Nothing to clean up."
@@ -2835,6 +2952,7 @@ msgid "No newsletters generated yet. Create a newsletter mail and click “Gener
 msgstr "Ingen nyhedsbreve genereret endnu. Opret en nyhedsbrevsmail og klik på “Generér nyhedsbrevs-PDF”."
 
 #: includes/class-pcio-vis-plugin.php:1210
+#: includes/class-pcio-vis-roles-db.php:195
 msgid "Member"
 msgstr "Medlem"
 
@@ -3489,3 +3607,1242 @@ msgstr "Opdater"
 #: includes/class-pcio-vis-admin.php:1517
 msgid " to any anchor tag in your content. Clicks are recorded automatically and shown under Vis → Statistics. See Vis → Sponsor Links for details."
 msgstr " til et vilkårligt anchor-tag i dit indhold. Klik registreres automatisk og vises under Vis → Statistik. Se Vis → Spons links for detaljer."
+
+#: includes/class-pcio-vis-admin.php:1233
+msgid "Renders a read-only, searchable table of all members, including their email address and phone number. Requires a logged-in account that carries the vis_member capability — it renders nothing at all for visitors and for accounts without a member record. Any user with vis_member sees the full table; there is no per-member filtering."
+msgstr "Viser en skrivebeskyttet, søgbar tabel over alle medlemmer inkl. e-mailadresse og telefonnummer. Kræver en logget ind konto med rettigheden vis_member — for besøgende og konti uden medlemspost vises intet. Alle brugere med vis_member ser hele tabellen; der filtreres ikke pr. medlem."
+
+#: includes/class-pcio-vis-history-admin.php:32
+#: includes/class-pcio-vis-history-admin.php:33
+#: includes/class-pcio-vis-plugin.php:430
+#: includes/class-pcio-vis-plugin.php:800
+msgid "History"
+msgstr "Historik"
+
+#: includes/class-pcio-vis-history-admin.php:52
+#: includes/class-pcio-vis-plugin.php:370
+msgid "Undo this change?"
+msgstr "Fortryd denne ændring?"
+
+#: includes/class-pcio-vis-history-admin.php:65
+#: includes/class-pcio-vis-history.php:617
+msgid "You are not allowed to undo changes."
+msgstr "Du har ikke tilladelse til at fortryde ændringer."
+
+#: includes/class-pcio-vis-history-admin.php:74
+#, php-format
+msgid "Change #%d was undone."
+msgstr "Ændring #%d blev fortrudt."
+
+#: includes/class-pcio-vis-history-admin.php:91
+msgid "You do not have permission to view this page."
+msgstr "Du har ikke tilladelse til at se denne side."
+
+#: includes/class-pcio-vis-history-admin.php:103
+#: includes/class-pcio-vis-plugin.php:357
+msgid "Change history"
+msgstr "Ændringshistorik"
+
+#: includes/class-pcio-vis-history-admin.php:113
+#, php-format
+msgid "All changes to Vis data, newest first. Undo restores the database rows only; e-mails, payments and WordPress accounts are not reverted. Undo data is kept for %d days."
+msgstr "Alle ændringer af Vis-data, nyeste først. Fortryd gendanner kun databaserækkerne; e-mails, betalinger og WordPress-konti rulles ikke tilbage. Fortrydelsesdata gemmes i %d dage."
+
+#: includes/class-pcio-vis-history-admin.php:121
+msgid "Search"
+msgstr "Søg"
+
+#: includes/class-pcio-vis-history-admin.php:147
+#: includes/class-pcio-vis-plugin.php:364
+msgid "User"
+msgstr "Bruger"
+
+#: includes/class-pcio-vis-history-admin.php:149
+#: includes/class-pcio-vis-plugin.php:365
+msgid "Change"
+msgstr "Ændring"
+
+#: includes/class-pcio-vis-history-admin.php:150
+#: includes/class-pcio-vis-history-admin.php:282
+#: includes/class-pcio-vis-plugin.php:366
+msgid "Undo"
+msgstr "Fortryd"
+
+#: includes/class-pcio-vis-history-admin.php:197
+msgid "Filter by type"
+msgstr "Filtrér efter type"
+
+#: includes/class-pcio-vis-history-admin.php:199
+msgid "All types"
+msgstr "Alle typer"
+
+#: includes/class-pcio-vis-history-admin.php:208
+msgid "Hide undone"
+msgstr "Skjul fortrudte"
+
+#: includes/class-pcio-vis-history-admin.php:216
+#: includes/class-pcio-vis-plugin.php:361
+msgid "No changes logged yet."
+msgstr "Ingen ændringer logget endnu."
+
+#: includes/class-pcio-vis-history-admin.php:245
+#, php-format
+msgid "Event #%d"
+msgstr "Begivenhed #%d"
+
+#: includes/class-pcio-vis-history-admin.php:250
+#, php-format
+msgid "Member #%d"
+msgstr "Medlem #%d"
+
+#: includes/class-pcio-vis-history-admin.php:255
+#, php-format
+msgid "Undone %1$s by %2$s"
+msgstr "Fortrudt %1$s af %2$s"
+
+#: includes/class-pcio-vis-history-admin.php:267
+#: includes/class-pcio-vis-plugin.php:367
+msgid "Undone"
+msgstr "Fortrudt"
+
+#: includes/class-pcio-vis-history-admin.php:270
+#: includes/class-pcio-vis-plugin.php:368
+msgid "Expired"
+msgstr "Udløbet"
+
+#: includes/class-pcio-vis-history-admin.php:273
+#: includes/class-pcio-vis-plugin.php:369
+msgid "Not undoable"
+msgstr "Kan ikke fortrydes"
+
+#: includes/class-pcio-vis-history-rest.php:95
+#: includes/class-pcio-vis-plugin.php:371
+msgid "Change undone."
+msgstr "Ændringen er fortrudt."
+
+#: includes/class-pcio-vis-history-tables.php:36
+msgid "End"
+msgstr "Slut"
+
+#: includes/class-pcio-vis-history-tables.php:37
+msgid "All day"
+msgstr "Hele dagen"
+
+#: includes/class-pcio-vis-history-tables.php:38
+#: includes/class-pcio-vis-history-tables.php:106
+#: includes/class-pcio-vis-history-tables.php:197
+msgid "Color"
+msgstr "Farve"
+
+#: includes/class-pcio-vis-history-tables.php:40
+msgid "Image"
+msgstr "Billede"
+
+#: includes/class-pcio-vis-history-tables.php:41
+msgid "Thumbnail"
+msgstr "Miniature"
+
+#: includes/class-pcio-vis-history-tables.php:43
+msgid "Signup mode"
+msgstr "Tilmeldingstype"
+
+#: includes/class-pcio-vis-history-tables.php:44
+msgid "Series"
+msgstr "Serie"
+
+#: includes/class-pcio-vis-history-tables.php:52
+msgid "Signup"
+msgstr "Tilmelding"
+
+#: includes/class-pcio-vis-history-tables.php:68
+msgid "Event resource"
+msgstr "Begivenhedsressource"
+
+#: includes/class-pcio-vis-history-tables.php:79
+msgid "Occurrences"
+msgstr "Forekomster"
+
+#: includes/class-pcio-vis-history-tables.php:81
+msgid "Frequency"
+msgstr "Frekvens"
+
+#: includes/class-pcio-vis-history-tables.php:82
+msgid "Interval"
+msgstr "Interval"
+
+#: includes/class-pcio-vis-history-tables.php:83
+msgid "Weekdays"
+msgstr "Ugedage"
+
+#: includes/class-pcio-vis-history-tables.php:88
+msgid "Resource"
+msgstr "Ressource"
+
+#: includes/class-pcio-vis-history-tables.php:112
+msgid "Event type resource"
+msgstr "Begivenhedstype-ressource"
+
+#: includes/class-pcio-vis-history-tables.php:154
+msgid "Member field"
+msgstr "Medlemsfelt"
+
+#: includes/class-pcio-vis-history-tables.php:168
+msgid "Member role"
+msgstr "Medlemsrolle"
+
+#: includes/class-pcio-vis-history-tables.php:172
+#: includes/class-pcio-vis-history-tables.php:179
+msgid "Vis role"
+msgstr "Vis-rolle"
+
+#: includes/class-pcio-vis-history-tables.php:173
+msgid "WordPress account"
+msgstr "WordPress-konto"
+
+#: includes/class-pcio-vis-history-tables.php:190
+msgid "Workgroup"
+msgstr "Arbejdsgruppe"
+
+#: includes/class-pcio-vis-history-tables.php:203
+msgid "Workgroup member"
+msgstr "Arbejdsgruppemedlem"
+
+#: includes/class-pcio-vis-history-tables.php:233
+msgid "Document"
+msgstr "Dokument"
+
+#: includes/class-pcio-vis-history-tables.php:245
+msgid "Mail"
+msgstr "Mail"
+
+#: includes/class-pcio-vis-history-tables.php:255
+msgid "Events until"
+msgstr "Begivenheder til og med"
+
+#: includes/class-pcio-vis-history-tables.php:256
+msgid "Mail type"
+msgstr "Mailtype"
+
+#: includes/class-pcio-vis-history-tables.php:268
+msgid "Rolling text"
+msgstr "Rulletekst"
+
+#: includes/class-pcio-vis-history-tables.php:275
+msgid "Roller"
+msgstr "Rulle"
+
+#: includes/class-pcio-vis-history-tables.php:283
+msgid "Journal entry"
+msgstr "Journalpost"
+
+#: includes/class-pcio-vis-history-tables.php:288
+msgid "Amount (cents)"
+msgstr "Beløb (øre)"
+
+#: includes/class-pcio-vis-history-tables.php:292
+msgid "Receipt"
+msgstr "Bilag"
+
+#: includes/class-pcio-vis-history.php:621
+msgid "History entry not found."
+msgstr "Historikposten blev ikke fundet."
+
+#: includes/class-pcio-vis-history.php:624
+msgid "This change has already been undone."
+msgstr "Denne ændring er allerede fortrudt."
+
+#: includes/class-pcio-vis-history.php:628
+msgid "The undo data for this change has expired."
+msgstr "Fortrydelsesdata for denne ændring er udløbet."
+
+#: includes/class-pcio-vis-history.php:629
+#: includes/class-pcio-vis-history.php:635
+#: includes/class-pcio-vis-history.php:640
+msgid "This change cannot be undone."
+msgstr "Denne ændring kan ikke fortrydes."
+
+#: includes/class-pcio-vis-history.php:646
+#, php-format
+msgid "Undo needs transactional (InnoDB) tables; %s is not."
+msgstr "Fortryd kræver transaktionelle (InnoDB) tabeller; %s er det ikke."
+
+#: includes/class-pcio-vis-history.php:657
+#, php-format
+msgid "Undo of #%1$d: %2$s"
+msgstr "Fortrydelse af #%1$d: %2$s"
+
+#: includes/class-pcio-vis-history.php:674
+msgid "Could not record the undo."
+msgstr "Kunne ikke registrere fortrydelsen."
+
+#: includes/class-pcio-vis-history.php:706
+#, php-format
+msgid "%1$s “%2$s” already exists again."
+msgstr "%1$s “%2$s” findes allerede igen."
+
+#: includes/class-pcio-vis-history.php:715
+#, php-format
+msgid "%1$s “%2$s” no longer exists."
+msgstr "%1$s “%2$s” findes ikke længere."
+
+#: includes/class-pcio-vis-history.php:729
+#, php-format
+msgid "%1$s “%2$s” was changed again afterwards (%3$s). Undo the newer change first."
+msgstr "%1$s “%2$s” er ændret igen efterfølgende (%3$s). Fortryd den nyere ændring først."
+
+#: includes/class-pcio-vis-history.php:744
+msgid "A database error stopped the undo."
+msgstr "En databasefejl stoppede fortrydelsen."
+
+#: includes/class-pcio-vis-history.php:804
+#, php-format
+msgid "%1$s “%2$s” created"
+msgstr "%1$s “%2$s” oprettet"
+
+#: includes/class-pcio-vis-history.php:808
+#, php-format
+msgid "%1$s “%2$s” deleted"
+msgstr "%1$s “%2$s” slettet"
+
+#: includes/class-pcio-vis-history.php:818
+#, php-format
+msgid "%1$s (%2$s → %3$s chars)"
+msgstr "%1$s (%2$s → %3$s tegn)"
+
+#: includes/class-pcio-vis-history.php:828
+#, php-format
+msgid "%1$s “%2$s” changed: %3$s"
+msgstr "%1$s “%2$s” ændret: %3$s"
+
+#: includes/class-pcio-vis-history.php:460
+#, php-format
+msgid "(+%d related change)"
+msgid_plural "(+%d related changes)"
+msgstr[0] "(+%d relateret ændring)"
+msgstr[1] "(+%d relaterede ændringer)"
+
+#: includes/class-pcio-vis-plugin.php:358
+msgid "Newest first. Undo restores the stored data only; e-mails, payments and user accounts are not reverted."
+msgstr "Nyeste først. Fortryd gendanner kun de gemte data; e-mails, betalinger og brugerkonti rulles ikke tilbage."
+
+#: includes/class-pcio-vis-plugin.php:359
+msgid "Refresh"
+msgstr "Opdatér"
+
+#: includes/class-pcio-vis-plugin.php:360
+msgid "Load more"
+msgstr "Indlæs flere"
+
+#: includes/class-pcio-vis-plugin.php:362
+msgid "Could not load the history:"
+msgstr "Kunne ikke indlæse historikken:"
+
+#: includes/class-pcio-vis-plugin.php:431
+msgid "Member sections"
+msgstr "Medlemsafsnit"
+
+#: includes/class-pcio-vis-plugin.php:433
+msgid "No member selected."
+msgstr "Intet medlem valgt."
+
+#: includes/class-pcio-vis-plugin.php:434
+msgid "Failed to load member: "
+msgstr "Kunne ikke indlæse medlem: "
+
+#: includes/class-pcio-vis-plugin.php:440
+#, php-format
+msgid "Linked to WordPress user #%d."
+msgstr "Knyttet til WordPress-bruger #%d."
+
+#: includes/class-pcio-vis-plugin.php:441
+msgid "Not linked to a WordPress user."
+msgstr "Ikke knyttet til en WordPress-bruger."
+
+#: includes/class-pcio-vis-plugin.php:447
+msgid "The deletion is logged in the change history and can be undone there."
+msgstr "Sletningen logges i ændringshistorikken og kan fortrydes der."
+
+msgid "Newsletter template"
+msgstr "Nyhedsbrevsskabelon"
+
+msgid "Could not create the newsletter template."
+msgstr "Kunne ikke oprette nyhedsbrevsskabelonen."
+
+msgid "The newsletter template cannot be sent directly."
+msgstr "Nyhedsbrevsskabelonen kan ikke sendes direkte."
+
+msgid "The newsletter template cannot be generated directly."
+msgstr "Nyhedsbrevsskabelonen kan ikke genereres direkte."
+
+msgid "Header"
+msgstr "Sidehoved"
+
+msgid "HTML source"
+msgstr "HTML-kilde"
+
+msgid "Insert organization logo"
+msgstr "Indsæt foreningens logo"
+
+msgid "Edit newsletter template"
+msgstr "Rediger nyhedsbrevsskabelon"
+
+msgid "Header and footer come from the shared newsletter template for both email and PDF. Edit the template to change them for all newsletters."
+msgstr "Sidehoved og sidefod hentes fra den fælles nyhedsbrevsskabelon til både e-mail og PDF. Rediger skabelonen for at ændre dem for alle nyhedsbreve."
+
+msgid "Use the header for your organization logo and title. This header and footer are used by all newsletters when sending email or generating a PDF."
+msgstr "Brug sidehovedet til foreningens logo og navn. Dette sidehoved og denne sidefod bruges af alle nyhedsbreve, når de sendes som e-mail eller genereres som PDF."
+
+msgid "Publish on homepage"
+msgstr "Offentliggør på hjemmesiden"
+
+msgid "Publish to poster"
+msgstr "Offentliggør på plakat"
+
+msgid "Publish to Facebook"
+msgstr "Offentliggør på Facebook"
+
+msgid "Homepage approval enables public viewing and signup. Poster and Facebook flags are reserved for future publishing."
+msgstr "Godkendelse til hjemmesiden åbner for offentlig visning og tilmelding. Plakat- og Facebook-flagene er reserveret til fremtidig offentliggørelse."
+
+msgid "Could not save publication settings: "
+msgstr "Kunne ikke gemme indstillinger for offentliggørelse: "
+
+msgid "This link is accessible only after homepage publication is approved."
+msgstr "Dette link er først tilgængeligt, når offentliggørelse på hjemmesiden er godkendt."
+
+msgid "This event has not been published yet."
+msgstr "Dette arrangement er endnu ikke offentliggjort."
+
+msgid "Only publishers may change event publication settings."
+msgstr "Kun brugere med udgiverrettigheder må ændre indstillinger for offentliggørelse."
+
+msgid "Invalid publication flag."
+msgstr "Ugyldigt flag for offentliggørelse."
+
+msgid "Could not upgrade event publication settings."
+msgstr "Kunne ikke opgradere indstillinger for offentliggørelse."
+
+msgid "Publish events / manage documents"
+msgstr "Offentliggør arrangementer / administrer dokumenter"
+
+msgid "Vis navigation"
+msgstr "Vis-navigation"
+
+#: includes/class-pcio-vis-plugin.php
+msgid "Resume"
+msgstr "Resumé"
+
+#: includes/class-pcio-vis-plugin.php
+msgid "Create Resume"
+msgstr "Opret resumé"
+
+#: includes/class-pcio-vis-plugin.php
+msgid "Short version of the description…"
+msgstr "Kort version af beskrivelsen…"
+
+#. translators: %d: number of characters in the resume.
+#: includes/class-pcio-vis-plugin.php
+#, php-format
+msgid "%d characters"
+msgstr "%d tegn"
+
+#: includes/class-pcio-vis-ai.php
+msgid "The description is empty."
+msgstr "Beskrivelsen er tom."
+
+#: includes/class-pcio-vis-plugin.php
+msgid "Generate with AI"
+msgstr "Generer med AI"
+
+#: includes/class-pcio-vis-plugin.php
+msgid "Could not generate the short text: "
+msgstr "Kunne ikke generere den korte tekst: "
+
+#: includes/class-pcio-vis-ai.php
+msgid "No AI provider is connected. Set one up under Settings → Connectors."
+msgstr "Der er ingen AI-udbyder forbundet. Opsæt en under Indstillinger → Forbindelser."
+
+#: includes/class-pcio-vis-ai.php
+msgid "The AI returned no text."
+msgstr "AI returnerede ingen tekst."
+
+#: includes/class-pcio-vis-google-admin.php
+msgid "AI text generation"
+msgstr "AI-tekstgenerering"
+
+#: includes/class-pcio-vis-google-admin.php
+msgid "An AI provider is connected. Event editors can generate a short version of the event description."
+msgstr "Der er forbundet en AI-udbyder. Redaktører af begivenheder kan generere en kort version af beskrivelsen."
+
+#: includes/class-pcio-vis-google-admin.php
+msgid "No AI provider supporting text generation is connected."
+msgstr "Der er ingen AI-udbyder med tekstgenerering forbundet."
+
+#: includes/class-pcio-vis-google-admin.php
+msgid "Uses the WordPress AI Client. Install a provider plugin (e.g. AI Provider for Google) and add its API key under Settings → Connectors. The event description is sent to the provider only when the button is used."
+msgstr "Bruger WordPress AI Client. Installér et udbyder-plugin (f.eks. AI Provider for Google), og tilføj dets API-nøgle under Indstillinger → Forbindelser. Beskrivelsen sendes kun til udbyderen, når knappen bruges."
+
+#: includes/class-pcio-vis-google-admin.php
+msgid "Open Connectors"
+msgstr "Åbn Forbindelser"
+
+#: includes/class-pcio-vis-google-admin.php
+msgid "Requires WordPress 7.0 or later."
+msgstr "Kræver WordPress 7.0 eller nyere."
+
+#: includes/class-pcio-vis-google-db.php
+msgid "Shorten the following Danish event text to at most 250 characters. Write a natural and inviting short text for use in an event calendar. Keep important details such as names, dates, times and place, if present. Do not invent information that is not in the original text. Return only the short text."
+msgstr "Forkort følgende danske eventtekst til højst 250 tegn. Skriv en naturlig og indbydende kort tekst til brug på en eventkalender. Bevar vigtige oplysninger som navne, datoer, tidspunkter og sted, hvis de findes. Opfind ikke oplysninger, der ikke står i originalteksten. Returnér kun den korte tekst."
+
+#: includes/class-pcio-vis-google-admin.php
+msgid "AI resume instruction"
+msgstr "AI-instruktion til resumé"
+
+#: includes/class-pcio-vis-google-admin.php
+msgid "Sent to the AI before the event description when \"Generate with AI\" is used. Use it to control length, tone and content of the resume. Leave empty to restore the default."
+msgstr "Sendes til AI før beskrivelsen, når \"Generer med AI\" bruges. Brug den til at styre længde, tone og indhold af resuméet. Lad feltet være tomt for at gendanne standardteksten."
+
+#: includes/class-pcio-vis-plugin.php
+msgid "External ticket sale"
+msgstr "Eksternt billetsalg"
+
+#: includes/class-pcio-vis-history-tables.php
+msgid "External ticket sale URL"
+msgstr "URL til eksternt billetsalg"
+
+#: templates/event-public.php
+msgid "Tickets"
+msgstr "Billetter"
+
+#: templates/event-public.php
+msgid "Tickets are sold through an external website."
+msgstr "Billetter sælges via en ekstern hjemmeside."
+
+#: templates/event-public.php
+msgid "Buy tickets"
+msgstr "Køb billetter"
+
+#: includes/class-pcio-vis-plugin.php
+msgid "Ticket sale URL"
+msgstr "URL til billetsalg"
+
+#: includes/class-pcio-vis-plugin.php
+msgid "Checking URL…"
+msgstr "Tjekker URL…"
+
+#: includes/class-pcio-vis-plugin.php
+msgid "URL is reachable"
+msgstr "URL'en svarer"
+
+#: includes/class-pcio-vis-plugin.php
+msgid "URL is invalid or not reachable"
+msgstr "URL'en er ugyldig eller svarer ikke"
+
+#: includes/class-pcio-vis-plugin.php
+msgid "The guest list is only used for events with the sign-up option \"Simple: join / interested / not joining\". Change it on the Basic tab to use this tab."
+msgstr "Gæstelisten bruges kun til arrangementer med tilmeldingsmuligheden \"Enkel: kommer / interesseret / kommer ikke\". Skift den på fanen Grundlæggende for at bruge denne fane."
+
+#: includes/class-pcio-vis-plugin.php
+msgid "This tab is not used with the current sign-up option of the event."
+msgstr "Denne fane bruges ikke med arrangementets nuværende tilmeldingsmulighed."
+
+#: includes/class-pcio-vis-plugin.php
+msgid "SOLD OUT!"
+msgstr "UDSOLGT!"
+
+#: includes/class-pcio-vis-plugin.php
+msgid "Get-in time"
+msgstr "Get-in tidspunkt"
+
+#: includes/class-pcio-vis-plugin.php
+msgid "Door opening"
+msgstr "Dørene åbner"
+
+#: includes/class-pcio-vis-events-rest.php
+msgid "Get-in and door opening cannot be after the start."
+msgstr "Get-in og døråbning kan ikke være efter start."
+
+#. translators: %s: door opening time.
+#: includes/class-pcio-vis-plugin.php
+#, php-format
+msgid "(doors open %s)"
+msgstr "(døre åbner %s)"
+
+#: includes/class-pcio-vis-plugin.php
+msgid "— Choose event type —"
+msgstr "— Vælg begivenhedstype —"
+
+#: includes/class-pcio-vis-plugin.php includes/class-pcio-vis-events-rest.php
+msgid "Choose an event type."
+msgstr "Vælg en begivenhedstype."
+
+#. translators: %d: number of events using the event type.
+#: includes/class-pcio-vis-event-types-rest.php
+#, php-format
+msgid "The event type is used by %d event. Change its event type first."
+msgid_plural "The event type is used by %d events. Change their event type first."
+msgstr[0] "Begivenhedstypen bruges af %d begivenhed. Skift dens begivenhedstype først."
+msgstr[1] "Begivenhedstypen bruges af %d begivenheder. Skift deres begivenhedstype først."
+
+msgid "Scope"
+msgstr "Synlighed"
+
+msgid "During cafe opening hours"
+msgstr "I caféens åbningstid"
+
+msgid "System event type"
+msgstr "Systembegivenhedstype"
+
+#: includes/class-pcio-vis-crew-reminder.php
+msgid "Reminder: your shift at {event_title} tomorrow"
+msgstr "Påmindelse: din vagt til {event_title} i morgen"
+
+#: includes/class-pcio-vis-crew-reminder.php
+msgid "This is a reminder that you are on the crew for <strong>{event_title}</strong> tomorrow as {role_name}."
+msgstr "Dette er en påmindelse om, at du har vagt til <strong>{event_title}</strong> i morgen som {role_name}."
+
+#: includes/class-pcio-vis-crew-reminder.php
+msgid "Your shift starts <strong>{shift_start}</strong> and ends <strong>{shift_end}</strong>."
+msgstr "Din vagt starter <strong>{shift_start}</strong> og slutter <strong>{shift_end}</strong>."
+
+#: includes/class-pcio-vis-crew-reminder.php
+msgid "Thank you for helping out!"
+msgstr "Tak fordi du giver en hånd med!"
+
+#: includes/class-pcio-vis-crew-reminder.php
+msgid "Volunteer name"
+msgstr "Frivilligs navn"
+
+#: includes/class-pcio-vis-crew-reminder.php
+msgid "Shift start (date and time)"
+msgstr "Vagtstart (dato og tid)"
+
+#: includes/class-pcio-vis-crew-reminder.php
+msgid "Shift end"
+msgstr "Vagtslut"
+
+#: includes/class-pcio-vis-crew-reminder.php
+msgid "Crew role"
+msgstr "Vagtrolle"
+
+#: includes/class-pcio-vis-crew-reminder.php
+msgid "Crew reminders: the system mail is missing."
+msgstr "Vagtpåmindelser: systemmailen mangler."
+
+#. translators: 1: date of the shifts, 2: reminders sent, 3: shifts skipped (already reminded or no valid email), 4: failed sends
+#: includes/class-pcio-vis-crew-reminder.php
+#, php-format
+msgid "Shifts on %1$s  |  Sent: %2$d  |  Skipped: %3$d  |  Failed: %4$d"
+msgstr "Vagter %1$s  |  Sendt: %2$d  |  Sprunget over: %3$d  |  Fejlet: %4$d"
+
+#: includes/class-pcio-vis-sync.php
+msgid "Crew shift reminders"
+msgstr "Vagtpåmindelser"
+
+#: includes/class-pcio-vis-navigation.php
+msgid "Marketing"
+msgstr "Marketing"
+
+#: templates/home.php
+msgid "Send mails to members and publish newsletters."
+msgstr "Send mails til medlemmer og udgiv nyhedsbreve."
+
+#: includes/class-pcio-vis-plugin.php
+msgid "Personal filter in use"
+msgstr "Personligt filter i brug"
+
+#: includes/class-pcio-vis-plugin.php
+msgid "Calendar filter"
+msgstr "Kalenderfilter"
+
+#: includes/class-pcio-vis-plugin.php
+msgid "Exclude"
+msgstr "Ekskluder"
+
+#: includes/class-pcio-vis-plugin.php
+msgid "Criterion"
+msgstr "Kriterie"
+
+#. translators: %s: filter criterion, e.g. "Date"
+#: includes/class-pcio-vis-plugin.php
+#, php-format
+msgid "Use filter: %s"
+msgstr "Brug filter: %s"
+
+#. translators: %s: filter criterion, e.g. "Date"
+#: includes/class-pcio-vis-plugin.php
+#, php-format
+msgid "Hide matches: %s"
+msgstr "Skjul matchende: %s"
+
+#: includes/class-pcio-vis-plugin.php
+msgid "From"
+msgstr "Fra"
+
+#: includes/class-pcio-vis-plugin.php
+msgid "To"
+msgstr "Til"
+
+#: includes/class-pcio-vis-plugin.php
+msgid "Search title, resume and description"
+msgstr "Søg i titel, resumé og beskrivelse"
+
+#: includes/class-pcio-vis-plugin.php
+msgid "Crew member"
+msgstr "Frivillig"
+
+#: includes/class-pcio-vis-plugin.php
+msgid "Missing volunteer (open shift)"
+msgstr "Mangler frivillig (ledig vagt)"
+
+#: includes/class-pcio-vis-plugin.php
+msgid "Me"
+msgstr "Mig"
+
+#: includes/class-pcio-vis-plugin.php
+msgid "Published on homepage"
+msgstr "Publiceret på hjemmesiden"
+
+#: includes/class-pcio-vis-plugin.php
+msgid "None"
+msgstr "Ingen"
+
+#: includes/class-pcio-vis-plugin.php
+msgid "Internal"
+msgstr "Interne"
+
+#: includes/class-pcio-vis-plugin.php
+msgid "Cafe"
+msgstr "Café"
+
+#: includes/class-pcio-vis-plugin.php
+msgid "Clear"
+msgstr "Ryd"
+
+#: includes/class-pcio-vis-plugin.php
+msgid "OK"
+msgstr "OK"
+
+#: includes/class-pcio-vis-plugin.php
+msgid "Tick \"Filter\" to use a criterion. Tick \"Exclude\" to hide the matching events instead of showing them. Your settings are remembered until you change them or press Clear. The Filter button is green while a personal filter is in use. Clear returns to the default view with all events."
+msgstr "Sæt flueben i \"Filtrer\" for at bruge et kriterie. Sæt flueben i \"Ekskluder\" for at skjule de matchende arrangementer i stedet for at vise dem. Dine indstillinger huskes, indtil du ændrer dem eller trykker Ryd. Filter-knappen er grøn, når et personligt filter er i brug. Ryd vender tilbage til standardvisningen med alle arrangementer."
+
+#: includes/class-pcio-vis-plugin.php
+msgid "Could not load the filter: "
+msgstr "Kunne ikke hente filteret: "
+
+#: includes/class-pcio-vis-plugin.php
+msgid "Could not save the filter: "
+msgstr "Kunne ikke gemme filteret: "
+
+#: includes/class-pcio-vis-plugin.php
+msgid "The end date cannot be before the start date."
+msgstr "Slutdatoen kan ikke ligge før startdatoen."
+
+#: includes/class-pcio-vis-calendar-filter-rest.php
+msgid "Could not save the filter."
+msgstr "Kunne ikke gemme filteret."
+
+#: includes/class-pcio-vis-calendar-filter-rest.php
+msgid "Could not clear the filter."
+msgstr "Kunne ikke rydde filteret."
+
+#: includes/class-pcio-vis-plugin.php
+msgid "Browse events"
+msgstr "Bladr i begivenheder"
+
+#: includes/class-pcio-vis-plugin.php
+msgid "matching your calendar filter"
+msgstr "der matcher dit kalenderfilter"
+
+#: (migration)
+msgid "\"Public events only\" syncs events whose event type has public access. Events from one year back to one year ahead are synced; other events in the Google calendar within that window are removed."
+msgstr ""
+
+#: (migration)
+msgid "%1$s: Vis %2$d, Google %3$d | Added %4$d | Updated %5$d | Deleted %6$d | Re-linked %7$d | Errors %8$d"
+msgstr "%1$s: Se %2$d, Google %3$d | Tilføjet %4$d | Opdateret %5$d | Slettet %6$d | Genlinket %7$d | Fejl %8$d"
+
+#: (migration)
+msgid "+ New role"
+msgstr "+ Ny rolle"
+
+#: (migration)
+msgid "A key is stored for service account %s."
+msgstr "Der er gemt en nøgle for servicekonto %s."
+
+#: (migration)
+msgid "Add calendar"
+msgstr "Tilføj kalender"
+
+#: (migration)
+msgid "Add person"
+msgstr "Tilføj person"
+
+#: (migration)
+msgid "All events (internal)"
+msgstr "Alle arrangementer (interne)"
+
+#: (migration)
+msgid "Are you sure you want to delete %1$s %2$s?"
+msgstr "Er du sikker på, at du vil slette %1$s %2$s?"
+
+#: (migration)
+msgid "Are you sure you want to delete %s?"
+msgstr "Er du sikker på, at du vil slette %s?"
+
+#: (migration)
+msgid "Are you sure you want to delete this shift?"
+msgstr "Er du sikker på, at du vil slette dette vagtskifte?"
+
+#: (migration)
+msgid "Art"
+msgstr "Kunst"
+
+#: (migration)
+msgid "Assisting in the kitchen with food preparation and cleanup."
+msgstr "At hjælpe til i køkkenet med madlavning og oprydning."
+
+#: (migration)
+msgid "Authenticates with the stored key and checks access to every configured calendar. Nothing is changed."
+msgstr "Der foretages en autentificering med den gemte nøgle, og adgangen til hver enkelt konfigureret kalender kontrolleres. Der foretages ingen ændringer."
+
+#: (migration)
+msgid "Authentication with Google succeeded."
+msgstr "Godkendelsen via Google lykkedes."
+
+#: (migration)
+msgid "Bartender"
+msgstr "Bartender"
+
+#: (migration)
+msgid "Calendar added."
+msgstr "Kalender tilføjet."
+
+#: (migration)
+msgid "Calendar removed. Events already in Google are left untouched."
+msgstr "Kalenderen er fjernet. Begivenheder, der allerede findes i Google, forbliver uændrede."
+
+#: (migration)
+msgid "Calendar updated."
+msgstr "Kalenderen er opdateret."
+
+#: (migration)
+msgid "Calendars"
+msgstr "Kalendere"
+
+#: (migration)
+msgid "Could not add the calendar."
+msgstr "Det var ikke muligt at tilføje kalenderen."
+
+#: (migration)
+msgid "Could not create crew shift."
+msgstr "Det var ikke muligt at oprette et vagtplan for besætningen."
+
+#: (migration)
+msgid "Could not create event role."
+msgstr "Det var ikke muligt at oprette en begivenhedsrolle."
+
+#: (migration)
+msgid "Could not delete crew shift."
+msgstr "Det var ikke muligt at slette personalets vagt."
+
+#: (migration)
+msgid "Could not delete event role."
+msgstr "Det var ikke muligt at slette begivenhedsrollen."
+
+#: (migration)
+msgid "Could not duplicate crew shift."
+msgstr "Det var ikke muligt at oprette en kopi af et besætningsskift."
+
+#: (migration)
+msgid "Could not remove the calendar."
+msgstr "Det var ikke muligt at slette kalenderen."
+
+#: (migration)
+msgid "Could not reset crew shift times."
+msgstr "Det var ikke muligt at nulstille besætningens arbejdstider."
+
+#: (migration)
+msgid "Could not seed system event types."
+msgstr "Det var ikke muligt at indstille systemhændelsestyper."
+
+#: (migration)
+msgid "Could not sign the Google authentication request."
+msgstr "Det var ikke muligt at underskrive Google-godkendelsesanmodningen."
+
+#: (migration)
+msgid "Could not update crew shift."
+msgstr "Det var ikke muligt at opdatere personalets vagtplan."
+
+#: (migration)
+msgid "Could not update event role."
+msgstr "Det var ikke muligt at opdatere begivenhedsrollen."
+
+#: (migration)
+msgid "Could not update the calendar."
+msgstr "Det var ikke muligt at opdatere kalenderen."
+
+#: (migration)
+msgid "Could not upgrade event types."
+msgstr "Det var ikke muligt at opgradere begivenhedstyperne."
+
+#: (migration)
+msgid "Crew"
+msgstr "Besætning"
+
+#: (migration)
+msgid "Crew assignment"
+msgstr "Besætningsfordeling"
+
+#: (migration)
+msgid "Crew shift not found."
+msgstr ""
+
+#: (migration)
+msgid "Default Event Address"
+msgstr "Standardarrangementets adresse"
+
+#: (migration)
+msgid "Default location"
+msgstr "Standard placering"
+
+#: (migration)
+msgid "Duplicate"
+msgstr "Kopier"
+
+#: (migration)
+msgid "Edit Event Role"
+msgstr ""
+
+#: (migration)
+msgid "Edit calendar"
+msgstr ""
+
+#: (migration)
+msgid "Emails copied to clipboard."
+msgstr ""
+
+#: (migration)
+msgid "Error: %s"
+msgstr ""
+
+#: (migration)
+msgid "Error: no Google key configured (Vis → Google)."
+msgstr ""
+
+#: (migration)
+msgid "Event Roles"
+msgstr ""
+
+#: (migration)
+msgid "Event detail (full width)"
+msgstr ""
+
+#: (migration)
+msgid "Event role"
+msgstr ""
+
+#: (migration)
+msgid "Event role created."
+msgstr ""
+
+#: (migration)
+msgid "Event role deleted."
+msgstr ""
+
+#: (migration)
+msgid "Event role not found."
+msgstr ""
+
+#: (migration)
+msgid "Event role updated."
+msgstr ""
+
+#: (migration)
+msgid "Event type not found."
+msgstr ""
+
+#: (migration)
+msgid "Every new event is created with this address. It can be changed per event afterwards."
+msgstr "Hvert nyt arrangement oprettes med denne adresse. Den kan ændres pr. arrangement bagefter."
+
+#: (migration)
+msgid "Found in Google Calendar under Settings → Integrate calendar, e.g. abc123@group.calendar.google.com. Changing it drops the stored event links, so events are recreated in the new calendar."
+msgstr ""
+
+#: (migration)
+msgid "General"
+msgstr "Generelt"
+
+#: (migration)
+msgid "General volunteer assisting with event tasks."
+msgstr ""
+
+#: (migration)
+msgid "Google"
+msgstr "Google"
+
+#: (migration)
+msgid "Google API error %1$d: %2$s"
+msgstr ""
+
+#: (migration)
+msgid "Google calendar ID"
+msgstr ""
+
+#: (migration)
+msgid "Google did not return an access token."
+msgstr ""
+
+#: (migration)
+msgid "Google key (GOOGLE_KEY)"
+msgstr ""
+
+#: (migration)
+msgid "Google key removed."
+msgstr ""
+
+#: (migration)
+msgid "Google key saved."
+msgstr "Google-nøgle gemt."
+
+#: (migration)
+msgid "Helper"
+msgstr ""
+
+#: (migration)
+msgid "Holiday"
+msgstr ""
+
+#: (migration)
+msgid "Kitchen"
+msgstr ""
+
+#: (migration)
+msgid "Lead organizer responsible for the event."
+msgstr ""
+
+#: (migration)
+msgid "Loading crew…"
+msgstr ""
+
+#: (migration)
+msgid "My Extension Job"
+msgstr ""
+
+#: (migration)
+msgid "Name and Google calendar ID are required."
+msgstr ""
+
+#: (migration)
+msgid "New Event Role"
+msgstr ""
+
+#: (migration)
+msgid "No Google key configured."
+msgstr ""
+
+#: (migration)
+msgid "No calendars configured yet."
+msgstr ""
+
+#: (migration)
+msgid "No crew emails to copy."
+msgstr ""
+
+#: (migration)
+msgid "No crew members assigned yet."
+msgstr ""
+
+#: (migration)
+msgid "No event roles defined yet. Add them under Calendar → Event roles."
+msgstr ""
+
+#: (migration)
+msgid "No key stored."
+msgstr ""
+
+#: (migration)
+msgid "Nothing to do: no Google calendars configured (Vis → Google)."
+msgstr ""
+
+#: (migration)
+msgid "Organizer"
+msgstr ""
+
+#: (migration)
+msgid "Paste the service-account JSON key here to set or replace it"
+msgstr ""
+
+#: (migration)
+msgid "Public events only"
+msgstr ""
+
+#: (migration)
+msgid "Remove the stored key"
+msgstr ""
+
+#: (migration)
+msgid "Remove this calendar from the sync?"
+msgstr ""
+
+#: (migration)
+msgid "Renders an event. Left empty on the Event page — the single WordPress page that serves every public event at /events/{slug}/ — it renders the full detail layout and resolves the event from the URL. Anywhere else it renders a compact card."
+msgstr ""
+
+#: (migration)
+msgid "Reset all shift start and end times to the event start and end times?"
+msgstr ""
+
+#: (migration)
+msgid "Reset crew shift times to event times"
+msgstr ""
+
+#: (migration)
+msgid "Reset shift times to default"
+msgstr ""
+
+#: (migration)
+msgid "Responsible for bar and beverage sales."
+msgstr ""
+
+#: (migration)
+msgid "Role"
+msgstr ""
+
+#: (migration)
+msgid "Role name cannot be empty."
+msgstr ""
+
+#: (migration)
+msgid "Role name is required."
+msgstr ""
+
+#: (migration)
+msgid "Save settings"
+msgstr ""
+
+#: (migration)
+msgid "Schedule or run it under Sync Jobs."
+msgstr ""
+
+#: (migration)
+msgid "Service-account key (JSON) from Google Cloud Console with the Calendar API enabled. The stored key is never shown again. Share each Google calendar with the service account e-mail and give it \"Make changes to events\" permission."
+msgstr ""
+
+#: (migration)
+msgid "Settings saved."
+msgstr ""
+
+#: (migration)
+msgid "Settings updated."
+msgstr "Indstillinger opdateret."
+
+#: (migration)
+msgid "Shift added."
+msgstr ""
+
+#: (migration)
+msgid "Shift deleted."
+msgstr ""
+
+#: (migration)
+msgid "Shift duplicated."
+msgstr ""
+
+#: (migration)
+msgid "Shift times reset to event times."
+msgstr ""
+
+#: (migration)
+msgid "Shift updated."
+msgstr ""
+
+#: (migration)
+msgid "Skipped: a Google Calendar sync is already running."
+msgstr ""
+
+#: (migration)
+msgid "Sync Google Calendar"
+msgstr ""
+
+#: (migration)
+msgid "System event types cannot be deleted or lose their system identity."
+msgstr ""
+
+#: (migration)
+msgid "System event types cannot be deleted."
+msgstr ""
+
+#: (migration)
+msgid "Test connection"
+msgstr ""
+
+#: (migration)
+msgid "The Event page itself (slug \"event\") is created automatically on activation and must not be deleted: /events/{slug}/ is rewritten onto it so the public event pages use the theme header and footer."
+msgstr ""
+
+#: (migration)
+msgid "The Google key is not valid JSON."
+msgstr ""
+
+#: (migration)
+msgid "The Google key must be a service-account key containing client_email and private_key."
+msgstr ""
+
+#: (migration)
+msgid "The event slug, as used in the public URL /events/{slug}/. Alternative to id."
+msgstr ""
+
+#: (migration)
+msgid "The numeric ID of the event. Find it in the URL when viewing an event at /vis/events/{id}/. When omitted, the event is taken from the slug attribute or from the /events/{slug}/ URL."
+msgstr ""
+
+#: (migration)
+msgid "The private key in the Google key could not be read."
+msgstr ""
+
+#: (migration)
+msgid "Too many result pages returned by Google."
+msgstr ""
+
+#: (migration)
+msgid "Unassigned"
+msgstr ""
+
+#: (migration)
+msgid "Update calendar"
+msgstr ""
+
+#: (migration)
+msgid "Use default address"
+msgstr "Brug standardadresse"
+
+#: (migration)
+msgid "Used as the Google event location when a Vis event has no location."
+msgstr ""
+
+#: (migration)
+msgid "Vis events are pushed to the Google calendars below by the \"Sync Google Calendar\" job."
+msgstr ""
+
+#: (migration)
+msgid "Vis — Google Calendar"
+msgstr ""
+
+#: (migration)
+msgid "You do not have permission to do this."
+msgstr ""
+
+#: (migration)
+msgid "card (compact embed) or detail (full-width detail page). The Event page defaults to detail; a standalone embed defaults to card."
+msgstr ""
+
+#: (migration)
+msgid "unknown error"
+msgstr ""
+
+#: (migration)
+msgid "— Unassigned —"
+msgstr ""

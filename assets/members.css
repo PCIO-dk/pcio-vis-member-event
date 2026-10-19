@@ -26,7 +26,8 @@ body.pcio-me-body {
     align-items: center;
     gap: 6px;
     padding: 0 28px;
-    height: 52px;
+    min-height: 52px;
+    flex-wrap: wrap;
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #334155 100%);
     box-shadow: 0 2px 12px rgba(8, 15, 30, 0.45);
     flex-shrink: 0;
@@ -51,7 +52,29 @@ body.pcio-me-body {
     align-items: center;
     gap: 2px;
     flex: 1;
+    flex-wrap: wrap;
 }
+
+.me-nav-dropdown { position: relative; }
+.me-nav-dropdown > summary { cursor: pointer; list-style: none; }
+.me-nav-dropdown > summary::-webkit-details-marker { display: none; }
+.me-nav-dropdown > summary::after { content: ' \25BE'; }
+.me-nav-submenu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 180px;
+    padding: 6px;
+    background: #1e293b;
+    border-radius: 7px;
+    box-shadow: 0 6px 18px rgba(8,15,30,.3);
+    z-index: 1;
+}
+.me-nav-submenu .me-nav-link { display: block; }
+.me-nav-submenu [aria-current="page"] { color: #38bdf8; }
+.me-nav-link:focus-visible { outline: 2px solid #38bdf8; outline-offset: 2px; }
+.me-section-tabs { flex-wrap: wrap; }
+.me-section-tabs a { text-decoration: none; }
 
 .me-nav-link {
     padding: 6px 13px;
@@ -85,6 +108,13 @@ body.pcio-me-body {
 }
 .me-nav-ext:hover {
     border-color: rgba(56, 189, 248, 0.4);
+}
+
+@media (max-width: 600px) {
+    .me-nav { padding: 8px 12px; gap: 8px; }
+    .me-nav-links { flex-basis: 100%; }
+    .me-nav-user { flex-wrap: wrap; margin-left: 0; gap: 6px; }
+    .me-nav-submenu { position: static; }
 }
 
 /* ── Main content area ───────────────────────────────────────── */
@@ -134,7 +164,8 @@ body.pcio-me-body {
     flex-wrap: wrap;
 }
 
-.me-fin-tab {
+.me-fin-tab,
+.me-tab-btn {
     appearance: none;
     background: transparent;
     border: none;
@@ -150,14 +181,17 @@ body.pcio-me-body {
     transition: color .15s, border-color .15s;
 }
 
-.me-fin-tab:hover { color: #111827; }
+.me-fin-tab:hover,
+.me-tab-btn:hover { color: #111827; }
 
-.me-fin-tab-active {
+.me-fin-tab-active,
+.me-tab-btn.active {
     color: #1d4ed8;
     border-bottom-color: #1d4ed8;
 }
 
-.me-fin-tab:focus-visible { outline: 2px solid #3b82f6; outline-offset: 2px; }
+.me-fin-tab:focus-visible,
+.me-tab-btn:focus-visible { outline: 2px solid #3b82f6; outline-offset: 2px; }
 
 /* ── Member type filter tabs (All / Volunteers / Non-members) ── */
 .me-type-tabs {
@@ -738,6 +772,25 @@ th.sortable:not(.sort-asc):not(.sort-desc) .sort-icon {
 .me-form-input.is-invalid { border-color: #ef4444; box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12); }
 .me-form-textarea { min-height: 80px; resize: vertical; }
 
+/* Event Basic tab: narrow sign-up select with the external ticket URL beside it. */
+.me-form-row.me-signup-row { grid-template-columns: minmax(180px, 280px) 1fr; }
+.me-signup-row .me-form-group[hidden] { display: none; }
+.me-url-check-wrap { display: flex; align-items: center; gap: 8px; }
+.me-url-check-wrap .me-form-input { flex: 1; min-width: 0; }
+.me-url-check {
+    flex: 0 0 20px;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+}
+.me-url-check.is-ok { color: #16a34a; }
+.me-url-check.is-bad { color: #dc2626; }
+.me-url-check.is-busy { color: #94a3b8; }
+@media (max-width: 600px) {
+    .me-form-row.me-signup-row { grid-template-columns: 1fr; }
+}
+
 /* Event-type / resource edit modal: give the text inputs a touch more
    horizontal padding so they line up with the native select's indent. */
 #me-cal-item-body .me-form-input {
@@ -896,12 +949,28 @@ th.sortable:not(.sort-asc):not(.sort-desc) .sort-icon {
 
 /* ── Wide modal (mail editor) ─────────────────────────────────── */
 .me-modal-wide {
-    width: min(860px, 96vw);
+    width: 80vw;
+    max-width: none;
     max-height: 90vh;
     overflow-y: auto;
 }
 .me-modal-wide .me-modal-body {
     padding: 20px 24px;
+}
+#me-overlay .ql-size .ql-picker-item[data-value]::before,
+#me-overlay .ql-size .ql-picker-label[data-value]::before,
+.me-tab-card .ql-size .ql-picker-item[data-value]::before,
+.me-tab-card .ql-size .ql-picker-label[data-value]::before {
+    content: attr(data-value);
+}
+#me-overlay #m-content-html,
+#me-overlay #m-footer-html {
+    font-family: monospace;
+    resize: vertical;
+    margin-bottom: 8px;
+}
+@media (max-width: 600px) {
+    .me-modal-wide { width: calc(100vw - 40px); }
 }
 .me-modal-footer {
     display: flex;
@@ -1017,6 +1086,91 @@ th.sortable:not(.sort-asc):not(.sort-desc) .sort-icon {
 .me-calendar-card {
     padding: 20px 20px 28px;
 }
+
+/* ── Personal calendar filter ──────────────────────────────────── */
+.me-cal-filter-btn {
+    background: #e2e8f0;
+    color: #334155;
+    border: 1px solid #cbd5e1;
+}
+.me-cal-filter-btn:hover { background: #cbd5e1; color: #0f172a; }
+.me-cal-filter-btn.is-active {
+    background: #16a34a;
+    color: #fff;
+    border-color: #15803d;
+}
+.me-cal-filter-btn.is-active:hover { background: #15803d; color: #fff; }
+
+.me-cal-filter-table { width: 100%; border-collapse: collapse; }
+.me-cal-filter-table th,
+.me-cal-filter-table td {
+    padding: 8px 6px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+    vertical-align: top;
+}
+.me-cal-filter-table thead th { font-size: 12px; color: #64748b; font-weight: 600; }
+.me-cal-filter-table td.me-cal-filter-check { width: 1%; text-align: center; }
+.me-cal-filter-table label { margin-right: 12px; white-space: nowrap; }
+.me-cal-filter-table .me-cf-wide { width: 100%; }
+.me-cal-filter-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 2px 12px;
+    max-height: 168px;
+    overflow-y: auto;
+    padding: 6px 8px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background: #f8fafc;
+}
+.me-cal-filter-list label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 13px;
+}
+.me-cf-quick { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.me-cal-filter-help { margin: 12px 0 0; font-size: 12.5px; color: #64748b; }
+#me-cal-filter-overlay .me-modal-footer .me-cf-clear { margin-right: auto; }
+
+/* Event page: previous / next event next to the date line. */
+.me-evt-when-row { display: flex; align-items: center; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
+.me-evt-nav { display: inline-flex; gap: 4px; }
+.me-evt-nav-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 26px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 6px;
+    border: 1px solid rgba(203, 213, 225, 0.35);
+    color: #cbd5e1;
+    font-size: 14px;
+    line-height: 1;
+    text-decoration: none;
+    transition: background 0.14s, color 0.14s;
+}
+.me-evt-nav-btn:hover,
+.me-evt-nav-btn:focus-visible { background: rgba(255, 255, 255, 0.12); color: #fff; }
+.me-evt-nav-btn.is-filtered { border-color: rgba(74, 222, 128, 0.6); }
+.me-evt-nav-btn.is-disabled { opacity: 0.3; pointer-events: none; }
+/* Keep header and buttons on screen; only the criteria scroll. */
+#me-cal-filter-overlay .me-modal {
+    max-width: 760px;
+    max-height: calc(100vh - 40px);
+    display: flex;
+    flex-direction: column;
+}
+#me-cal-filter-overlay .me-modal-header,
+#me-cal-filter-overlay .me-modal-footer { flex-shrink: 0; }
+#me-cal-filter-overlay .me-modal-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding-bottom: 16px;
+}
+#me-cal-filter-overlay .me-modal-footer { margin-top: 0; }
 
 /* ── FullCalendar element overrides ────────────────────────────── */
 .fc {
@@ -1144,11 +1298,15 @@ th.sortable:not(.sort-asc):not(.sort-desc) .sort-icon {
 
 .me-home-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 18px;
     max-width: 860px;
     margin: 0 auto;
     padding: 0 4px;
+}
+
+@media (max-width: 600px) {
+    .me-home-grid { grid-template-columns: 1fr; }
 }
 
 .me-home-card {
@@ -1280,36 +1438,24 @@ th.sortable:not(.sort-asc):not(.sort-desc) .sort-icon {
 /* ── Tab bar ─────────────────────────────────────────────────────── */
 .me-tab-bar {
     display: flex;
-    gap: 2px;
-    padding: 0 2px;
+    gap: 4px;
+    padding: 0;
     margin-bottom: 16px;
-    border-bottom: 2px solid #e2e8f0;
+    border-bottom: 1px solid #e5e7eb;
     overflow-x: auto;
     scrollbar-width: none;
 }
 .me-tab-bar::-webkit-scrollbar { display: none; }
 
 .me-tab-btn {
-    padding: 9px 18px;
-    font-size: 12.5px;
-    font-weight: 600;
-    color: #64748b;
-    background: transparent;
-    border: none;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -2px;
-    cursor: pointer;
-    transition: color 0.13s, border-color 0.13s;
+    /* Keep the underline inside the scroll container so it is not clipped. */
+    margin-bottom: 0;
     white-space: nowrap;
-    border-radius: 6px 6px 0 0;
 }
-.me-tab-btn:hover { color: #1e293b; background: #f1f5f9; }
-.me-tab-btn.active {
-    color: #2563eb;
-    border-bottom-color: #2563eb;
-    background: transparent;
-}
-.me-tab-btn:focus-visible { outline: 2px solid #3b82f6; outline-offset: -2px; }
+/* Tab not used by the event's current sign-up mode (e.g. Guests, Tickets). */
+.me-tab-btn.me-tab-inactive { color: #cbd5e1; }
+.me-tab-btn.me-tab-inactive.active { color: #94a3b8; border-bottom-color: #cbd5e1; }
+.me-tab-inactive-note { margin: 0; color: #64748b; }
 
 /* ── Tab content card ─────────────────────────────────────────────── */
 .me-tab-card {

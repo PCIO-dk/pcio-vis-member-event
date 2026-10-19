@@ -31,7 +31,7 @@ class PCIO_VIS_Events_Rest {
             [
                 'methods'             => WP_REST_Server::EDITABLE,   // PUT + PATCH
                 'callback'            => [ $this, 'update_event' ],
-                'permission_callback' => [ $this, 'can_write' ],
+                'permission_callback' => [ $this, 'can_update' ],
                 'args'                => [ 'id' => [ 'validate_callback' => fn( $v ) => is_numeric( $v ), 'sanitize_callback' => 'absint' ] ],
             ],
             [
@@ -49,6 +49,37 @@ class PCIO_VIS_Events_Rest {
                 'callback'            => [ $this, 'upload_image' ],
                 'permission_callback' => [ $this, 'can_write' ],
                 'args'                => [ 'id' => [ 'validate_callback' => fn( $v ) => is_numeric( $v ), 'sanitize_callback' => 'absint' ] ],
+            ],
+        ] );
+
+        // Generate a short version of a description via the WordPress AI Client (only when a provider is connected).
+        register_rest_route( $ns, '/events/summarize', [
+            [
+                'methods'             => WP_REST_Server::CREATABLE,
+                'callback'            => [ $this, 'summarize' ],
+                'permission_callback' => [ $this, 'can_write' ],
+                'args'                => [
+                    'text' => [
+                        'type'              => 'string',
+                        'required'          => true,
+                        'sanitize_callback' => static fn( $v ) => sanitize_textarea_field( wp_strip_all_tags( (string) $v ) ),
+                    ],
+                ],
+            ],
+        ] );
+
+        register_rest_route( $ns, '/events/check-url', [
+            [
+                'methods'             => WP_REST_Server::CREATABLE,
+                'callback'            => [ $this, 'check_url' ],
+                'permission_callback' => [ $this, 'can_create' ],
+                'args'                => [
+                    'url' => [
+                        'type'              => 'string',
+                        'required'          => true,
+                        'sanitize_callback' => static fn( $v ) => PCIO_VIS_Events_DB::sanitize_external_url( $v ),
+                    ],
+                ],
             ],
         ] );
     }
@@ -70,7 +101,70 @@ class PCIO_VIS_Events_Rest {
         return current_user_can( 'vis_edit_all_events' );
     }
 
+    /** Publishers may change only publication flags unless they can also edit events. */
+    public function can_update( WP_REST_Request $req ): bool {
+        if ( $this->can_write() ) {
+            return true;
+        }
+        $params = (array) $req->get_json_params();
+        return current_user_can( 'vis_publish_events' ) && (bool) $params
+            && ! array_diff( array_keys( $params ), PCIO_VIS_Events_DB::PUBLISH_FIELDS );
+    }
+
+    /** Reject unauthorized or invalid publication flag input. */
+    private static function publication_error( array $params ): ?WP_REST_Response {
+        foreach ( PCIO_VIS_Events_DB::PUBLISH_FIELDS as $field ) {
+            if ( ! array_key_exists( $field, $params ) ) {
+                continue;
+            }
+            if ( ! current_user_can( 'vis_publish_events' ) ) {
+                return new WP_REST_Response( [ 'message' => __( 'Only publishers may change event publication settings.', 'pcio-vis-member-event' ) ], 403 );
+            }
+            if ( ! in_array( $params[ $field ], [ true, false, 0, 1, '0', '1' ], true ) ) {
+                return new WP_REST_Response( [ 'message' => __( 'Invalid publication flag.', 'pcio-vis-member-event' ) ], 400 );
+            }
+        }
+        return null;
+    }
+
     // ── Handlers ──────────────────────────────────────────────────
+
+    /** Return an AI-generated short version of the posted description text. */
+    public function summarize( WP_REST_Request $req ): WP_REST_Response {
+        if ( ! PCIO_VIS_AI::is_available() ) {
+            return new WP_REST_Response( [ 'message' => __( 'No AI provider is connected. Set one up under Settings → Connectors.', 'pcio-vis-member-event' ) ], 400 );
+        }
+        $result = PCIO_VIS_AI::shorten( (string) $req->get_param( 'text' ) );
+        if ( is_wp_error( $result ) ) {
+            $status = 'pcio_vis_ai_empty' === $result->get_error_code() ? 400 : 502;
+            return new WP_REST_Response( [ 'message' => $result->get_error_message() ], $status );
+        }
+        return new WP_REST_Response( [ 'text' => $result ], 200 );
+    }
+
+    /**
+     * Check that an external ticket-sale URL answers with HTTP 200. Done
+     * server-side because browsers block cross-origin requests (CORS); the
+     * wp_safe_remote_* functions refuse private/local hosts.
+     */
+    public function check_url( WP_REST_Request $req ): WP_REST_Response {
+        $url = (string) $req->get_param( 'url' );
+        if ( '' === $url || ! wp_http_validate_url( $url ) ) {
+            return new WP_REST_Response( [ 'ok' => false, 'status' => 0 ], 200 );
+        }
+
+        $args     = [ 'timeout' => 8, 'redirection' => 5 ];
+        $response = wp_safe_remote_head( $url, $args );
+        $status   = is_wp_error( $response ) ? 0 : (int) wp_remote_retrieve_response_code( $response );
+
+        // Some servers reject HEAD; retry those with a GET.
+        if ( in_array( $status, [ 0, 403, 405, 501 ], true ) ) {
+            $response = wp_safe_remote_get( $url, $args + [ 'limit_response_size' => 65536 ] );
+            $status   = is_wp_error( $response ) ? 0 : (int) wp_remote_retrieve_response_code( $response );
+        }
+
+        return new WP_REST_Response( [ 'ok' => 200 === $status, 'status' => $status ], 200 );
+    }
 
     public function list_events( WP_REST_Request $req ): WP_REST_Response {
         try {
@@ -80,7 +174,11 @@ class PCIO_VIS_Events_Rest {
                 $start = gmdate( 'Y-m-d', strtotime( '-60 days' ) );
                 $end   = gmdate( 'Y-m-d', strtotime( '+120 days' ) );
             }
-            return new WP_REST_Response( PCIO_VIS_Events_DB::get_range( $start, $end ), 200 );
+            $events = PCIO_VIS_Events_DB::get_range( $start, $end, ! PCIO_VIS_Events_DB::can_view_unpublished() );
+            if ( rest_sanitize_boolean( $req->get_param( 'filtered' ) ) ) {
+                $events = PCIO_VIS_Calendar_Filter::apply_for_user( $events, get_current_user_id() );
+            }
+            return new WP_REST_Response( $events, 200 );
         } catch ( \Throwable $e ) {
             return new WP_REST_Response( [ 'message' => $e->getMessage() ], 500 );
         }
@@ -89,7 +187,7 @@ class PCIO_VIS_Events_Rest {
     public function get_event( WP_REST_Request $req ): WP_REST_Response {
         try {
             $event = PCIO_VIS_Events_DB::get( (int) $req->get_param( 'id' ) );
-            if ( ! $event ) {
+            if ( ! $event || ( ! PCIO_VIS_Events_DB::is_published( $event ) && ! PCIO_VIS_Events_DB::can_view_unpublished() ) ) {
                 return new WP_REST_Response( [ 'message' => __( 'Not found.', 'pcio-vis-member-event' ) ], 404 );
             }
             return new WP_REST_Response( $event, 200 );
@@ -101,9 +199,21 @@ class PCIO_VIS_Events_Rest {
     public function create_event( WP_REST_Request $req ): WP_REST_Response {
         try {
             $params = (array) $req->get_json_params();
+            $error = self::publication_error( $params );
+            if ( $error ) {
+                return $error;
+            }
+            if ( ! PCIO_VIS_Event_Types_DB::exists( $params['event_type_id'] ?? 0 ) ) {
+                return new WP_REST_Response( [ 'message' => __( 'Choose an event type.', 'pcio-vis-member-event' ) ], 400 );
+            }
             if ( ! self::dates_valid( $params['start_datetime'] ?? '', $params['end_datetime'] ?? '' ) ) {
                 return new WP_REST_Response( [ 'message' => __( 'End cannot be before the start.', 'pcio-vis-member-event' ) ], 400 );
             }
+            if ( ! self::pre_start_times_valid( $params, $params['start_datetime'] ?? '' ) ) {
+                return new WP_REST_Response( [ 'message' => __( 'Get-in and door opening cannot be after the start.', 'pcio-vis-member-event' ) ], 400 );
+            }
+            // New events always start with the default address from the General settings.
+            $params['location'] = PCIO_VIS_Events_DB::get_default_location();
             $id = PCIO_VIS_Events_DB::create( $params );
             if ( ! $id ) {
                 return new WP_REST_Response( [ 'message' => self::db_error_message( __( 'Could not create event.', 'pcio-vis-member-event' ) ) ], 500 );
@@ -126,6 +236,13 @@ class PCIO_VIS_Events_Rest {
         try {
             $id     = (int) $req->get_param( 'id' );
             $params = (array) $req->get_json_params();
+            $error = self::publication_error( $params );
+            if ( $error ) {
+                return $error;
+            }
+            if ( array_key_exists( 'event_type_id', $params ) && ! PCIO_VIS_Event_Types_DB::exists( $params['event_type_id'] ) ) {
+                return new WP_REST_Response( [ 'message' => __( 'Choose an event type.', 'pcio-vis-member-event' ) ], 400 );
+            }
 
             // Resolve effective start/end against the stored values for partial updates.
             $existing = PCIO_VIS_Events_DB::get( $id );
@@ -133,6 +250,12 @@ class PCIO_VIS_Events_Rest {
             $end      = array_key_exists( 'end_datetime', $params )   ? $params['end_datetime']   : ( $existing['end_datetime']   ?? '' );
             if ( ! self::dates_valid( $start, $end ) ) {
                 return new WP_REST_Response( [ 'message' => __( 'End cannot be before the start.', 'pcio-vis-member-event' ) ], 400 );
+            }
+            if ( $existing ) {
+                $params = self::follow_start_shift( $params, $existing );
+            }
+            if ( ! self::pre_start_times_valid( $params, $start ) ) {
+                return new WP_REST_Response( [ 'message' => __( 'Get-in and door opening cannot be after the start.', 'pcio-vis-member-event' ) ], 400 );
             }
 
             $ok = PCIO_VIS_Events_DB::update( $id, $params );
@@ -166,6 +289,53 @@ class PCIO_VIS_Events_Rest {
             return true;
         }
         return strtotime( (string) $end ) >= strtotime( (string) $start );
+    }
+
+    /**
+     * True when the supplied get-in / door-opening times are empty or not after the start.
+     *
+     * @param array  $params Request params.
+     * @param string $start  Effective start datetime.
+     */
+    private static function pre_start_times_valid( array $params, $start ): bool {
+        $start_ts = strtotime( (string) $start );
+        if ( ! $start_ts ) {
+            return true;
+        }
+        foreach ( PCIO_VIS_Events_DB::PRE_START_FIELDS as $field ) {
+            if ( empty( $params[ $field ] ) ) {
+                continue;
+            }
+            $ts = strtotime( (string) $params[ $field ] );
+            if ( $ts && $ts > $start_ts ) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * When only the start moves (e.g. calendar drag), move stored get-in /
+     * door-opening times by the same amount so they stay relative to the start.
+     *
+     * @param array $params   Request params.
+     * @param array $existing Stored event row.
+     */
+    private static function follow_start_shift( array $params, array $existing ): array {
+        if ( empty( $params['start_datetime'] ) || empty( $existing['start_datetime'] ) ) {
+            return $params;
+        }
+        $delta = strtotime( (string) $params['start_datetime'] . ' UTC' ) - strtotime( (string) $existing['start_datetime'] . ' UTC' );
+        if ( 0 === $delta ) {
+            return $params;
+        }
+        foreach ( PCIO_VIS_Events_DB::PRE_START_FIELDS as $field ) {
+            if ( array_key_exists( $field, $params ) || empty( $existing[ $field ] ) ) {
+                continue;
+            }
+            $params[ $field ] = gmdate( 'Y-m-d H:i:s', strtotime( (string) $existing[ $field ] . ' UTC' ) + $delta );
+        }
+        return $params;
     }
 
     public function delete_event( WP_REST_Request $req ): WP_REST_Response {
